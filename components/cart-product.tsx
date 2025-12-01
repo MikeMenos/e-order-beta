@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2, Heart } from "lucide-react";
 import { IProductInCart } from "@/lib/interfaces";
+import { placeholderImage } from "./product-card";
 
 interface ICartProductProps {
     item: IProductInCart;
@@ -10,6 +11,8 @@ interface ICartProductProps {
 
 export function CardProduct({ item }: ICartProductProps) {
     const qty = Number(item?.Qty1) || 0;
+    const IMAGE_BASE_URL =
+        "https://ergastiri.oncloud.gr/s1services?filename=";
 
     return (
         <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 bg-white">
@@ -18,7 +21,7 @@ export function CardProduct({ item }: ICartProductProps) {
 
                     <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-2xl bg-slate-50">
                         <Image
-                            src={`/${item?.IMAGE}`}
+                            src={item?.IMAGE ? `${IMAGE_BASE_URL}${item.IMAGE}` : placeholderImage}
                             alt={item?.TITLE}
                             fill
                             className="object-contain p-2"

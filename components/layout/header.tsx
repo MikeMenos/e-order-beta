@@ -17,10 +17,11 @@ import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
 import { redirect } from "next/navigation";
 import { deletePinFromCookies } from "@/app/login/actions/deletePinFromCookies";
+import { useEffect } from "react";
 
 export default function Header() {
   const pathname = usePathname();
-  const { clientData, branchNumber, setBranchNumber } = appStore();
+  const { clientData, branchNumber, setBranchNumber, hydrated, setHydrated } = appStore();
 
   const currentBranch = clientData?.data.find(
     (item) => item.BRANCH === branchNumber
@@ -53,7 +54,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-black/80 backdrop-blur">
       <div className="flex h-16 items-center gap-4 px-4">
-        {/* LEFT: Logo + Families */}
+
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.svg" alt="Logo" width={32} height={32} />
           <span className="hidden sm:inline text-lg font-semibold">
@@ -61,7 +62,6 @@ export default function Header() {
           </span>
         </Link>
 
-        {/* Families navigation */}
         {pathname !== "/stores" && (
           <div className="flex-1 overflow-x-auto">
             <nav className="ml-4 flex items-center gap-1 md:gap-2">
@@ -81,7 +81,7 @@ export default function Header() {
             </nav>
           </div>
         )}
-        {/* RIGHT: Logout, Cart, Store dropdown */}
+
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
           {pathname !== "/stores" && (
             <>
@@ -152,7 +152,3 @@ export default function Header() {
     </header>
   );
 }
-function setHydrated() {
-  throw new Error("Function not implemented.");
-}
-

@@ -1,15 +1,16 @@
+// order-summary.tsx
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CardProduct } from "@/components/cart-product";
 import { IProductInCart } from "@/lib/interfaces";
 import ProductCard from "./product-card";
 
 interface OrderSummaryProps {
   items?: IProductInCart[];
+  onRemove?: (mtrl: string) => void;   // 👈 to handle remove in parent
 }
 
-export function OrderSummary({ items }: OrderSummaryProps) {
+export function OrderSummary({ items, onRemove }: OrderSummaryProps) {
   return (
     <div className="basis-2/3 mt-6">
       <Card className="border-0 shadow-none rounded-2xl bg-white">
@@ -21,7 +22,12 @@ export function OrderSummary({ items }: OrderSummaryProps) {
 
         <CardContent className="p-3 pt-0 space-y-3 text-sm">
           {items?.map((item) => (
-            <ProductCard key={item.MTRL} product={item} />
+            <ProductCard
+              key={item.MTRL}
+              product={item}
+              showRemoveButton        // 👈 this makes the bin appear *only here*
+              onRemove={onRemove}
+            />
           ))}
         </CardContent>
       </Card>
