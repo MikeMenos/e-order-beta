@@ -34,8 +34,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToOrder }) => {
   console.log(qty);
 
   return (
-    <Card className="border border-slate-200/80 shadow-none rounded-2xl bg-white mt-6">
-      <CardContent className="p-0 sm:p-3">
+    <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 bg-white mt-6">
+      <CardContent className="sm:p-3">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
 
           {/* IMAGE */}
