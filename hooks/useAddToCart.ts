@@ -1,25 +1,22 @@
+import { api } from "@/lib/api";
+import { AddToCartPayload } from "@/lib/interfaces";
+import { appStore } from "@/stores/appStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 
-type CartRequestBody = {
-    // Replace with your actual body shape
-    count: number;
-    productId: string;
-    // ...
-};
-
-async function postCart(body: CartRequestBody) {
-    const { data } = await axios.post("/add-to-cart", body);
-    return data;
+async function postCart(payload: AddToCartPayload) {
+  const { data } = await api.post("/add-to-cart", payload);
+  return data;
 }
 
 export function useAddToCart() {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
+  const { setBasketId } = appStore();
 
-    return useMutation({
-        mutationFn: (body: CartRequestBody) => postCart(body),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["cart"] });
-        },
-    });
+  return useMutation<{ success: string; id: string }, Error, AddToCartPayload>({
+    mutationFn: (payload: AddToCartPayload) => postCart(payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      setBasketId(data.id);
+    },
+  });
 }

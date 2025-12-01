@@ -20,13 +20,17 @@ export default function Header() {
   const pathname = usePathname();
   const { clientData, branchNumber } = appStore();
 
-  const currentBranch = clientData?.data.find(item => item.BRANCH === branchNumber);
+  const currentBranch = clientData?.data.find(
+    (item) => item.BRANCH === branchNumber
+  );
 
-  const { data: families, isLoading } = useGetFamilies()
-  const { data } = useGetCart({ trdr: currentBranch?.TRDR, branch: branchNumber })
+  const { data: families } = useGetFamilies();
+  const { data } = useGetCart({
+    trdr: currentBranch?.TRDR,
+    branch: branchNumber,
+  });
 
   if (pathname === "/login") return null;
-
 
   const handleBranchChange = (id: string) => {
     // TODO: σύνδεσε το με context / state / query param
@@ -41,7 +45,6 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-black/80 backdrop-blur">
       <div className="flex h-16 items-center gap-4 px-4">
-
         {/* LEFT: Logo + Families */}
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.svg" alt="Logo" width={32} height={32} />
@@ -71,7 +74,6 @@ export default function Header() {
 
         {/* RIGHT: Logout, Cart, Store dropdown */}
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
-
           <DropdownMenu>
             <DropdownMenuContent align="end" className="w-64">
               <DropdownMenuLabel>Επιλογή καταστήματος</DropdownMenuLabel>
@@ -115,9 +117,7 @@ export default function Header() {
             <Link href="/cart" aria-label="Καλάθι" className="relative">
               <ShoppingCart className="h-5 w-5" />
               {data && data.count > 0 && (
-                <span
-                  className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-semibold text-white"
-                >
+                <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-semibold text-white">
                   {data.count}
                 </span>
               )}

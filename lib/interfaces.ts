@@ -5,20 +5,20 @@ export interface ClientResponse {
 }
 
 export interface IStoreInfo {
-  TRDR: string
-  KEY_CODE: string
-  BRANCH: string
-  TYPOS: string
-  BRANCHES: string
-  NAME: string
-  AFM: string
-  ADDRESS: string
-  DISTRICT?: string
-  CITY: string
-  ZIP: string
-  PIN_A: string
-  PIN_B: string
-  PAYMENT?: string
+  TRDR: string;
+  KEY_CODE: string;
+  BRANCH: string;
+  TYPOS: string;
+  BRANCHES: string;
+  NAME: string;
+  AFM: string;
+  ADDRESS: string;
+  DISTRICT?: string;
+  CITY: string;
+  ZIP: string;
+  PIN_A: string;
+  PIN_B: string;
+  PAYMENT?: string;
 }
 
 export interface IFamilyCategories {
@@ -27,7 +27,7 @@ export interface IFamilyCategories {
 
 export interface IProductItem {
   SUPPLIER: string;
-  MTRL: string;
+  ITEMUID: string;
   CODE: string;
   FULL_DESCRIPTION: string;
   TITLE: string;
@@ -42,7 +42,7 @@ export interface IProductItem {
   FAMILY: string;
   IMAGE?: string;
   FAV: string;
-};
+}
 
 export interface ICartProductItem {
   FINDOC: string;
@@ -76,15 +76,46 @@ export interface IProductInBasket {
   Qty1: string;
   Qty2: string;
   SXESI: string;
-};
+}
 
 export interface ICart {
   success: boolean;
   count: number;
   data: IProductInBasket[];
-};
+}
 
+export interface SalDocEntry {
+  SERIES: string;
+  TRDR: number;
+  TRDBRANCH: number;
+  PAYMENT: number;
+  TRUCKS: number;
+  DELIVDATE: string;
+  COMMENTS: string;
+  REMARKS: string;
+}
 
+export interface MtrDocEntry {
+  TRUCKS: number;
+  DELIVDATE: string;
+}
 
+export interface IteLineEntry {
+  MTRL: number;
+  QTY2: number;
+}
 
+export interface SophiaDataPayload {
+  SALDOC: SalDocEntry[];
+  MTRDOC: MtrDocEntry[];
+  ITELINES: IteLineEntry[];
+}
 
+export interface AddToCartPayload {
+  service: "setData";
+  clientID: string;
+  appId: string;
+  OBJECT: "SALDOC";
+  KEY: string;
+  data: SophiaDataPayload;
+}
