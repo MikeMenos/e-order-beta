@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-export async function verifyPin(pin: string) {
+export async function setPinToCookies(pin: string) {
   (await cookies()).set("ergastirio-session-key", pin, {
     httpOnly: true,
     secure: true,

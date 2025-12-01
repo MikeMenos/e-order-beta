@@ -10,7 +10,7 @@ export function useGetCart({
   branch?: string;
 }) {
   return useQuery<ICart, Error>({
-    queryKey: ["cart"],
+    queryKey: ["cart", branch],
     queryFn: async () => {
       const { data } = await api.post("/get-cart", { trdr, branch });
       return data;

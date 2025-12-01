@@ -16,12 +16,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("bg-background text-foreground antialiased", "flex flex-col")}>
+      <body
+        className={cn(
+          "bg-background text-foreground antialiased",
+          "flex flex-col"
+        )}
+      >
         <QueryProvider>
           <Header />
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            {children}
-          </div>
+          <div className="max-w-7xl mx-auto">{children}</div>
           <Footer />
         </QueryProvider>
       </body>
