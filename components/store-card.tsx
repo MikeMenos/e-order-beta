@@ -24,7 +24,7 @@ function InfoItem({ label, value, icon }: InfoItemProps) {
   if (!value) return null
 
   return (
-    <div className="flex items-start gap-3 rounded-xl bg-zinc-50 px-3 py-2 text-xs text-zinc-700 shadow-sm dark:bg-zinc-900 dark:text-zinc-200">
+    <div className="flex items-start gap-3 rounded-xl bg-zinc-50 px-3 py-2 text-xs text-zinc-700 shadow-sm dark:bg-zinc-900 dark:text-zinc-200 ">
       {icon && <span className="mt-2">{icon}</span>}
       <div className="space-y-0.5">
         <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-400">
@@ -55,9 +55,7 @@ export default function StoreCard({ data }: StoreInfoCardProps) {
 
   return (
     <Card className="group relative w-full max-w-xl overflow-hidden border border-zinc-200 bg-white/80 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900/80">
-      {/* Decorative gradient strip */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-linear-to-r from-indigo-500 via-sky-500 to-emerald-500" />
-
+  
       <CardHeader className="flex flex-row items-start justify-between gap-4 pt-4">
         <div className="space-y-1">
           <CardTitle className="flex items-center gap-2 text-xl font-semibold tracking-tight">

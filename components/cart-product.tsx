@@ -2,26 +2,24 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2, Heart } from "lucide-react";
-import { ICartProductItem } from "@/lib/interfaces";
+import { IProductInCart } from "@/lib/interfaces";
 
 interface ICartProductProps {
-    item: ICartProductItem;
+    item: IProductInCart;
 }
 
 export function CardProduct({ item }: ICartProductProps) {
-    const qty = Number(item.Qty1) || 0;
-    const pricePerUnit = Number(item.PRICE_PER_MU1) || 0;
-    const lineTotal = qty * pricePerUnit;
+    const qty = Number(item?.Qty1) || 0;
 
     return (
-        <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 bg-white mt-6">
+        <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 bg-white">
             <CardContent className="sm:px-3 sm:py-3">
                 <div className="flex items-center gap-4 sm:gap-3">
 
                     <div className="relative h-20 w-20 sm:h-24 sm:w-24 shrink-0 overflow-hidden rounded-2xl bg-slate-50">
                         <Image
-                            src={`/${item.IMAGE}`}
-                            alt={item.TITLE}
+                            src={`/${item?.IMAGE}`}
+                            alt={item?.TITLE}
                             fill
                             className="object-contain p-2"
                         />
@@ -29,19 +27,19 @@ export function CardProduct({ item }: ICartProductProps) {
 
                     <div className="flex-1 min-w-0">
                         <h3 className="text-sm sm:text-base font-semibold leading-snug truncate">
-                            {item.TITLE}
+                            {item?.TITLE}
                         </h3>
 
                         <p className="mt-1 text-xs sm:text-[13px] text-slate-500">
-                            Κωδ. Προϊόντος: <span className="font-mono">{item.CODE}</span>
+                            Κωδ. Προϊόντος: <span className="font-mono">{item?.CODE}</span>
                         </p>
 
                         <p className="mt-1 text-xs sm:text-[13px] text-slate-500">
-                            {item.SXESI} τεμάχια / {item.ORDER_UNIT.toLowerCase()}
+                            {item?.SXESI} τεμάχια / {item?.ORDER_UNIT?.toLowerCase()}
                         </p>
 
                         <p className="mt-1 text-xs sm:text-[13px] text-slate-500">
-                            Κατηγορία: {item.FAMILY}
+                            Κατηγορία: {item?.FAMILY}
                         </p>
                     </div>
 
@@ -50,13 +48,15 @@ export function CardProduct({ item }: ICartProductProps) {
                         <div className="flex items-center gap-3">
 
                             <div className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-sm text-slate-700">
-                                <button
+                                <Button
+                                    variant="outline"
+
                                     type="button"
-                                    className="mr-3 text-base leading-none text-slate-400 disabled:opacity-40"
+                                    className="text-slate-400 disabled:opacity-40"
                                     disabled={qty <= 1}
                                 >
                                     –
-                                </button>
+                                </Button>
 
                                 <input
                                     type="number"
@@ -65,21 +65,13 @@ export function CardProduct({ item }: ICartProductProps) {
                                     className="h-6 w-10 border-0 bg-transparent text-center text-sm font-medium text-slate-700 focus:outline-none focus:ring-0 appearance-none"
                                 />
 
-                                <button
+                                <Button
+                                    variant="outline"
                                     type="button"
-                                    className="ml-3 text-base leading-none text-slate-400"
+                                    className=" text-slate-400"
                                 >
                                     +
-                                </button>
-                            </div>
-
-                            <div className="text-right">
-                                <div className="text-lg sm:text-xl font-semibold">
-                                    €{lineTotal.toFixed(2)}
-                                </div>
-                                <div className="text-[11px] sm:text-xs text-slate-500">
-                                    €{pricePerUnit.toFixed(2)} / {item.INVOICE_UNIT.toLowerCase()}
-                                </div>
+                                </Button>
                             </div>
 
                         </div>

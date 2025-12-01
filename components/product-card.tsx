@@ -13,7 +13,7 @@ export const placeholderImage =
 interface ProductCardProps {
   product: IProductItem;
   onAddToOrder?: (product: IProductItem, qty: number) => void;
-  isPending: boolean;
+  isPending?: boolean;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -68,16 +68,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 <span className="font-medium text-slate-600">Κωδικός:</span>
                 <span className="tabular-nums">{product.CODE}</span>
               </div>
-
-              <div className="flex gap-1">
-                <span className="font-medium text-slate-600">MTRL:</span>
-                <span className="tabular-nums">{product.ITEMUID}</span>
-              </div>
             </div>
 
             <div className="flex flex-col gap-1 text-[11px] sm:text-xs text-slate-600 mt-1">
               <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">
-                {product.SXESI} τεμάχια / {product.ORDER_UNIT.toLowerCase()}
+                {product.SXESI} τεμάχια / {product.ORDER_UNIT?.toLowerCase()}
               </span>
 
               <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">

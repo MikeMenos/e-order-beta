@@ -6,7 +6,7 @@ import { useGetCart } from "@/hooks/useGetCart";
 import { useGetProductsPerFamily } from "@/hooks/useGetProductsPerFamily";
 import {
   AddToCartPayload,
-  IProductInBasket,
+  IProductInCart,
   IProductItem,
 } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
@@ -44,7 +44,7 @@ export default function FamilyProducts() {
     const KEY = cartData?.count === 0 ? "" : basketId;
 
     const existingLines =
-      cartData?.data?.map((line: IProductInBasket) => ({
+      cartData?.data?.map((line: IProductInCart) => ({
         MTRL: Number(line.MTRL),
         QTY2: Number(line.Qty2),
       })) ?? [];

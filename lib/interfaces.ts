@@ -44,31 +44,7 @@ export interface IProductItem {
   FAV: string;
 }
 
-export interface ICartProductItem {
-  FINDOC: string;
-  TRDR: string;
-  BRANCH: string;
-  MTRL: string;
-  Qty1: string;
-  Qty2: string;
-
-  SUPPLIER: string;
-  CODE: string;
-  FULL_DESCRIPTION: string;
-  TITLE: string;
-  DESCRIPTION: string;
-  PRICE_PER_MU1: string;
-  INVOICE_UNIT: string;
-  ORDER_UNIT: string;
-  SXESI: string;
-  MANUFACTOR: string;
-  CATEGORY: string;
-  IMAGE: string;
-  MARKA: string;
-  FAMILY: string;
-}
-
-export interface IProductInBasket {
+export interface IProductInCart extends IProductItem {
   FINDOC: string;
   TRDR: string;
   BRANCH: string;
@@ -81,7 +57,7 @@ export interface IProductInBasket {
 export interface ICart {
   success: boolean;
   count: number;
-  data: IProductInBasket[];
+  data: IProductInCart[];
 }
 
 export interface SalDocEntry {

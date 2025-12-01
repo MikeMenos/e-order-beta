@@ -15,14 +15,20 @@ import { ShoppingCart, LogOut, ChevronDown } from "lucide-react";
 import { useGetCart } from "@/hooks/useGetCart";
 import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
+import { useEffect } from "react";
 
 export default function Header() {
   const pathname = usePathname();
-  const { clientData, branchNumber } = appStore();
+  const { clientData, branchNumber, hydrated, setHydrated } = appStore();
 
   const currentBranch = clientData?.data.find(
     (item) => item.BRANCH === branchNumber
   );
+
+  useEffect(() => {
+    appStore.persist.rehydrate();
+    setHydrated();
+  }, [setHydrated]);
 
   const { data: families } = useGetFamilies();
   const { data } = useGetCart({
@@ -30,6 +36,7 @@ export default function Header() {
     branch: branchNumber,
   });
 
+  if (!hydrated) return null;
   if (pathname === "/login") return null;
 
   const handleBranchChange = (id: string) => {
@@ -138,3 +145,7 @@ export default function Header() {
     </header>
   );
 }
+function setHydrated() {
+  throw new Error("Function not implemented.");
+}
+

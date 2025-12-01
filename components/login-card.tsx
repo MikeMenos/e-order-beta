@@ -103,7 +103,8 @@ export function LoginCard() {
   };
 
   return (
-    <Card className="w-full max-w-sm flex">
+    <Card className="w-full">
+
       <CardHeader>
         <CardTitle>Καλωσορίσατε στην εφαρμογή</CardTitle>
         <CardDescription>
@@ -113,7 +114,7 @@ export function LoginCard() {
 
       <CardContent>
         <div className="flex flex-col gap-6">
-          {/* VAT INPUT */}
+       
           {!backendPin && (
             <div className="grid gap-2">
               <Label htmlFor="AFM">ΑΦΜ</Label>
@@ -127,7 +128,6 @@ export function LoginCard() {
             </div>
           )}
 
-          {/* PIN INPUT */}
           {backendPin && (
             <div className="grid gap-2">
               <Label>6-ψήφιο PIN</Label>
