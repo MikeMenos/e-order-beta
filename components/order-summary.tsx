@@ -2,12 +2,12 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { IProductInCart } from "@/lib/interfaces";
+import { IProductInCart, IProductItem } from "@/lib/interfaces";
 import ProductCard from "./product-card";
 
 interface OrderSummaryProps {
   items?: IProductInCart[];
-  onRemove?: (mtrl: string) => void;   // 👈 to handle remove in parent
+  onRemove?: (product: IProductItem) => void;
 }
 
 export function OrderSummary({ items, onRemove }: OrderSummaryProps) {
@@ -25,7 +25,7 @@ export function OrderSummary({ items, onRemove }: OrderSummaryProps) {
             <ProductCard
               key={item.MTRL}
               product={item}
-              showRemoveButton        // 👈 this makes the bin appear *only here*
+              showRemoveButton
               onRemove={onRemove}
             />
           ))}
