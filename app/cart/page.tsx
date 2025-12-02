@@ -20,7 +20,7 @@ export default function Cart() {
 
     return (
         <div className="flex gap-6">
-            <OrderSummary items={data?.data} />
+            <OrderSummary items={data} />
 
             <div className="basis-1/3">
                 <CartTotals items={data?.data} />

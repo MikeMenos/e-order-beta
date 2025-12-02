@@ -3,20 +3,21 @@
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { IProductItem } from "@/lib/interfaces";
+import { IProductInCart } from "@/lib/interfaces";
 import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export const placeholderImage =
   "https://via.placeholder.com/300x200?text=No+Image";
 
 interface ProductCardProps {
-  product: IProductItem;
-  onAddToOrder?: (product: IProductItem, qty: number) => void;
+  product: IProductInCart;
+  onAddToOrder?: (product: IProductInCart, qty: number) => void;
   isPending?: boolean;
 
   showRemoveButton?: boolean;
-  onRemove?: (product: IProductItem) => void;
+  onRemove?: (product: IProductInCart) => void;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -26,18 +27,22 @@ const ProductCard: React.FC<ProductCardProps> = ({
   showRemoveButton,
   onRemove,
 }) => {
-  const [qty, setQty] = React.useState<number>(1);
+  const [qty, setQty] = React.useState<number>(Number(product.Qty2));
 
-  const handleDecrease = () => {
-    setQty((prev) => (prev > 1 ? prev - 1 : 1));
+  useEffect(() => {
+    setQty(Number(product.Qty2));
+  }, [product.Qty2]);
+
+  const handleDecrease = (currentQty: number) => {
+    setQty(Math.max(currentQty - 1, 1));
   };
 
-  const handleIncrease = () => {
-    setQty((prev) => prev + 1);
+  const handleIncrease = (currentQty: number) => {
+    setQty(Math.max(currentQty + 1, 1));
   };
 
   const handleAddToOrder = () => {
-    if (onAddToOrder) {
+    if (onAddToOrder && qty) {
       onAddToOrder(product, qty);
     }
   };
@@ -53,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const imageUrl = product.IMAGE
     ? `${IMAGE_BASE_URL}${product.IMAGE}`
     : placeholderImage;
-
+  console.log(qty)
   return (
     <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 bg-white mt-6">
       <CardContent className="sm:p-3">
@@ -109,14 +114,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     variant="outline"
                     size="icon"
                     className="h-8 w-8 rounded-full"
-                    onClick={handleDecrease}
+                    onClick={() => handleDecrease(qty)}
                     disabled={qty <= 1}
                   >
                     <Minus className="h-4 w-4" />
                   </Button>
 
                   <div className="min-w-12 text-center text-sm font-medium tabular-nums">
-                    {qty}
+                    {qty ?? product.Qty2}
                   </div>
 
                   <Button
@@ -124,7 +129,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     variant="outline"
                     size="icon"
                     className="h-8 w-8 rounded-full"
-                    onClick={handleIncrease}
+                    onClick={() => handleIncrease(qty)}
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
@@ -137,7 +142,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   disabled={isPending}
                 >
                   <ShoppingCart className="h-4 w-4" />
-                  Προσθήκη
                 </Button>
               </div>
 
