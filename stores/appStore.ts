@@ -1,4 +1,4 @@
- import { ClientResponse } from "@/lib/interfaces";
+import { ClientResponse } from "@/lib/interfaces";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -6,7 +6,7 @@ type AppState = {
   clientData?: ClientResponse;
   setClientData: (value: ClientResponse) => void;
   branchNumber?: string;
-  setBranchNumber: (value: string) => void;
+  setBranchNumber: (value?: string) => void;
   basketId: string;
   setBasketId: (value: string) => void;
   hydrated: boolean;

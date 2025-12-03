@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 
 export default function Stores() {
-  const { clientData, hydrated, setHydrated, setBranchNumber } = appStore();
+  const { clientData, hydrated, setHydrated, setBranchNumber, setBasketId } = appStore();
 
   useEffect(() => {
     appStore.persist.rehydrate();
@@ -18,7 +18,10 @@ export default function Stores() {
   return (
     <>
       {clientData?.data.map((item) => (
-        <Link key={item.BRANCH} href={'/'} onClick={() => setBranchNumber(item.BRANCH)}>
+        <Link key={item.BRANCH} href={'/'} onClick={() => {
+          setBranchNumber(item.BRANCH)
+          setBasketId(item.BASKET_KEY ?? '')
+        }}>
           <StoreCard data={item} />
         </Link>
       ))}

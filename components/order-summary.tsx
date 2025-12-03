@@ -12,82 +12,6 @@ interface OrderSummaryProps {
 }
 
 export function OrderSummary({ items }: OrderSummaryProps) {
-  const [pendingProductId, setPendingProductId] = useState<string | null>(null);
-
-  const { clientData, branchNumber, basketId, setHydrated, hydrated } =
-    appStore();
-  const currentBranch = clientData?.data.find(
-    (item) => item.BRANCH === branchNumber
-  );
-  const { mutate: addToCartMutation } = useAddToCart();
-
-  const handleAddToOrder = (product: IProductInCart, qty: number) => {
-    setPendingProductId(product.ITEMUID);
-    const KEY = items?.count === 0 ? "" : basketId;
-
-    const existingLines =
-      items?.data?.map((line: IProductInCart) => ({
-        MTRL: Number(line.MTRL),
-        QTY2: Number(line.Qty2),
-      })) ?? [];
-
-    const newLineMTRL = Number(product.MTRL);
-
-    const lineExists = existingLines.find(l => l.MTRL === newLineMTRL);
-
-    let updatedLines;
-
-    if (lineExists) {
-      updatedLines = existingLines.map(l =>
-        l.MTRL === newLineMTRL
-          ? { ...l, QTY2: l.QTY2 + ((l.QTY2 - qty) < 0 ? Math.abs(l.QTY2 - qty) : -(l.QTY2 - qty)) }
-          : l
-      );
-    } else {
-      updatedLines = [
-        ...existingLines,
-        { MTRL: newLineMTRL, QTY2: qty }
-      ];
-    }
-
-
-    const payload: AddToCartPayload = {
-      service: "setData",
-      clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
-      appId: process.env.NEXT_PUBLIC_APP_ID!,
-      OBJECT: "SALDOC",
-      KEY,
-
-      data: {
-        SALDOC: [
-          {
-            SERIES: "7001",
-            TRDR: Number(currentBranch?.TRDR),
-            TRDBRANCH: Number(branchNumber),
-            PAYMENT: 1006,
-            TRUCKS: 2,
-            DELIVDATE: "",
-            COMMENTS: "",
-            REMARKS: "",
-          },
-        ],
-        MTRDOC: [
-          {
-            TRUCKS: 2,
-            DELIVDATE: "",
-          },
-        ],
-
-        ITELINES: updatedLines,
-      },
-    };
-
-    addToCartMutation(payload, {
-      onSettled: () => {
-        setPendingProductId(null);
-      },
-    });
-  };
 
   return (
     <div className="basis-2/3 mt-6">
@@ -104,8 +28,6 @@ export function OrderSummary({ items }: OrderSummaryProps) {
               key={item.CODE}
               product={item}
               showRemoveButton
-              onAddToOrder={handleAddToOrder}
-              isPending={pendingProductId === item.ITEMUID}
             />
           ))}
         </CardContent>

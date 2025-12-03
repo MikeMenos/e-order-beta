@@ -21,7 +21,7 @@ import { useEffect } from "react";
 
 export default function Header() {
   const pathname = usePathname();
-  const { clientData, branchNumber, setBranchNumber, hydrated, setHydrated } = appStore();
+  const { clientData, branchNumber, setBranchNumber, hydrated, setHydrated, setBasketId } = appStore();
 
   const currentBranch = clientData?.data.find(
     (item) => item.BRANCH === branchNumber
@@ -42,12 +42,14 @@ export default function Header() {
   if (pathname === "/login") return null;
 
   const handleBranchChange = (branch: string) => {
+    setBasketId(currentBranch?.BASKET_KEY ?? '');
     setBranchNumber(branch);
     redirect("/");
   };
 
   const handleLogout = () => {
     deletePinFromCookies();
+    setBranchNumber(undefined)
     redirect("/login");
   };
 

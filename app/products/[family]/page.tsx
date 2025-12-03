@@ -1,6 +1,7 @@
 "use client";
 
 import ProductCard from "@/components/product-card";
+import { successToast } from "@/components/toasts";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { useGetProductsPerFamily } from "@/hooks/useGetProductsPerFamily";
@@ -57,7 +58,6 @@ export default function FamilyProducts() {
 
   const handleAddToOrder = (product: IProductItem, qty: number) => {
     setPendingProductId(product.ITEMUID);
-    const KEY = cartData?.count === 0 ? "" : basketId;
 
     const existingLines =
       cartData?.data?.map((line: IProductInCart) => ({
@@ -90,7 +90,7 @@ export default function FamilyProducts() {
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY,
+      KEY: basketId ?? '',
 
       data: {
         SALDOC: [
@@ -118,6 +118,7 @@ export default function FamilyProducts() {
 
     addToCartMutation(payload, {
       onSettled: () => {
+        successToast('Προστέθηκε στο καλάθι');
         setPendingProductId(null);
       },
     });
@@ -128,12 +129,45 @@ export default function FamilyProducts() {
 
   if (isLoading) return <div>Loading...</div>;
 
-  return productsWithQty?.map((item) => (
-    <ProductCard
-      product={item}
-      key={item.CODE}
-      onAddToOrder={handleAddToOrder}
-      isPending={pendingProductId === item.ITEMUID}
-    />
-  ));
+  const favProducts = productsWithQty?.filter((p) => p.FAV === "FAV");
+  const regProducts = productsWithQty?.filter((p) => p.FAV === "REG");
+
+
+  return (
+    <>
+      {/* FAV PRODUCTS */}
+      {favProducts && favProducts.length > 0 && (
+        <>
+          <h2 className="text-lg font-semibold mb-2">Αγαπημένα Προϊόντα</h2>
+          {favProducts.map((item) => (
+            <ProductCard
+              product={item}
+              key={item.CODE}
+              onAddToOrder={handleAddToOrder}
+              isPending={pendingProductId === item.ITEMUID}
+            />
+          ))}
+        </>
+      )}
+
+      {/* Divider only if both exist */}
+      {favProducts && favProducts?.length > 0 && regProducts && regProducts?.length > 0 && <hr className="my-4" />}
+
+      {/* REGULAR PRODUCTS */}
+      {regProducts && regProducts.length > 0 && (
+        <>
+          <h2 className="text-lg font-semibold mb-2">Άλλα Προϊόντα</h2>
+          {regProducts.map((item) => (
+            <ProductCard
+              product={item}
+              key={item.CODE}
+              onAddToOrder={handleAddToOrder}
+              isPending={pendingProductId === item.ITEMUID}
+            />
+          ))}
+        </>
+      )}
+    </>
+  );
+
 }

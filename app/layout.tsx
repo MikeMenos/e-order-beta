@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { QueryProvider } from "../components/query-provider";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Ergastirio Manager",
@@ -26,6 +27,19 @@ export default function RootLayout({
           <Header />
           <div className="max-w-9xl mx-auto">{children}</div>
           <Footer />
+          <Toaster
+            toastOptions={{
+              success: {
+                duration: 3000,
+                style: { padding: "1rem" },
+              },
+              error: {
+                duration: 3000,
+                style: { padding: "1rem" },
+              },
+              position: "bottom-center",
+            }}
+          />
         </QueryProvider>
       </body>
     </html>
