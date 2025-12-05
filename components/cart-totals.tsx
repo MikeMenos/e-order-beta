@@ -54,7 +54,7 @@ export function CartTotals({ items, onSendOrder }: CartTotalsProps) {
     };
 
     return (
-        <div className="basis-2/3 mt-6">
+        <div className="basis-2/3">
             <Card className="border border-slate-200/80 shadow-none rounded-2xl bg-slate-50">
                 <CardHeader className="border-b border-slate-200">
                     <CardTitle className="text-base sm:text-lg">

@@ -73,21 +73,23 @@ const ProductCard: FC<ProductCardProps> = ({
     : placeholderImage;
 
   return (
-    <div className="flex items-start gap-3 ">
+    <div className="flex items-start gap-3">
+
       {showRemoveButton && (
         <input
           type="checkbox"
-          className="h-5 w-5 mt-6 cursor-pointer"
+          className="h-5 w-5 mt-4 cursor-pointer"
           checked={checked}
           onChange={handleCheckboxChange}
         />
       )}
 
-      <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 bg-white mt-6 w-full">
-        <CardContent className="sm:p-3">
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+      <Card className="border border-slate-200/80 shadow-none rounded-2xl bg-white w-full">
+        <CardContent className="p-3 sm:p-3">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
+
             <div className="shrink-0">
-              <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl bg-slate-50 overflow-hidden">
+              <div className="sm:mt-0 h-20 w-20 sm:h-24 sm:w-24 rounded-xl bg-slate-50 overflow-hidden">
                 <Image
                   src={imageUrl}
                   alt={product.TITLE}
@@ -98,8 +100,9 @@ const ProductCard: FC<ProductCardProps> = ({
               </div>
             </div>
 
-            <div className="flex-1 flex flex-col gap-2 text-sm p-0">
-              <div className="flex flex-col space-y-1.5">
+            <div className="flex-1 flex flex-col gap-3 text-sm">
+
+              <div className="space-y-1.5">
                 <div className="font-medium text-[15px] sm:text-base">
                   {product.TITLE || product.FULL_DESCRIPTION}
                 </div>
@@ -114,21 +117,28 @@ const ProductCard: FC<ProductCardProps> = ({
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1 text-[11px] sm:text-xs text-slate-600 mt-1">
-                <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">
+              <div className="flex flex-col gap-1 text-[11px] sm:text-xs text-slate-600">
+                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
                   {product.SXESI} τεμάχια / {product.ORDER_UNIT?.toLowerCase()}
                 </span>
 
-                <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">
+                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
                   Προμηθευτής:
                   <span className="ml-1 font-medium">{product.SUPPLIER}</span>
+                </span>
+
+                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
+                  MTRL:
+                  <span className="ml-1 font-medium">{product.MTRL}</span>
                 </span>
               </div>
             </div>
 
             <div className="flex items-center justify-end min-w-[130px] sm:min-w-[150px]">
-              <div className="flex flex-col items-end gap-2">
+              <div className="flex flex-col items-end gap-3">
+
                 <div className="flex items-center justify-end gap-2">
+
                   <div className="flex items-center gap-1">
                     <Button
                       type="button"
@@ -156,15 +166,16 @@ const ProductCard: FC<ProductCardProps> = ({
                     </Button>
                   </div>
 
-                  {pathname !== '/cart' && <Button
-                    size="sm"
-                    className="whitespace-nowrap gap-1 cursor-pointer"
-                    onClick={handleAddToOrder}
-                    disabled={isPending}
-                  >
-                    <ShoppingCart className="h-4 w-4" />
-                  </Button>}
-
+                  {pathname !== '/cart' && (
+                    <Button
+                      size="sm"
+                      className="whitespace-nowrap gap-1 cursor-pointer"
+                      onClick={handleAddToOrder}
+                      disabled={isPending}
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                    </Button>
+                  )}
 
                   {showRemoveButton && (
                     <Button
@@ -178,13 +189,17 @@ const ProductCard: FC<ProductCardProps> = ({
                     </Button>
                   )}
                 </div>
+
               </div>
             </div>
+
           </div>
         </CardContent>
       </Card>
+
     </div>
   );
+
 };
 
 export default ProductCard;

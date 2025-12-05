@@ -20,13 +20,17 @@ export default function RootLayout({
       <body
         className={cn(
           "bg-background text-foreground antialiased",
-          "flex flex-col"
+          "min-h-screen flex flex-col"
         )}
       >
         <QueryProvider>
           <Header />
-          <div className="max-w-9xl mx-auto">{children}</div>
+          <main className="mx-auto w-full max-w-6xl px-4 py-6 flex-1">
+            {children}
+          </main>
+
           <Footer />
+
           <Toaster
             toastOptions={{
               success: {

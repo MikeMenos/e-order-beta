@@ -2,6 +2,7 @@
 
 import ProductCard from "@/components/product-card";
 import { successToast } from "@/components/toasts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { useGetProductsPerFamily } from "@/hooks/useGetProductsPerFamily";
@@ -134,40 +135,62 @@ export default function FamilyProducts() {
 
 
   return (
-    <>
-      {/* FAV PRODUCTS */}
-      {favProducts && favProducts.length > 0 && (
-        <>
-          <h2 className="text-lg font-semibold mb-2">Αγαπημένα Προϊόντα</h2>
-          {favProducts.map((item) => (
-            <ProductCard
-              product={item}
-              key={item.CODE}
-              onAddToOrder={handleAddToOrder}
-              isPending={pendingProductId === item.ITEMUID}
-            />
-          ))}
-        </>
-      )}
+    <Card className="border-0 shadow-none rounded-2xl bg-white">
+      <CardHeader className="border-b border-slate-200">
+        <CardTitle className="text-base sm:text-lg">
+          {data?.[0]?.FAMILY ?? "Προϊόντα"}
+        </CardTitle>
+      </CardHeader>
 
-      {/* Divider only if both exist */}
-      {favProducts && favProducts?.length > 0 && regProducts && regProducts?.length > 0 && <hr className="my-4" />}
+      <CardContent className="p-0 lg:p-3 space-y-6 text-sm">
+        {favProducts && favProducts.length > 0 && (
+          <section>
+            <div className="border-b border-slate-200 pb-2 mb-3">
+              <span className="text-lg font-semibold">
+                Αγαπημένα Προϊόντα
+              </span>
+            </div>
 
-      {/* REGULAR PRODUCTS */}
-      {regProducts && regProducts.length > 0 && (
-        <>
-          <h2 className="text-lg font-semibold mb-2">Άλλα Προϊόντα</h2>
-          {regProducts.map((item) => (
-            <ProductCard
-              product={item}
-              key={item.CODE}
-              onAddToOrder={handleAddToOrder}
-              isPending={pendingProductId === item.ITEMUID}
-            />
-          ))}
-        </>
-      )}
-    </>
+            <div className="space-y-3">
+              {favProducts.map((item) => (
+                <ProductCard
+                  product={item}
+                  key={item.CODE}
+                  onAddToOrder={handleAddToOrder}
+                  isPending={pendingProductId === item.ITEMUID}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {favProducts?.length > 0 && regProducts?.length > 0 && (
+          <hr className="my-2" />
+        )}
+
+        {regProducts && regProducts.length > 0 && (
+          <section>
+            <div className="border-b border-slate-200 pb-2 mb-3">
+              <span className="text-lg font-semibold">
+                Άλλα Προϊόντα
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              {regProducts.map((item) => (
+                <ProductCard
+                  product={item}
+                  key={item.CODE}
+                  onAddToOrder={handleAddToOrder}
+                  isPending={pendingProductId === item.ITEMUID}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+      </CardContent>
+    </Card>
   );
+
 
 }
