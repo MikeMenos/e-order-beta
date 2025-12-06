@@ -25,7 +25,7 @@ export default function RootLayout({
       >
         <QueryProvider>
           <Header />
-          <div className="max-w-9xl mx-auto">{children}</div>
+          <div className="max-w-9xl mx-auto py-4">{children}</div>
           <Footer />
           <Toaster
             toastOptions={{

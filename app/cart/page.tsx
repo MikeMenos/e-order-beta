@@ -87,7 +87,7 @@ export default function Cart() {
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="flex gap-6">
+    <div className="flex md:flex-row flex-col gap-6">
       <OrderSummary items={data} />
 
       <div className="basis-1/3">
