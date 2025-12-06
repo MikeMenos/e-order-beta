@@ -3,25 +3,22 @@
 import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { IProductInCart } from "@/lib/interfaces";
 import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { usePathname } from "next/navigation";
+import { IProductItem } from "@/lib/interfaces";
+import { Input } from "./ui/input";
 
 export const placeholderImage =
-  "https://via.placeholder.com/300x200?text=No+Image";
+  "https://images.pexels.com/photos/2955820/pexels-photo-2955820.jpeg";
 
 interface ProductCardProps {
-  product: IProductInCart;
-  onAddToOrder?: (product: IProductInCart, qty: number) => void;
+  product: IProductItem;
+  onAddToOrder?: (product: IProductItem, qty: number) => void;
   isPending?: boolean;
-
   showRemoveButton?: boolean;
-  onRemove?: (product: IProductInCart) => void;
-
-  onCheck?: (product: IProductInCart, checked: boolean) => void;
-  checked?: boolean;
+  onRemove?: (product: IProductItem) => void;
 }
 
 const ProductCard: FC<ProductCardProps> = ({
@@ -30,25 +27,21 @@ const ProductCard: FC<ProductCardProps> = ({
   isPending,
   showRemoveButton,
   onRemove,
-  onCheck,
-  checked = false,
 }) => {
   const pathname = usePathname();
-  const [qty, setQty] = useState<number>(Number(product.Qty2));
+  const [qty, setQty] = useState<number | "">(product.Qty2);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    setQty(Number(product.Qty2));
-  }, [product.Qty2]);
-
-  const handleDecrease = (currentQty: number) => {
-    setQty(Math.max(currentQty - 1, 1));
-  };
-
-  const handleIncrease = (currentQty: number) => {
-    setQty(Math.max(currentQty + 1, 1));
-  };
+  const IMAGE_BASE_URL = "https://ergastiri.oncloud.gr/s1services?filename=";
+  const imageUrl = product.IMAGE
+    ? `${IMAGE_BASE_URL}${product.IMAGE}`
+    : placeholderImage;
 
   const handleAddToOrder = () => {
+    if (typeof qty === "number" && qty <= 0) {
+      setError("Η ποσότητα δεν μπορεί να είναι μηδέν ή μικρότερη από μηδέν");
+      return;
+    }
     if (onAddToOrder && qty) {
       onAddToOrder(product, qty);
     }
@@ -60,40 +53,28 @@ const ProductCard: FC<ProductCardProps> = ({
     }
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onCheck) {
-      onCheck(product, e.target.checked);
+  const handleQtyChange = (value: string, setter: (v: number | "") => void) => {
+    setError("");
+    if (value === "") {
+      setter("");
+    } else {
+      setter(Number(value));
     }
   };
 
-  const IMAGE_BASE_URL = "https://ergastiri.oncloud.gr/s1services?filename=";
-
-  const imageUrl = product.IMAGE
-    ? `${IMAGE_BASE_URL}${product.IMAGE}`
-    : placeholderImage;
-
   return (
     <div className="flex items-start gap-3 ">
-      {showRemoveButton && (
-        <input
-          type="checkbox"
-          className="h-5 w-5 mt-6 cursor-pointer"
-          checked={checked}
-          onChange={handleCheckboxChange}
-        />
-      )}
-
       <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 bg-white mt-6 w-full">
         <CardContent className="sm:p-3">
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center">
             <div className="shrink-0">
               <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-xl bg-slate-50 overflow-hidden">
                 <Image
                   src={imageUrl}
                   alt={product.TITLE}
                   className="h-full w-full object-cover"
-                  width={400}
-                  height={400}
+                  width={800}
+                  height={800}
                 />
               </div>
             </div>
@@ -129,42 +110,29 @@ const ProductCard: FC<ProductCardProps> = ({
             <div className="flex items-center justify-end min-w-[130px] sm:min-w-[150px]">
               <div className="flex flex-col items-end gap-2">
                 <div className="flex items-center justify-end gap-2">
-                  <div className="flex items-center gap-1">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 rounded-full"
-                      onClick={() => handleDecrease(qty)}
-                      disabled={qty <= 1}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-
-                    <div className="min-w-12 text-center text-sm font-medium tabular-nums">
-                      {qty ?? product.Qty2}
-                    </div>
-
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 rounded-full"
-                      onClick={() => handleIncrease(qty)}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
+                  <div className="relative">
+                    <Input
+                      className="min-w-12 text-center text-sm font-medium tabular-nums"
+                      value={qty}
+                      type="number"
+                      onChange={(e) => handleQtyChange(e.target.value, setQty)}
+                    />
+                    {error && (
+                      <p className="text-xs text-red-500 w-44 text-center mx-auto absolute top-10">
+                        {error}
+                      </p>
+                    )}
                   </div>
-
-                  {pathname !== '/cart' && <Button
-                    size="sm"
-                    className="whitespace-nowrap gap-1 cursor-pointer"
-                    onClick={handleAddToOrder}
-                    disabled={isPending}
-                  >
-                    <ShoppingCart className="h-4 w-4" />
-                  </Button>}
-
+                  {pathname !== "/cart" && (
+                    <Button
+                      size="sm"
+                      className="whitespace-nowrap gap-1 cursor-pointer"
+                      onClick={handleAddToOrder}
+                      disabled={isPending}
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                    </Button>
+                  )}
 
                   {showRemoveButton && (
                     <Button

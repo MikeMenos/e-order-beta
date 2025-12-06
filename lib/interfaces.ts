@@ -43,22 +43,18 @@ export interface IProductItem {
   FAMILY: string;
   IMAGE?: string;
   FAV: string;
-}
-
-export interface IProductInCart extends IProductItem {
   FINDOC: string;
   TRDR: string;
   BRANCH: string;
   MTRL: string;
   Qty1: string;
-  Qty2: string;
-  SXESI: string;
+  Qty2: number;
 }
 
 export interface ICart {
   success: boolean;
   count: number;
-  data: IProductInCart[];
+  data: IProductItem[];
 }
 
 export interface SalDocEntry {
