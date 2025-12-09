@@ -6,11 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { useGetProductsPerFamily } from "@/hooks/useGetProductsPerFamily";
-import {
-  AddToCartPayload,
-  IProductInCart,
-  IProductItem,
-} from "@/lib/interfaces";
+import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -41,12 +37,12 @@ export default function FamilyProducts() {
   });
   const { mutate: addToCartMutation } = useAddToCart();
 
-  const productsWithQty = useMemo(() => {
+  const productsWithQty = useMemo((): IProductItem[] | undefined => {
     return data?.map((product) => {
       const productId = Number(product.ITEMUID);
 
       const matchingCartLine = cartData?.data?.find(
-        (line: IProductInCart) => Number(line.MTRL) === productId
+        (line: IProductItem) => Number(line.MTRL) === productId
       );
 
       return {
@@ -56,42 +52,42 @@ export default function FamilyProducts() {
     });
   }, [data, cartData]);
 
-
   const handleAddToOrder = (product: IProductItem, qty: number) => {
     setPendingProductId(product.ITEMUID);
 
     const existingLines =
-      cartData?.data?.map((line: IProductInCart) => ({
+      cartData?.data?.map((line: IProductItem) => ({
         MTRL: Number(line.MTRL),
         QTY2: Number(line.Qty2),
       })) ?? [];
 
     const newLineMTRL = Number(product.ITEMUID);
 
-    const lineExists = existingLines.find(l => l.MTRL === newLineMTRL);
+    const lineExists = existingLines.find((l) => l.MTRL === newLineMTRL);
 
     let updatedLines;
 
     if (lineExists) {
-      updatedLines = existingLines.map(l =>
+      updatedLines = existingLines.map((l) =>
         l.MTRL === newLineMTRL
-          ? { ...l, QTY2: l.QTY2 + ((l.QTY2 - qty) < 0 ? Math.abs(l.QTY2 - qty) : -(l.QTY2 - qty)) }
+          ? {
+              ...l,
+              QTY2:
+                l.QTY2 +
+                (l.QTY2 - qty < 0 ? Math.abs(l.QTY2 - qty) : -(l.QTY2 - qty)),
+            }
           : l
       );
     } else {
-      updatedLines = [
-        ...existingLines,
-        { MTRL: newLineMTRL, QTY2: qty }
-      ];
+      updatedLines = [...existingLines, { MTRL: newLineMTRL, QTY2: qty }];
     }
-
 
     const payload: AddToCartPayload = {
       service: "setData",
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY: basketId ?? '',
+      KEY: basketId ?? "",
 
       data: {
         SALDOC: [
@@ -119,7 +115,7 @@ export default function FamilyProducts() {
 
     addToCartMutation(payload, {
       onSettled: () => {
-        successToast('Προστέθηκε στο καλάθι');
+        successToast("Προστέθηκε στο καλάθι");
         setPendingProductId(null);
       },
     });
@@ -132,7 +128,6 @@ export default function FamilyProducts() {
 
   const favProducts = productsWithQty?.filter((p) => p.FAV === "FAV");
   const regProducts = productsWithQty?.filter((p) => p.FAV === "REG");
-
 
   return (
     <Card className="border-0 shadow-none rounded-2xl bg-white">
@@ -150,6 +145,11 @@ export default function FamilyProducts() {
                 Αγαπημένα Προϊόντα
               </span>
             </div>
+      {/* Divider only if both exist */}
+      {favProducts &&
+        favProducts?.length > 0 &&
+        regProducts &&
+        regProducts?.length > 0 && <hr className="my-4" />}
 
             <div className="space-y-3">
               {favProducts.map((item) => (
