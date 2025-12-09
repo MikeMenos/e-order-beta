@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { IProductInCart } from "@/lib/interfaces";
@@ -60,11 +59,11 @@ const ProductCard: FC<ProductCardProps> = ({
     }
   };
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onCheck) {
-      onCheck(product, e.target.checked);
-    }
-  };
+  // const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (onCheck) {
+  //     onCheck(product, e.target.checked);
+  //   }
+  // };
 
   const IMAGE_BASE_URL = "https://ergastiri.oncloud.gr/s1services?filename=";
 
@@ -75,18 +74,18 @@ const ProductCard: FC<ProductCardProps> = ({
   return (
     <div className="flex items-start gap-3">
 
-      {showRemoveButton && (
+      {/* {showRemoveButton && (
         <input
           type="checkbox"
           className="h-5 w-5 mt-4 cursor-pointer"
           checked={checked}
           onChange={handleCheckboxChange}
         />
-      )}
+      )} */}
 
-      <Card className="border border-slate-200/80 shadow-none rounded-2xl bg-white w-full">
-        <CardContent className="p-3 sm:p-3">
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
+      <Card className="shadow-none rounded-2xl w-full">
+        <CardContent className="p-0 sm:p-0">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-4">
 
             <div className="shrink-0">
               <div className="sm:mt-0 h-20 w-20 sm:h-24 sm:w-24 rounded-xl bg-slate-50 overflow-hidden">
@@ -110,14 +109,23 @@ const ProductCard: FC<ProductCardProps> = ({
                 <div className="text-s text-slate-500">
                   {product.DESCRIPTION || product.FULL_DESCRIPTION}
                 </div>
-
-                <div className="flex gap-1">
-                  <span className="font-medium text-slate-600">Κωδικός:</span>
-                  <span className="tabular-nums">{product.CODE}</span>
-                </div>
               </div>
 
-              <div className="flex flex-col gap-1 text-[11px] sm:text-xs text-slate-600">
+              <div className="flex flex-row gap-1 text-[11px] sm:text-xs text-slate-600">
+                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
+                  Κωδικός:
+                  <span className="ml-1 font-medium">{product.CODE}</span>
+                </span>
+
+                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
+                  MTRL:
+                  <span className="ml-1 font-medium">{product.MTRL}</span>
+                </span>
+
+              </div>
+
+              <div className="flex flex-row gap-1 text-[11px] sm:text-xs text-slate-600">
+
                 <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
                   {product.SXESI} τεμάχια / {product.ORDER_UNIT?.toLowerCase()}
                 </span>
@@ -127,10 +135,6 @@ const ProductCard: FC<ProductCardProps> = ({
                   <span className="ml-1 font-medium">{product.SUPPLIER}</span>
                 </span>
 
-                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
-                  MTRL:
-                  <span className="ml-1 font-medium">{product.MTRL}</span>
-                </span>
               </div>
             </div>
 

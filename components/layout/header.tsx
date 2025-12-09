@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import logo from "@/public/logo.png";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -54,11 +55,12 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-black/80 backdrop-blur">
+    <header className="sticky top-0 z-50 w-full border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">
       <div className="flex h-16 items-center gap-4 px-4">
 
         <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="Logo" width={32} height={32} />
+          <Image src={logo} alt="Logo" width={32} height={32} />
+
           <span className="hidden sm:inline text-lg font-semibold">
             Ergastirio Manager
           </span>

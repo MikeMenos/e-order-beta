@@ -15,7 +15,7 @@ export function CardProduct({ item }: ICartProductProps) {
         "https://ergastiri.oncloud.gr/s1services?filename=";
 
     return (
-        <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 bg-white">
+        <Card className="p-4 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="sm:px-3 sm:py-3">
                 <div className="flex items-center gap-4 sm:gap-3">
 

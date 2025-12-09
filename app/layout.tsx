@@ -5,9 +5,13 @@ import { QueryProvider } from "../components/query-provider";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Toaster } from "react-hot-toast";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Ergastirio Manager",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -18,8 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn(
-          "bg-background text-foreground antialiased",
+        className={cn( 
+          "bg-zinc-50 dark:bg-black text-foreground antialiased",
           "min-h-screen flex flex-col"
         )}
       >

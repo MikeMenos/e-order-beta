@@ -5,6 +5,8 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-brand: rgb(247, 174, 165);
+   --color-brand-light: rgb(255, 200, 190);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -120,3 +122,4 @@
     @apply bg-background text-foreground;
   }
 }
+

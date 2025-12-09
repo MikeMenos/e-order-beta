@@ -136,7 +136,7 @@ export default function FamilyProducts() {
 
   return (
     <Card className="border-0 shadow-none rounded-2xl bg-white">
-      <CardHeader className="border-b border-slate-200">
+      <CardHeader className="border rounded-2xl border-slate-200">
         <CardTitle className="text-base sm:text-lg">
           {data?.[0]?.FAMILY ?? "Προϊόντα"}
         </CardTitle>
