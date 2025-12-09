@@ -15,6 +15,7 @@ export const placeholderImage =
 interface ProductCardProps {
   product: IProductItem;
   onAddToOrder?: (product: IProductItem, qty: number) => void;
+  onQtyChange?: (product: IProductItem, qty: number) => void;
   isPending?: boolean;
   showRemoveButton?: boolean;
   onRemove?: (product: IProductItem) => void;
@@ -26,6 +27,7 @@ const ProductCard: FC<ProductCardProps> = ({
   isPending,
   showRemoveButton,
   onRemove,
+  onQtyChange,
 }) => {
   const pathname = usePathname();
   const [qty, setQty] = useState<number | "">(product.Qty2);
@@ -54,10 +56,16 @@ const ProductCard: FC<ProductCardProps> = ({
 
   const handleQtyChange = (value: string, setter: (v: number | "") => void) => {
     setError("");
-    if (value === "") {
-      setter("");
-    } else {
-      setter(Number(value));
+
+    const numberValue = value === "" ? "" : Number(value);
+    setter(numberValue);
+
+    if (
+      pathname === "/cart" &&
+      onQtyChange &&
+      typeof numberValue === "number"
+    ) {
+      onQtyChange(product, numberValue);
     }
   };
 
@@ -124,7 +132,7 @@ const ProductCard: FC<ProductCardProps> = ({
                     size="sm"
                     className="whitespace-nowrap gap-1 cursor-pointer"
                     onClick={handleAddToOrder}
-                    disabled={isPending}
+                    disabled={isPending || product.Qty2 === qty}
                   >
                     <ShoppingCart className="h-4 w-4" />
                   </Button>

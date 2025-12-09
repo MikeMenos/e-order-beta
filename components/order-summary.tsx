@@ -1,14 +1,15 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ICart } from "@/lib/interfaces";
+import { ICart, IProductItem } from "@/lib/interfaces";
 import ProductCard from "./product-card";
 
 interface OrderSummaryProps {
   items?: ICart;
+  onQtyChange?: (product: IProductItem, qty: number) => void;
 }
 
-export function OrderSummary({ items }: OrderSummaryProps) {
+export function OrderSummary({ items, onQtyChange }: OrderSummaryProps) {
   return (
     <div className="basis-2/3 mt-6">
       <Card className="border-0 shadow-none rounded-2xl bg-white">
@@ -20,7 +21,12 @@ export function OrderSummary({ items }: OrderSummaryProps) {
 
         <CardContent className="p-3 pt-0 space-y-3 text-sm">
           {items?.data.map((item) => (
-            <ProductCard key={item.CODE} product={item} showRemoveButton />
+            <ProductCard
+              key={item.CODE}
+              product={item}
+              showRemoveButton
+              onQtyChange={onQtyChange}
+            />
           ))}
         </CardContent>
       </Card>
