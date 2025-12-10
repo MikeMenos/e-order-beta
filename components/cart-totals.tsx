@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { IProductItem } from "@/lib/interfaces";
 import { ShoppingCart } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Input } from "./ui/input";
 
 interface CartTotalsProps {
   items?: IProductItem[];
@@ -18,59 +18,63 @@ export function CartTotals({ items, onSendOrder }: CartTotalsProps) {
       return acc + qty;
     }, 0);
 
-        const totalAmount = items?.reduce((acc, item) => {
-            const qty = Number(item.Qty1) || 0;
-            const price = Number(item.PRICE_PER_MU1) || 0;
-            return acc + qty * price;
-        }, 0);
+    const totalAmount = items?.reduce((acc, item) => {
+      const qty = Number(item.Qty1) || 0;
+      const price = Number(item.PRICE_PER_MU1) || 0;
+      return acc + qty * price;
+    }, 0);
 
-        return { totalQty, totalAmount };
-    }, [items]);
+    return { totalQty, totalAmount };
+  }, [items]);
 
   const [comments, setComments] = useState("");
   const [delivDate, setDelivDate] = useState("");
 
   const handleSendOrderClick = () => {
     if (onSendOrder && items) {
-      onSendOrder?.({
+      onSendOrder({
         comments,
         delivDate,
       });
     }
   };
 
-        // if (onSendOrder && payload?.items) {
-        //     onSendOrder(payload);
-        // } else {
-        //     console.log("Send order payload:", payload);
-        // }
-    };
+  return (
+    <div className="basis-2/3">
+      <Card className="border border-slate-200/80 shadow-none rounded-2xl bg-slate-50">
+        <CardHeader className="border-b border-slate-200">
+          <CardTitle className="text-base sm:text-lg">
+            Σύνολο Παραγγελίας
+          </CardTitle>
+        </CardHeader>
 
-    return (
-        <div className="basis-2/3">
-            <Card className="border border-slate-200/80 shadow-none rounded-2xl bg-slate-50">
-                <CardHeader className="border-b border-slate-200">
-                    <CardTitle className="text-base sm:text-lg">
-                        Σύνολο Παραγγελίας
-                    </CardTitle>
-                </CardHeader>
-
-                <CardContent className="pb-4 space-y-4 text-sm p-0">
-                    <div className="px-5 flex items-center justify-between pt-3">
-                        <span className="text-slate-500">Σύνολο τεμαχίων</span>
-                        <span className="font-semibold">{totals.totalQty}</span>
-                    </div>
-
-                    <div className="px-5 space-y-1">
-                        <label className="text-xs font-medium text-slate-500">
-                            Σχόλια Παραγγελίας
-                        </label>
-                        <Textarea className="bg-white"
-                            value={comments}
-                            onChange={(e) => setComments(e.target.value)}
-                            rows={3}
-                        />
-                    </div>
+        <CardContent className="pb-4 space-y-4 text-sm p-0">
+          <div className="px-5 flex items-center justify-between pt-3">
+            <span className="text-slate-500">Σύνολο τεμαχίων</span>
+            <span className="font-semibold">{totals.totalQty}</span>
+          </div>
+          <div className="px-5 space-y-1">
+            <label className="text-xs font-medium text-slate-500">
+              Επιλογή: Ημερομηνία Παράδοσης
+            </label>
+            <Input
+              className="bg-white"
+              type="date"
+              value={delivDate}
+              onChange={(e) => setDelivDate(e.target.value)}
+            />
+          </div>
+          <div className="px-5 space-y-1">
+            <label className="text-xs font-medium text-slate-500">
+              Σχόλια Παραγγελίας
+            </label>
+            <Textarea
+              className="bg-white"
+              value={comments}
+              onChange={(e) => setComments(e.target.value)}
+              rows={3}
+            />
+          </div>
 
           <div className="pt-4 p-4">
             <Button

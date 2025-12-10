@@ -141,15 +141,13 @@ export default function FamilyProducts() {
         {favProducts && favProducts.length > 0 && (
           <section>
             <div className="border-b border-slate-200 pb-2 mb-3">
-              <span className="text-lg font-semibold">
-                Αγαπημένα Προϊόντα
-              </span>
+              <span className="text-lg font-semibold">Αγαπημένα Προϊόντα</span>
             </div>
-      {/* Divider only if both exist */}
-      {favProducts &&
-        favProducts?.length > 0 &&
-        regProducts &&
-        regProducts?.length > 0 && <hr className="my-4" />}
+            {/* Divider only if both exist */}
+            {favProducts &&
+              favProducts?.length > 0 &&
+              regProducts &&
+              regProducts?.length > 0 && <hr className="my-4" />}
 
             <div className="space-y-3">
               {favProducts.map((item) => (
@@ -164,16 +162,15 @@ export default function FamilyProducts() {
           </section>
         )}
 
-        {favProducts?.length > 0 && regProducts?.length > 0 && (
-          <hr className="my-2" />
-        )}
+        {favProducts &&
+          favProducts?.length > 0 &&
+          regProducts &&
+          regProducts?.length > 0 && <hr className="my-2" />}
 
         {regProducts && regProducts.length > 0 && (
           <section>
             <div className="border-b border-slate-200 pb-2 mb-3">
-              <span className="text-lg font-semibold">
-                Άλλα Προϊόντα
-              </span>
+              <span className="text-lg font-semibold">Άλλα Προϊόντα</span>
             </div>
 
             <div className="space-y-3">
@@ -191,6 +188,4 @@ export default function FamilyProducts() {
       </CardContent>
     </Card>
   );
-
-
 }

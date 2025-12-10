@@ -1,26 +1,23 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card";
 import { IFamilyCategories } from "@/lib/interfaces";
 import Link from "next/link";
-
 
 interface ProductCategoriesProps {
   data?: IFamilyCategories[];
 }
 
 const categoryImages: Record<string, string> = {
-  "DONUT": "/categories/donut.jpg",
-  "ΑΡΤΟΠΟΙΗΜΑΤΑ": "/categories/artos.jpg",
-  "ΣΦΟΛΙΑΤA": "/categories/sfoliata.jpg",
-  "ΑΛΛΟ": "/categories/allo.jpg",
+  DONUT: "/categories/donut.jpg",
+  ΑΡΤΟΠΟΙΗΜΑΤΑ: "/categories/artos.jpg",
+  ΣΦΟΛΙΑΤA: "/categories/sfoliata.jpg",
+  ΑΛΛΟ: "/categories/allo.jpg",
 };
 
 export default function ProductCategories({ data }: ProductCategoriesProps) {
   return (
     <section className="w-full max-w-5xl mx-auto space-y-6">
-
       <div className="flex flex-col gap-2">
-        <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em]">
-        </div>
+        <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em]"></div>
         <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           Επιλέξτε οικογένεια προϊόντων
         </h1>
@@ -44,9 +41,8 @@ export default function ProductCategories({ data }: ProductCategoriesProps) {
           </Link>
         ))}
       </div>
-
     </section>
-  )
+  );
 }
 
 interface CategoryCardProps {
@@ -60,7 +56,6 @@ function CategoryCard({ family }: CategoryCardProps) {
   return (
     <div>
       <Card className="group overflow-hidden border border-zinc-200 bg-brand-light shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/80">
-
         <div className="flex justify-center p-4">
           <img
             src={imageSrc}
@@ -76,9 +71,8 @@ function CategoryCard({ family }: CategoryCardProps) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-
 
 // const initial = family.charAt(0)?.toUpperCase() ?? "?";
 
