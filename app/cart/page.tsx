@@ -6,10 +6,14 @@ import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
+import { useState } from "react";
 
 export default function Cart() {
   const { clientData, branchNumber } = appStore();
 
+  const [editedQuantities, setEditedQuantities] = useState<
+    Record<number, number>
+  >({});
   const currentBranch = clientData?.data.find(
     (item) => item.BRANCH === branchNumber
   );
@@ -20,33 +24,30 @@ export default function Cart() {
 
   const { mutate: addToCartMutation } = useAddToCart();
 
-  const handleAddToOrder = (product: IProductItem, qty: number) => {
-    const existingLines =
-      data?.data?.map((line: IProductItem) => ({
-        MTRL: Number(line.MTRL),
-        QTY2: line.Qty2,
-      })) ?? [];
+  const handleSendOrder = ({
+    comments,
+    delivDate,
+  }: {
+    comments: string;
+    delivDate: string;
+  }) => {
+    if (!data?.data) return;
 
-    const newLineMTRL = Number(product.MTRL);
+    const existingLines = data.data.map((line) => ({
+      MTRL: Number(line.MTRL),
+      QTY2: line.Qty2,
+    }));
 
-    const lineExists = existingLines.find((l) => l.MTRL === newLineMTRL);
+    const updatedLines = existingLines.map((line) => {
+      const delta = editedQuantities[line.MTRL];
 
-    let updatedLines;
+      if (delta === undefined) return line;
 
-    if (lineExists) {
-      updatedLines = existingLines.map((l) =>
-        l.MTRL === newLineMTRL
-          ? {
-            ...l,
-            QTY2:
-              l.QTY2 +
-              (l.QTY2 - qty < 0 ? Math.abs(l.QTY2 - qty) : -(l.QTY2 - qty)),
-          }
-          : l
-      );
-    } else {
-      updatedLines = [...existingLines, { MTRL: newLineMTRL, QTY2: qty }];
-    }
+      return {
+        ...line,
+        QTY2: delta,
+      };
+    });
 
     const payload: AddToCartPayload = {
       service: "setData",
@@ -63,45 +64,48 @@ export default function Cart() {
             TRDBRANCH: Number(branchNumber),
             PAYMENT: 1006,
             TRUCKS: 2,
-            DELIVDATE: "",
-            COMMENTS: "",
+            DELIVDATE: delivDate,
+            COMMENTS: comments,
             REMARKS: "",
           },
         ],
         MTRDOC: [
           {
             TRUCKS: 2,
-            DELIVDATE: "",
+            DELIVDATE: delivDate,
           },
         ],
 
         ITELINES: updatedLines,
       },
     };
-
-    addToCartMutation(payload, {
-      onSettled: () => { },
-    });
+    console.log(payload);
+    // addToCartMutation(payload);
   };
 
-  return (
-    <div className="flex flex-col gap-6 md:flex-row">
-      <OrderSummary items={data} />
+  const handleQtyEdit = (product: IProductItem, newQty: number) => {
+    const oldLine = data?.data?.find(
+      (item) => Number(item.MTRL) === Number(product.MTRL)
+    );
 
-      <div className="md:basis-1/3">
-        <CartTotals items={data?.data} />
-      </div>
-    </div>
+    const oldQty = oldLine ? Number(oldLine.Qty2) : 0;
 
-  );
+    const delta = Math.abs(newQty - oldQty);
+
+    setEditedQuantities((prev) => ({
+      ...prev,
+      [Number(product.MTRL)]: delta,
+    }));
+  };
+  console.log(editedQuantities);
   if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="flex md:flex-row flex-col gap-6">
-      <OrderSummary items={data} />
+      <OrderSummary items={data} onQtyChange={handleQtyEdit} />
 
       <div className="basis-1/3">
-        <CartTotals items={data?.data} />
+        <CartTotals items={data?.data} onSendOrder={handleSendOrder} />
       </div>
     </div>
   );
