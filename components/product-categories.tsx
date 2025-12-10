@@ -58,7 +58,6 @@ function CategoryCard({ family }: CategoryCardProps) {
                         src={imageSrc}
                         alt={family}
                         className="h-25 w-25 rounded-full object-cover transition duration-300 group-hover:scale-105"
-
                     />
                 </div>
 

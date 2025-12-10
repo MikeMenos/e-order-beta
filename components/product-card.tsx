@@ -85,13 +85,21 @@ const ProductCard: FC<ProductCardProps> = ({
                 {product.DESCRIPTION || product.FULL_DESCRIPTION}
               </div>
 
-              <div className="flex gap-1">
-                <span className="font-medium text-slate-600">Κωδικός:</span>
-                <span className="tabular-nums">{product.CODE}</span>
+              <div className="flex flex-row gap-1 text-[11px] sm:text-xs text-slate-600">
+                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
+                  Κωδικός:
+                  <span className="ml-1 font-medium">{product.CODE}</span>
+                </span>
+
+                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
+                  MTRL:
+                  <span className="ml-1 font-medium">{product.MTRL}</span>
+                </span>
+
               </div>
             </div>
 
-            <div className="flex flex-col gap-1 text-[11px] sm:text-xs text-slate-600 mt-1">
+            <div className="flex flex-row gap-1 text-[11px] sm:text-xs text-slate-600 mt-1">
               <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">
                 {product.SXESI} τεμάχια / {product.ORDER_UNIT?.toLowerCase()}
               </span>
