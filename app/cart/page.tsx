@@ -9,11 +9,14 @@ import { appStore } from "@/stores/appStore";
 import { useState } from "react";
 
 export default function Cart() {
-  const { clientData, branchNumber } = appStore();
+  const { clientData, branchNumber, basketId } = appStore();
 
   const [editedQuantities, setEditedQuantities] = useState<
     Record<number, number>
   >({});
+  const [comments, setComments] = useState("");
+  const [delivDate, setDelivDate] = useState("");
+
   const currentBranch = clientData?.data.find(
     (item) => item.BRANCH === branchNumber
   );
@@ -79,25 +82,59 @@ export default function Cart() {
         ITELINES: updatedLines,
       },
     };
-    console.log(payload);
-    // addToCartMutation(payload);
+
+    const payloadForBasketDeletion: AddToCartPayload = {
+      service: "setData",
+      clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
+      appId: process.env.NEXT_PUBLIC_APP_ID!,
+      OBJECT: "SALDOC",
+      KEY: basketId ?? "",
+
+      data: {
+        SALDOC: [
+          {
+            SERIES: "7001",
+            TRDR: Number(currentBranch?.TRDR),
+            TRDBRANCH: Number(branchNumber),
+            PAYMENT: 1006,
+            TRUCKS: 2,
+            DELIVDATE: "",
+            COMMENTS: "",
+            REMARKS: "",
+          },
+        ],
+        MTRDOC: [
+          {
+            TRUCKS: 2,
+            DELIVDATE: "",
+          },
+        ],
+
+        ITELINES: [
+          {
+            "MTRL": 2924,
+            "QTY2": 0.1
+          }
+        ],
+      },
+    };
+
+    addToCartMutation(payload, {
+      onSuccess: () => {
+        addToCartMutation(payloadForBasketDeletion
+        );
+        setComments("");
+        setDelivDate("")
+      }
+    });
   };
 
   const handleQtyEdit = (product: IProductItem, newQty: number) => {
-    const oldLine = data?.data?.find(
-      (item) => Number(item.MTRL) === Number(product.MTRL)
-    );
-
-    const oldQty = oldLine ? Number(oldLine.Qty2) : 0;
-
-    const delta = Math.abs(newQty - oldQty);
-
     setEditedQuantities((prev) => ({
       ...prev,
-      [Number(product.MTRL)]: delta,
+      [Number(product.MTRL)]: newQty,
     }));
   };
-  console.log(editedQuantities);
   if (isLoading) return <div>Loading...</div>;
 
   return (
@@ -105,7 +142,7 @@ export default function Cart() {
       <OrderSummary items={data} onQtyChange={handleQtyEdit} />
 
       <div className="basis-1/3">
-        <CartTotals items={data?.data} onSendOrder={handleSendOrder} />
+        <CartTotals items={data?.data} onSendOrder={handleSendOrder} comments={comments} setComments={setComments} delivDate={delivDate} setDelivDate={setDelivDate} />
       </div>
     </div>
   );

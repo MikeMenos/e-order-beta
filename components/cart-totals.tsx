@@ -9,26 +9,27 @@ import { Input } from "./ui/input";
 interface CartTotalsProps {
   items?: IProductItem[];
   onSendOrder?: (meta: { comments: string; delivDate: string }) => void;
+  comments: string;
+  setComments: (comments: string) => void;
+  delivDate: string;
+  setDelivDate: (date: string) => void;
 }
 
-export function CartTotals({ items, onSendOrder }: CartTotalsProps) {
+export function CartTotals({ items, onSendOrder, comments, setComments, delivDate, setDelivDate }: CartTotalsProps) {
   const totals = useMemo(() => {
     const totalQty = items?.reduce((acc, item) => {
-      const qty = Number(item.Qty1) || 0;
+      const qty = Number(item.Qty2) || 0;
       return acc + qty;
     }, 0);
 
     const totalAmount = items?.reduce((acc, item) => {
-      const qty = Number(item.Qty1) || 0;
+      const qty = Number(item.Qty2) || 0;
       const price = Number(item.PRICE_PER_MU1) || 0;
       return acc + qty * price;
     }, 0);
 
     return { totalQty, totalAmount };
   }, [items]);
-
-  const [comments, setComments] = useState("");
-  const [delivDate, setDelivDate] = useState("");
 
   const handleSendOrderClick = () => {
     if (onSendOrder && items) {
@@ -81,7 +82,7 @@ export function CartTotals({ items, onSendOrder }: CartTotalsProps) {
               className="w-full gap-2"
               size="lg"
               onClick={handleSendOrderClick}
-              disabled={items?.length === 0}
+              disabled={items?.length === 0 || !delivDate}
             >
               <ShoppingCart className="h-4 w-4" />
               Αποστολή Παραγγελίας

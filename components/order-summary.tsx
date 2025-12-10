@@ -24,7 +24,6 @@ export function OrderSummary({ items, onQtyChange }: OrderSummaryProps) {
             <ProductCard
               key={item.CODE}
               product={item}
-              showRemoveButton
               onQtyChange={onQtyChange}
             />
           ))}

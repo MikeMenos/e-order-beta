@@ -26,15 +26,7 @@ export default function ProductCategories({ data }: ProductCategoriesProps) {
         </p>
       </div>
 
-      {/* <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                {data?.map((item) => (
-                    <Link key={item.FAMILY} href={`/products/${item.FAMILY}`}>
-                        <CategoryCard family={item.FAMILY} />
-                    </Link>
-                ))}
-            </div> */}
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {data?.map((item, index) => (
           <Link href={`/products/${item.FAMILY}`} key={index}>
             <CategoryCard key={item.FAMILY} family={item.FAMILY} />
@@ -73,7 +65,7 @@ function CategoryCard({ family }: CategoryCardProps) {
     </div>
   );
 }
-
+// Check Maik - Conflict 
 // const initial = family.charAt(0)?.toUpperCase() ?? "?";
 
 //   return (
