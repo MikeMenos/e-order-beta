@@ -114,7 +114,7 @@ export default function Login() {
 
         <CardContent>
           <div className="flex flex-col gap-6">
-            {/* VAT INPUT */}
+           
             {!backendPin && (
               <div className="grid gap-2">
                 <Label htmlFor="AFM">ΑΦΜ</Label>
@@ -128,7 +128,6 @@ export default function Login() {
               </div>
             )}
 
-            {/* PIN INPUT */}
             {backendPin && (
               <div className="grid gap-2">
                 <Label>6-ψήφιο PIN</Label>

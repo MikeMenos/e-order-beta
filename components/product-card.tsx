@@ -68,7 +68,7 @@ const ProductCard: FC<ProductCardProps> = ({
   };
 
   return (
-    <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 w-full mb-2">
+    <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 w-full max-w-4xl mx-auto mb-2">
       <CardContent className="sm:p-3">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center">
           <div className="h-24 w-h-24 sm:h-24 sm:w-24 rounded-xl bg-slate-50 overflow-hidden">

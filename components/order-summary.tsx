@@ -12,13 +12,12 @@ interface OrderSummaryProps {
 export function OrderSummary({ items, onQtyChange }: OrderSummaryProps) {
   return (
     <div className="basis-2/3">
-      <Card className="border-0 shadow-none rounded-2xl">
-        <CardHeader className="border-b border-slate-200">
+       <CardHeader className="border-b border-slate-200 mb-4">
           <CardTitle className="text-base sm:text-lg">
             Σύνοψη Παραγγελίας
           </CardTitle>
         </CardHeader>
-
+      <Card className="border-0 shadow-none rounded-2xl">
         <CardContent className="p-0 md:p-0 lg:p-0 space-y-3 text-sm">
           {items?.data.map((item) => (
             <ProductCard
