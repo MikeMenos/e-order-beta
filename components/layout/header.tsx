@@ -22,7 +22,7 @@ import { useEffect } from "react";
 
 export default function Header() {
   const pathname = usePathname();
-  const { clientData, branchNumber, setBranchNumber, hydrated, setHydrated, setBasketId } = appStore();
+  const { clientData, branchNumber, setBranchNumber, hydrated, setHydrated, setBasketId, basketId } = appStore();
 
   const currentBranch = clientData?.data.find(
     (item) => item.BRANCH === branchNumber
@@ -48,9 +48,9 @@ export default function Header() {
     redirect("/");
   };
 
-  const handleLogout = () => {
-    deletePinFromCookies();
+  const handleLogout = async () => {
     setBranchNumber(undefined)
+    await deletePinFromCookies();
     redirect("/login");
   };
 

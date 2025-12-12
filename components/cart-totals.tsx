@@ -63,6 +63,7 @@ export function CartTotals({ items, onSendOrder, comments, setComments, delivDat
               type="date"
               value={delivDate}
               onChange={(e) => setDelivDate(e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
           <div className="px-5 space-y-1">

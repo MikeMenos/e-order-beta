@@ -36,10 +36,14 @@ export default function Cart() {
   }) => {
     if (!data?.data) return;
 
-    const existingLines = data.data.map((line) => ({
-      MTRL: Number(line.MTRL),
-      QTY2: line.Qty2,
-    }));
+    const BASE_LINENUM = 9000001;
+
+    const existingLines =
+      data?.data?.map((line: IProductItem, index) => ({
+        LINENUM: BASE_LINENUM + index,
+        MTRL: Number(line.MTRL),
+        QTY2: Number(line.Qty2),
+      })) ?? [];
 
     const updatedLines = existingLines.map((line) => {
       const delta = editedQuantities[line.MTRL];
@@ -136,6 +140,8 @@ export default function Cart() {
     }));
   };
   if (isLoading) return <div>Loading...</div>;
+
+  if (data?.count === 0) return <div>Το καλάθι είναι άδειο.</div>
 
   return (
     <div className="flex md:flex-row flex-col gap-6">

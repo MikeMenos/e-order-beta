@@ -56,8 +56,11 @@ export default function FamilyProducts() {
   const handleAddToOrder = (product: IProductItem, qty: number) => {
     setPendingProductId(product.ITEMUID);
 
+    const BASE_LINENUM = 9000001;
+
     const existingLines =
-      cartData?.data?.map((line: IProductItem) => ({
+      cartData?.data?.map((line: IProductItem, index) => ({
+        LINENUM: BASE_LINENUM + index,
         MTRL: Number(line.MTRL),
         QTY2: Number(line.Qty2),
       })) ?? [];
@@ -80,7 +83,7 @@ export default function FamilyProducts() {
           : l
       );
     } else {
-      updatedLines = [...existingLines, { MTRL: newLineMTRL, QTY2: qty }];
+      updatedLines = [...existingLines, { MTRL: newLineMTRL, QTY2: qty, LINENUM: BASE_LINENUM + existingLines.length }];
     }
 
     const payload: AddToCartPayload = {
@@ -89,27 +92,8 @@ export default function FamilyProducts() {
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
       KEY: basketId ?? "",
-
+      LOCATEINFO: "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
       data: {
-        SALDOC: [
-          {
-            SERIES: "7001",
-            TRDR: Number(currentBranch?.TRDR),
-            TRDBRANCH: Number(branchNumber),
-            PAYMENT: 1006,
-            TRUCKS: 2,
-            DELIVDATE: "",
-            COMMENTS: "",
-            REMARKS: "",
-          },
-        ],
-        MTRDOC: [
-          {
-            TRUCKS: 2,
-            DELIVDATE: "",
-          },
-        ],
-
         ITELINES: updatedLines,
       },
     };

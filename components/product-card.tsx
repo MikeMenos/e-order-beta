@@ -14,7 +14,7 @@ export const placeholderImage =
 
 interface ProductCardProps {
   product: IProductItem;
-  onAddToOrder?: (product: IProductItem, qty: number) => void;
+  onAddToOrder?: (product: IProductItem, qty: number, isDelete?: boolean) => void;
   onQtyChange?: (product: IProductItem, qty: number) => void;
   isPending?: boolean;
   onRemove?: (product: IProductItem) => void;
@@ -47,8 +47,8 @@ const ProductCard: FC<ProductCardProps> = ({
   };
 
   const handleRemove = () => {
-    if (onRemove) {
-      onRemove(product);
+    if (onAddToOrder && qty) {
+      onAddToOrder(product, qty, true);
     }
   };
 
@@ -126,6 +126,7 @@ const ProductCard: FC<ProductCardProps> = ({
                     value={qty}
                     type="number"
                     onChange={(e) => handleQtyChange(e.target.value, setQty)}
+                    min={0}
                   />
                   {error && (
                     <p className="text-xs text-red-500 w-44 text-center mx-auto absolute top-10">

@@ -73,15 +73,16 @@ export interface MtrDocEntry {
   DELIVDATE: string;
 }
 
-export interface IteLineEntry {
+export interface ItemLineEntry {
+  LINENUM?: number;
   MTRL: number;
   QTY2: number;
 }
 
-export interface SophiaDataPayload {
-  SALDOC: SalDocEntry[];
-  MTRDOC: MtrDocEntry[];
-  ITELINES: IteLineEntry[];
+export interface DataPayload {
+  SALDOC?: SalDocEntry[];
+  MTRDOC?: MtrDocEntry[];
+  ITELINES: ItemLineEntry[];
 }
 
 export interface AddToCartPayload {
@@ -90,5 +91,6 @@ export interface AddToCartPayload {
   appId: string;
   OBJECT: "SALDOC";
   KEY: string;
-  data: SophiaDataPayload;
+  LOCATEINFO?: "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
+  data: DataPayload;
 }

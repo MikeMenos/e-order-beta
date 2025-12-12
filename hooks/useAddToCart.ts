@@ -10,13 +10,13 @@ async function postCart(payload: AddToCartPayload) {
 
 export function useAddToCart() {
   const queryClient = useQueryClient();
-  const { setBasketId } = appStore();
+  const { setBasketId, basketId } = appStore();
 
   return useMutation<{ success: string; id: string }, Error, AddToCartPayload>({
     mutationFn: (payload: AddToCartPayload) => postCart(payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
-      setBasketId(data.id);
+      setBasketId(data?.id ?? basketId);
     },
   });
 }
