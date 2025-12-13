@@ -16,13 +16,25 @@ import { ShoppingCart, LogOut, ChevronDown } from "lucide-react";
 import { useGetCart } from "@/hooks/useGetCart";
 import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
-import { redirect } from "next/navigation";
-import { deletePinFromCookies } from "@/app/login/actions/deletePinFromCookies";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export default function Header() {
+  const [open, setOpen] = useState(false);
+
   const pathname = usePathname();
-  const { clientData, branchNumber, setBranchNumber, hydrated, setHydrated, setBasketId, basketId } = appStore();
+  const router = useRouter();
+  const {
+    clientData,
+    branchNumber,
+    setBranchNumber,
+    hydrated,
+    setHydrated,
+    setBasketId,
+    setClientData,
+    basketId,
+  } = appStore();
 
   const currentBranch = clientData?.data.find(
     (item) => item.BRANCH === branchNumber
@@ -43,26 +55,28 @@ export default function Header() {
   if (pathname === "/login") return null;
 
   const handleBranchChange = (branch: string) => {
-    setBasketId(currentBranch?.BASKET_KEY ?? '');
+    setOpen(false);
+    setBasketId(currentBranch?.BASKET_KEY ?? "");
     setBranchNumber(branch);
-    redirect("/");
-  };
 
+    router.push("/");
+  };
   const handleLogout = async () => {
-    setBranchNumber(undefined)
-    await deletePinFromCookies();
-    redirect("/login");
+    setBranchNumber(undefined);
+    setClientData(undefined);
+    setBasketId("");
+    await fetch("/api/logout", { method: "POST" });
+    router.replace("/login");
   };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">
       <div className="flex h-16 items-center gap-4 px-4">
-
         <Link href="/" className="flex items-center gap-2">
           <Image src={logo} alt="Logo" width={32} height={32} />
 
           <span className="hidden sm:inline text-lg font-semibold">
-            Ergastirio Manager
+            Ergastirion Manager
           </span>
         </Link>
 
@@ -89,34 +103,43 @@ export default function Header() {
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
           {pathname !== "/stores" && (
             <>
-              <DropdownMenu>
+              <DropdownMenu open={open} onOpenChange={setOpen}>
                 <DropdownMenuContent align="end" className="w-64">
                   <DropdownMenuLabel>Επιλογή καταστήματος</DropdownMenuLabel>
-                  {clientData?.data.map((branch) => (
-                    <DropdownMenuItem
-                      key={branch.BRANCH}
-                      onClick={() => handleBranchChange(branch.BRANCH)}
-                    >
-                      <div className="flex flex-col">
-                        <span className="text-sm font-medium">
-                          {branch.NAME}
-                        </span>
-                        <span className="text-xs text-slate-500">
-                          {branch.ADDRESS}
-                        </span>
-                      </div>
-                    </DropdownMenuItem>
-                  ))}
+
+                  {clientData?.data.map((branch) => {
+                    const isActive = branch.BASKET_KEY === basketId;
+
+                    return (
+                      <DropdownMenuItem
+                        key={branch.BRANCH}
+                        onClick={() => handleBranchChange(branch.BRANCH)}
+                        className={cn(
+                          "cursor-pointer",
+                          isActive && "bg-accent text-accent-foreground"
+                        )}
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">
+                            {branch.NAME}
+                          </span>
+                          <span className="text-xs text-slate-500">
+                            {branch.ADDRESS}
+                          </span>
+                        </div>
+                      </DropdownMenuItem>
+                    );
+                  })}
                 </DropdownMenuContent>
 
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="flex items-center gap-2 px-2 sm:px-3"
+                    className="flex items-center gap-2 px-2 sm:px-3 p-6"
                   >
                     <div className="flex flex-col items-start">
                       <span className="text-[10px] uppercase tracking-wide text-slate-500">
-                        Κατάστημα
+                        Καταστημα
                       </span>
                       <span className="text-xs sm:text-sm font-medium leading-tight">
                         {currentBranch?.NAME}

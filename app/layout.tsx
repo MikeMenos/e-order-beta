@@ -8,7 +8,7 @@ import { Toaster } from "react-hot-toast";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Ergastirio Manager",
+  title: "Ergastirion Manager",
   icons: {
     icon: "/logo.png",
   },
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn( 
+        className={cn(
           "bg-zinc-50  dark:bg-zinc-900 text-foreground antialiased",
           "min-h-screen flex flex-col"
         )}

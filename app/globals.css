@@ -123,3 +123,7 @@
   }
 }
 
+button:focus-visible {
+  box-shadow: none !important;
+}
+

@@ -1,0 +1,66 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { successToast } from "@/components/toasts";
+import { useAddToCart } from "@/hooks/useAddToCart";
+import { useGetCart } from "@/hooks/useGetCart";
+import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
+import { appStore } from "@/stores/appStore";
+import { buildUpdatedLines } from "@/lib/utils";
+
+export function useHandleOnSubmitProducts() {
+  const [pendingProductId, setPendingProductId] = useState<string | null>(null);
+
+  const { basketId, branchNumber, clientData } = appStore();
+  const currentBranch = useMemo(
+    () => clientData?.data.find((item) => item.BRANCH === branchNumber),
+    [clientData, branchNumber]
+  );
+
+  const { data: cartData } = useGetCart({
+    trdr: currentBranch?.TRDR,
+    branch: branchNumber,
+  });
+
+  const { mutate: addToCartMutation } = useAddToCart();
+
+  const onSubmitProducts = (
+    product: IProductItem,
+    qty: number,
+    isDelete?: boolean
+  ) => {
+    setPendingProductId(product.ITEMUID);
+
+    const updatedLines = buildUpdatedLines({
+      cartLines: cartData?.data,
+      product,
+      qty,
+      isDelete,
+    });
+
+    const payload: AddToCartPayload = {
+      service: "setData",
+      clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
+      appId: process.env.NEXT_PUBLIC_APP_ID!,
+      OBJECT: "SALDOC",
+      KEY: basketId ?? "",
+      LOCATEINFO:
+        "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
+      data: { ITELINES: updatedLines },
+    };
+
+    addToCartMutation(payload, {
+      onSuccess: () => {
+        successToast(
+          isDelete ? "Αφαιρέθηκε από το καλάθι" : "Προστέθηκε στο καλάθι"
+        );
+        setPendingProductId(null);
+      },
+      onError: () => {
+        setPendingProductId(null);
+      },
+    });
+  };
+
+  return { onSubmitProducts, pendingProductId };
+}

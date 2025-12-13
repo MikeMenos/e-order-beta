@@ -14,7 +14,11 @@ export const placeholderImage =
 
 interface ProductCardProps {
   product: IProductItem;
-  onAddToOrder?: (product: IProductItem, qty: number, isDelete?: boolean) => void;
+  onSubmitProducts?: (
+    product: IProductItem,
+    qty: number,
+    isDelete?: boolean
+  ) => void;
   onQtyChange?: (product: IProductItem, qty: number) => void;
   isPending?: boolean;
   onRemove?: (product: IProductItem) => void;
@@ -22,9 +26,8 @@ interface ProductCardProps {
 
 const ProductCard: FC<ProductCardProps> = ({
   product,
-  onAddToOrder,
+  onSubmitProducts,
   isPending,
-  onRemove,
   onQtyChange,
 }) => {
   const pathname = usePathname();
@@ -36,19 +39,19 @@ const ProductCard: FC<ProductCardProps> = ({
     ? `${IMAGE_BASE_URL}${product.IMAGE}`
     : placeholderImage;
 
-  const handleAddToOrder = () => {
+  const onAddProductToBasket = () => {
     if (typeof qty === "number" && qty <= 0) {
       setError("Η ποσότητα δεν μπορεί να είναι μηδέν ή μικρότερη από μηδέν");
       return;
     }
-    if (onAddToOrder && qty) {
-      onAddToOrder(product, qty);
+    if (onSubmitProducts && qty) {
+      onSubmitProducts(product, qty);
     }
   };
 
   const handleRemove = () => {
-    if (onAddToOrder && qty) {
-      onAddToOrder(product, qty, true);
+    if (onSubmitProducts && qty) {
+      onSubmitProducts(product, qty, true);
     }
   };
 
@@ -101,7 +104,6 @@ const ProductCard: FC<ProductCardProps> = ({
                   MTRL:
                   <span className="ml-1 font-medium">{product.MTRL}</span>
                 </span>
-
               </div>
             </div>
 
@@ -138,7 +140,7 @@ const ProductCard: FC<ProductCardProps> = ({
                   <Button
                     size="sm"
                     className="whitespace-nowrap gap-1 cursor-pointer"
-                    onClick={handleAddToOrder}
+                    onClick={onAddProductToBasket}
                     disabled={isPending || product.Qty2 === qty}
                   >
                     <ShoppingCart className="h-4 w-4" />
@@ -158,13 +160,11 @@ const ProductCard: FC<ProductCardProps> = ({
                 )}
               </div>
             </div>
-
           </div>
         </div>
       </CardContent>
     </Card>
   );
-
 };
 
 export default ProductCard;

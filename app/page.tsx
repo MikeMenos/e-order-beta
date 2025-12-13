@@ -7,9 +7,10 @@ import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Home() {
-  const { clientData, setHydrated, hydrated, branchNumber } = appStore();
+  const { clientData, setHydrated, hydrated, branchNumber, basketId } =
+    appStore();
 
-  const { data, isLoading } = useGetFamilies()
+  const { data, isLoading } = useGetFamilies();
 
   useEffect(() => {
     appStore.persist.rehydrate();
@@ -19,9 +20,7 @@ export default function Home() {
   if (!hydrated) return null;
   if (clientData && clientData?.count > 1 && !branchNumber) redirect("/stores");
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <div>Loading...</div>;
 
-  return (
-    <ProductCategories data={data} />
-  );
+  return <ProductCategories data={data} />;
 }

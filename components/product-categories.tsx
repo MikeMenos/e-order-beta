@@ -28,7 +28,7 @@ export default function ProductCategories({ data }: ProductCategoriesProps) {
 
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {data?.map((item, index) => (
-          <Link href={`/products/${item.FAMILY.trim}`} key={index}>
+          <Link href={`/products/${item.FAMILY.trim()}`} key={index}>
             <CategoryCard key={item.FAMILY} family={item.FAMILY} />
           </Link>
         ))}
