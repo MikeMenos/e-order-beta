@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { appStore } from "@/stores/appStore";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { useVerifyPin } from "@/hooks/useVerifyPin";
+import { errorToast } from "@/components/toasts";
 
 export default function Login() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function Login() {
   const pinRefs = React.useRef<Array<HTMLInputElement | null>>([]);
   const [enteredPin, setEnteredPin] = React.useState(Array(6).fill(""));
 
-  const clientDataMutation = useGetClientData();
+  const { mutate: clientDataMutation, isPending } = useGetClientData();
   const pinMutation = useVerifyPin();
 
   const handlePinChange = (
@@ -79,26 +80,26 @@ export default function Login() {
   const onSubmitVat = () => {
     if (!localVat) return;
 
-    clientDataMutation.mutate(localVat, {
+    clientDataMutation(localVat, {
       onSuccess: (data) => {
         setBackendPin(data.data[0].PIN_A);
         setClientData(data);
       },
       onError: () => {
-        alert("Δεν βρέθηκαν στοιχεία για το ΑΦΜ.");
+        errorToast("Δε βρέθηκαν στοιχεία για το συγκεκριμένο ΑΦΜ");
       },
     });
   };
 
   const onSubmitPin = (pin: string) => {
     if (pin !== backendPin) {
-      alert("Λάθος PIN");
+      errorToast("Λάθος PIN");
       return;
     }
 
     pinMutation.mutate(pin, {
       onSuccess: () => router.push("/"),
-      onError: () => alert("Αποτυχία σύνδεσης."),
+      onError: () => errorToast("Αποτυχία σύνδεσης"),
     });
   };
 
@@ -114,7 +115,6 @@ export default function Login() {
 
         <CardContent>
           <div className="flex flex-col gap-6">
-           
             {!backendPin && (
               <div className="grid gap-2">
                 <Label htmlFor="AFM">ΑΦΜ</Label>
@@ -156,11 +156,9 @@ export default function Login() {
             <Button
               className="w-full"
               onClick={onSubmitVat}
-              disabled={clientDataMutation.isPending}
+              disabled={isPending}
             >
-              {clientDataMutation.isPending
-                ? "Παρακαλώ περιμένετε..."
-                : "Συνέχεια"}
+              {isPending ? "Παρακαλώ περιμένετε..." : "Συνέχεια"}
             </Button>
           ) : (
             <Button

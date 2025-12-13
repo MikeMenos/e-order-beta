@@ -2,6 +2,7 @@
 
 import { CartTotals } from "@/components/cart-totals";
 import { OrderSummary } from "@/components/order-summary";
+import { errorToast, successToast } from "@/components/toasts";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
@@ -25,7 +26,7 @@ export default function Cart() {
     branch: branchNumber,
   });
 
-  const { mutate: addToCartMutation } = useAddToCart();
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
 
   const handleSendOrder = ({
     comments,
@@ -116,20 +117,23 @@ export default function Cart() {
 
         ITELINES: [
           {
-            "MTRL": 2924,
-            "QTY2": 0.1
-          }
+            MTRL: 2924,
+            QTY2: 0.1,
+          },
         ],
       },
     };
 
     addToCartMutation(payload, {
       onSuccess: () => {
-        addToCartMutation(payloadForBasketDeletion
-        );
+        addToCartMutation(payloadForBasketDeletion);
+        successToast("Η παραγγελία σας έχει σταλθεί");
         setComments("");
-        setDelivDate("")
-      }
+        setDelivDate("");
+      },
+      onError: () => {
+        errorToast("Σφάλμα κατά την αποστολή της παραγγελίας σας");
+      },
     });
   };
 
@@ -141,14 +145,22 @@ export default function Cart() {
   };
   if (isLoading) return <div>Loading...</div>;
 
-  if (data?.count === 0) return <div>Το καλάθι είναι άδειο.</div>
+  if (data?.count === 0) return <div>Το καλάθι σας είναι άδειο.</div>;
 
   return (
     <div className="flex md:flex-row flex-col gap-6">
       <OrderSummary items={data} onQtyChange={handleQtyEdit} />
 
       <div className="basis-1/3">
-        <CartTotals items={data?.data} onSendOrder={handleSendOrder} comments={comments} setComments={setComments} delivDate={delivDate} setDelivDate={setDelivDate} />
+        <CartTotals
+          items={data?.data}
+          onSendOrder={handleSendOrder}
+          comments={comments}
+          setComments={setComments}
+          delivDate={delivDate}
+          setDelivDate={setDelivDate}
+          isPending={isPending}
+        />
       </div>
     </div>
   );

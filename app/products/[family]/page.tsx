@@ -1,22 +1,17 @@
 "use client";
 
 import ProductCard from "@/components/product-card";
-import { successToast } from "@/components/toasts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { useGetProductsPerFamily } from "@/hooks/useGetProductsPerFamily";
-import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
+import { useHandleOnSubmitProducts } from "@/hooks/useHandleOnSubmitProducts";
+import { IProductItem } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
 import { redirect, usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-
+import { useEffect, useMemo } from "react";
 
 export default function FamilyProducts() {
-  const [pendingProductId, setPendingProductId] = useState<string | null>(null);
-
-  const { clientData, setHydrated, hydrated, branchNumber, basketId } =
-    appStore();
+  const { clientData, setHydrated, hydrated, branchNumber } = appStore();
   const pathname = usePathname();
   const family = decodeURIComponent(pathname.split("/")[2] || "").trim();
   const trdr = clientData?.data[0].TRDR as string;
@@ -36,7 +31,8 @@ export default function FamilyProducts() {
     trdr: currentBranch?.TRDR,
     branch: branchNumber,
   });
-  const { mutate: addToCartMutation } = useAddToCart();
+
+  const { onSubmitProducts, pendingProductId } = useHandleOnSubmitProducts();
 
   const productsWithQty = useMemo((): IProductItem[] | undefined => {
     return data?.map((product) => {
@@ -52,59 +48,6 @@ export default function FamilyProducts() {
       };
     });
   }, [data, cartData]);
-
-  const handleAddToOrder = (product: IProductItem, qty: number) => {
-    setPendingProductId(product.ITEMUID);
-
-    const BASE_LINENUM = 9000001;
-
-    const existingLines =
-      cartData?.data?.map((line: IProductItem, index) => ({
-        LINENUM: BASE_LINENUM + index,
-        MTRL: Number(line.MTRL),
-        QTY2: Number(line.Qty2),
-      })) ?? [];
-
-    const newLineMTRL = Number(product.ITEMUID);
-
-    const lineExists = existingLines.find((l) => l.MTRL === newLineMTRL);
-
-    let updatedLines;
-
-    if (lineExists) {
-      updatedLines = existingLines.map((l) =>
-        l.MTRL === newLineMTRL
-          ? {
-            ...l,
-            QTY2:
-              l.QTY2 +
-              (l.QTY2 - qty < 0 ? Math.abs(l.QTY2 - qty) : -(l.QTY2 - qty)),
-          }
-          : l
-      );
-    } else {
-      updatedLines = [...existingLines, { MTRL: newLineMTRL, QTY2: qty, LINENUM: BASE_LINENUM + existingLines.length }];
-    }
-
-    const payload: AddToCartPayload = {
-      service: "setData",
-      clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
-      appId: process.env.NEXT_PUBLIC_APP_ID!,
-      OBJECT: "SALDOC",
-      KEY: basketId ?? "",
-      LOCATEINFO: "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
-      data: {
-        ITELINES: updatedLines,
-      },
-    };
-
-    addToCartMutation(payload, {
-      onSettled: () => {
-        successToast("Προστέθηκε στο καλάθι");
-        setPendingProductId(null);
-      },
-    });
-  };
 
   if (!hydrated) return null;
   if (clientData && clientData?.count > 1 && !branchNumber) redirect("/stores");
@@ -126,7 +69,9 @@ export default function FamilyProducts() {
           {favProducts && favProducts.length > 0 && (
             <section>
               <div className="border-b border-slate-200 pb-2 mb-3">
-                <span className="text-lg font-semibold">Αγαπημένα Προϊόντα</span>
+                <span className="text-lg font-semibold">
+                  Αγαπημένα Προϊόντα
+                </span>
               </div>
 
               {favProducts &&
@@ -139,7 +84,7 @@ export default function FamilyProducts() {
                   <ProductCard
                     product={item}
                     key={item.CODE}
-                    onAddToOrder={handleAddToOrder}
+                    onSubmitProducts={onSubmitProducts}
                     isPending={pendingProductId === item.ITEMUID}
                   />
                 ))}
@@ -163,7 +108,7 @@ export default function FamilyProducts() {
                   <ProductCard
                     product={item}
                     key={item.CODE}
-                    onAddToOrder={handleAddToOrder}
+                    onSubmitProducts={onSubmitProducts}
                     isPending={pendingProductId === item.ITEMUID}
                   />
                 ))}

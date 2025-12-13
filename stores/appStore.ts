@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 
 type AppState = {
   clientData?: ClientResponse;
-  setClientData: (value: ClientResponse) => void;
+  setClientData: (value: ClientResponse | undefined) => void;
   branchNumber?: string;
   setBranchNumber: (value?: string) => void;
   basketId: string;

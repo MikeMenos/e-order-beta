@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { IProductItem } from "@/lib/interfaces";
 import { ShoppingCart } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Input } from "./ui/input";
 
 interface CartTotalsProps {
@@ -12,10 +12,19 @@ interface CartTotalsProps {
   comments: string;
   setComments: (comments: string) => void;
   delivDate: string;
+  isPending: boolean;
   setDelivDate: (date: string) => void;
 }
 
-export function CartTotals({ items, onSendOrder, comments, setComments, delivDate, setDelivDate }: CartTotalsProps) {
+export function CartTotals({
+  items,
+  onSendOrder,
+  comments,
+  setComments,
+  delivDate,
+  setDelivDate,
+  isPending,
+}: CartTotalsProps) {
   const totals = useMemo(() => {
     const totalQty = items?.reduce((acc, item) => {
       const qty = Number(item.Qty2) || 0;
@@ -83,7 +92,7 @@ export function CartTotals({ items, onSendOrder, comments, setComments, delivDat
               className="w-full gap-2"
               size="lg"
               onClick={handleSendOrderClick}
-              disabled={items?.length === 0 || !delivDate}
+              disabled={items?.length === 0 || !delivDate || isPending}
             >
               <ShoppingCart className="h-4 w-4" />
               Αποστολή Παραγγελίας
