@@ -2,14 +2,15 @@
 
 import StoreCard from "@/components/store-card";
 import { useAddToCart } from "@/hooks/useAddToCart";
-import { AddToCartPayload, IStoreInfo } from "@/lib/interfaces";
+import { IStoreInfo } from "@/lib/interfaces";
+import { buildAddToCartPayload } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Stores() {
-  const { clientData, hydrated, setHydrated, setBranchNumber, setBasketId, basketId } = appStore();
+  const { clientData, hydrated, setHydrated, setBranchNumber, setBasketId } =
+    appStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -22,59 +23,33 @@ export default function Stores() {
   if (!hydrated) return null;
 
   const handleBranchChange = (branch: IStoreInfo) => {
-    if (branch?.BASKET_KEY === '0') {
-      const payload: AddToCartPayload = {
-        service: "setData",
-        clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
-        appId: process.env.NEXT_PUBLIC_APP_ID!,
-        OBJECT: "SALDOC",
-        KEY: "",
-        data: {
-          SALDOC: [
-            {
-              SERIES: "7001",
-              TRDR: Number(branch?.TRDR),
-              TRDBRANCH: Number(branch.BRANCH),
-              PAYMENT: 1006,
-              TRUCKS: 2,
-              DELIVDATE: '',
-              COMMENTS: '',
-              REMARKS: "",
-            },
-          ],
-          MTRDOC: [
-            {
-              TRUCKS: 2,
-              DELIVDATE: '',
-            },
-          ],
-
-          ITELINES: [{
-            "LINENUM": 9000001,
-            "MTRL": 2924,
-            "QTY2": 0.1
-          }],
-        },
-      };
+    if (branch.BASKET_KEY === "0") {
+      const payload = buildAddToCartPayload({
+        trdr: Number(branch.TRDR),
+        branch: Number(branch.BRANCH),
+      });
 
       addToCartMutation(payload, {
         onSuccess: (data) => {
-          setBasketId(data.id!)
-          router.push('/')
+          setBasketId(data.id!);
+          router.push("/");
         },
       });
-
     } else {
-      setBasketId(branch?.BASKET_KEY!);
-      router.push('/')
+      setBasketId(branch.BASKET_KEY as string);
+      router.push("/");
     }
-    setBranchNumber(branch.BRANCH);
-  }
 
+    setBranchNumber(branch.BRANCH);
+  };
   return (
     <>
       {clientData?.data.map((item) => (
-        <p key={item.BRANCH} onClick={() => handleBranchChange(item)}>
+        <p
+          key={item.BRANCH}
+          onClick={() => handleBranchChange(item)}
+          className="cursor-pointer"
+        >
           <StoreCard data={item} />
         </p>
       ))}

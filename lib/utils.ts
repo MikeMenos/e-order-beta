@@ -50,13 +50,51 @@ export function buildUpdatedLines(params: {
       },
     ];
   }
-
-  return [
-    ...existingLines,
-    {
-      MTRL: clickedMtrl,
-      QTY2: qty,
-      LINENUM: baseLineNum + existingLines.length,
-    },
-  ];
 }
+
+import { AddToCartPayload } from "@/lib/interfaces";
+
+interface BuildAddToCartPayloadParams {
+  trdr: number;
+  branch: number;
+}
+
+export const buildAddToCartPayload = ({
+  trdr,
+  branch,
+}: BuildAddToCartPayloadParams): AddToCartPayload => {
+  return {
+    service: "setData",
+    clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
+    appId: process.env.NEXT_PUBLIC_APP_ID!,
+    OBJECT: "SALDOC",
+    KEY: "",
+    data: {
+      SALDOC: [
+        {
+          SERIES: "7001",
+          TRDR: trdr,
+          TRDBRANCH: branch,
+          PAYMENT: 1006,
+          TRUCKS: 2,
+          DELIVDATE: "",
+          COMMENTS: "",
+          REMARKS: "",
+        },
+      ],
+      MTRDOC: [
+        {
+          TRUCKS: 2,
+          DELIVDATE: "",
+        },
+      ],
+      ITELINES: [
+        {
+          LINENUM: 9000001,
+          MTRL: 2924,
+          QTY2: 0.1,
+        },
+      ],
+    },
+  };
+};

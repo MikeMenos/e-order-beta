@@ -18,8 +18,7 @@ import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { AddToCartPayload } from "@/lib/interfaces";
+import { buildAddToCartPayload, cn } from "@/lib/utils";
 import { useAddToCart } from "@/hooks/useAddToCart";
 
 export default function Header() {
@@ -35,7 +34,6 @@ export default function Header() {
     setHydrated,
     setBasketId,
     setClientData,
-    basketId,
   } = appStore();
 
   const currentBranch = clientData?.data.find(
@@ -54,62 +52,30 @@ export default function Header() {
   });
   const { mutate: addToCartMutation } = useAddToCart();
 
-
   if (!hydrated) return null;
   if (pathname === "/login") return null;
 
   const handleBranchChange = (branch: string) => {
     setOpen(false);
-    if (currentBranch?.BASKET_KEY === '0') {
-      const payload: AddToCartPayload = {
-        service: "setData",
-        clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
-        appId: process.env.NEXT_PUBLIC_APP_ID!,
-        OBJECT: "SALDOC",
-        KEY: "",
-        data: {
-          SALDOC: [
-            {
-              SERIES: "7001",
-              TRDR: Number(currentBranch?.TRDR),
-              TRDBRANCH: Number(branchNumber),
-              PAYMENT: 1006,
-              TRUCKS: 2,
-              DELIVDATE: '',
-              COMMENTS: '',
-              REMARKS: "",
-            },
-          ],
-          MTRDOC: [
-            {
-              TRUCKS: 2,
-              DELIVDATE: '',
-            },
-          ],
 
-          ITELINES: [{
-            "LINENUM": 9000001,
-            "MTRL": 2924,
-            "QTY2": 0.1
-          }],
-        },
-      };
+    if (currentBranch?.BASKET_KEY === "0") {
+      const payload = buildAddToCartPayload({
+        trdr: Number(currentBranch.TRDR),
+        branch: Number(branchNumber),
+      });
 
       addToCartMutation(payload, {
         onSuccess: (data) => {
-          setBasketId(data.id!)
+          setBasketId(data.id!);
         },
       });
-
     } else {
-      setBasketId(currentBranch?.BASKET_KEY!);
+      setBasketId(currentBranch?.BASKET_KEY as string);
     }
 
     setBranchNumber(branch);
-
     router.push("/");
   };
-
   const handleLogout = async () => {
     setBranchNumber(undefined);
     setClientData(undefined);
@@ -161,12 +127,10 @@ export default function Header() {
 
                     return (
                       <DropdownMenuItem
+                        disabled={isActive}
                         key={branch.BRANCH}
                         onClick={() => handleBranchChange(branch.BRANCH)}
-                        className={cn(
-                          "cursor-pointer",
-                          isActive && "bg-accent text-accent-foreground"
-                        )}
+                        className={"cursor-pointer"}
                       >
                         <div className="flex flex-col">
                           <span className="text-sm font-medium">
