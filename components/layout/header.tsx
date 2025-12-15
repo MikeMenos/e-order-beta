@@ -108,7 +108,7 @@ export default function Header() {
                   <DropdownMenuLabel>Επιλογή καταστήματος</DropdownMenuLabel>
 
                   {clientData?.data.map((branch) => {
-                    const isActive = branch.BASKET_KEY === basketId;
+                    const isActive = branch.BRANCH === branchNumber;
 
                     return (
                       <DropdownMenuItem
