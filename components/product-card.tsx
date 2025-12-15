@@ -141,7 +141,7 @@ const ProductCard: FC<ProductCardProps> = ({
                     size="sm"
                     className="whitespace-nowrap gap-1 cursor-pointer"
                     onClick={onAddProductToBasket}
-                    disabled={isPending || product.Qty2 === qty}
+                    disabled={isPending || product.Qty2 === qty || !qty}
                   >
                     <ShoppingCart className="h-4 w-4" />
                   </Button>

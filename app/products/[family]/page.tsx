@@ -11,7 +11,7 @@ import { redirect, usePathname } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 export default function FamilyProducts() {
-  const { clientData, setHydrated, hydrated, branchNumber } = appStore();
+  const { clientData, setHydrated, hydrated, branchNumber, basketId } = appStore();
   const pathname = usePathname();
   const family = decodeURIComponent(pathname.split("/")[2] || "").trim();
   const trdr = clientData?.data[0].TRDR as string;

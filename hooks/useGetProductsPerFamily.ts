@@ -16,6 +16,7 @@ export function useGetProductsPerFamily({ family, trdr, branch }: Params) {
                 family,
                 trdr,
                 branch,
+                
             });
 
             return data.data;

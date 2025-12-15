@@ -3,14 +3,16 @@ import { api } from "@/lib/api";
 import { AddToCartPayload } from "@/lib/interfaces";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-type CartErrorResponse = {
+type CartResponse = {
   success: false;
-  errorcode: number;
-  error: string;
+  errorcode?: number;
+  error?: string;
+  id?: string
 };
 
-export async function postCart(payload: AddToCartPayload): Promise<void> {
-  const { data } = await api.post<CartErrorResponse | undefined>(
+
+export async function postCart(payload: AddToCartPayload): Promise<CartResponse> {
+  const { data } = await api.post<CartResponse>(
     "/add-to-cart",
     payload
   );
@@ -18,12 +20,14 @@ export async function postCart(payload: AddToCartPayload): Promise<void> {
   if (data && data.success === false) {
     throw new Error(data.error);
   }
+
+  return data
 }
 
 export function useAddToCart() {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, AddToCartPayload>({
+  return useMutation<CartResponse, Error, AddToCartPayload>({
     mutationFn: postCart,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });

@@ -38,14 +38,13 @@ function InfoItem({ label, value, icon }: InfoItemProps) {
 
 export default function StoreCard({ data }: StoreInfoCardProps) {
   const headerMeta = [
-    data.TRDR && `Κωδικός ${data.TRDR}`,
     data.BRANCH && `Υποκατάστημα ${data.BRANCH}`,
+
   ]
     .filter(Boolean)
     .join(" • ")
 
   const typeLine = [
-    data.TYPOS,
     data.BRANCHES && `Σύνολο Υποκαταστημάτων: ${data.BRANCHES}`,
   ]
     .filter(Boolean)
@@ -54,9 +53,9 @@ export default function StoreCard({ data }: StoreInfoCardProps) {
   const addressLine = [data.ADDRESS, data.DISTRICT].filter(Boolean).join(", ")
 
   return (
-    <Card className="group relative w-full max-w-xl overflow-hidden border border-zinc-200 bg-white/80 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900/80">
-  
-      <CardHeader className="flex flex-row items-start justify-between gap-4 pt-4">
+    <Card className="group overflow-hidden mb-4 border border-zinc-200 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/80">
+
+      <CardHeader className="flex flex-row items-start justify-between gap-4 pt-2 px-2">
         <div className="space-y-1">
           <CardTitle className="flex items-center gap-2 text-xl font-semibold tracking-tight">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 shadow-sm dark:bg-zinc-800 dark:text-zinc-200">
@@ -66,56 +65,73 @@ export default function StoreCard({ data }: StoreInfoCardProps) {
           </CardTitle>
 
           {headerMeta && (
-            <CardDescription className="mt-1 text-xs uppercase tracking-[0.16em] text-zinc-400">
+            <CardDescription className="mt-4 text-xs uppercase tracking-[0.16em] text-zinc-400">
               {headerMeta}
             </CardDescription>
           )}
 
           {typeLine && (
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="mt-1 text-xs uppercase tracking-[0.16em] text-zinc-400">
               {typeLine}
             </p>
+
           )}
         </div>
 
         <div className="flex flex-col items-end gap-2">
-          {data.CITY && (
-            <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm dark:bg-zinc-800 dark:text-zinc-100">
-              <MapPin className="mr-1 h-3 w-3" />
-              {data.CITY}
-            </span>
-          )}
+          <div className="flex flex-row sm:flex-row gap-2">
+            {data.CITY && (
+              <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm dark:bg-zinc-800 dark:text-zinc-100">
+                <MapPin className="mr-1 h-3 w-3" />
+                {data.CITY}
+              </span>
+            )}
+
+            {data.BRANCH && (
+              <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm dark:bg-zinc-800 dark:text-zinc-100">
+                <Hash className="mr-1 h-3 w-3" />
+                {data.BRANCH}
+              </span>
+            )}
+          </div>
+
           <span className="rounded-full bg-zinc-900 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.16em] text-zinc-100 dark:bg-zinc-700">
             {data.KEY_CODE}
           </span>
+
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 border-t border-dashed border-zinc-200 pt-4 text-sm dark:border-zinc-800">
-        <div className="grid gap-4 md:grid-cols-2">
-          <InfoItem
-            label="Διεύθυνση"
-            value={addressLine}
-            icon={<MapPin className="h-4 w-4 text-zinc-400" />}
-          />
-          <InfoItem
-            label="Ταχυδρομικός Κώδικας"
-            value={data.ZIP}
-            icon={<Hash className="h-4 w-4 text-zinc-400" />}
-          />
-          <InfoItem
-            label="ΑΦΜ"
-            value={data.AFM}
-            icon={<IdCard className="h-4 w-4 text-zinc-400" />}
-          />
-          <InfoItem
-            label="Τρόπος Πληρωμής"
-            value={data.PAYMENT}
-            icon={<CreditCard className="h-4 w-4 text-zinc-400" />}
-          />
+      <CardContent className="border-t border-dashed border-zinc-200 pt-4 text-sm dark:border-zinc-800">
+        <div className="flex flex-col gap-4">
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            <InfoItem
+              label="Διεύθυνση"
+              value={`${addressLine} - Τ.Κ. ${data.ZIP}`}
+              icon={<MapPin className="h-4 w-4 text-zinc-400" />}
+            />
+            <InfoItem
+              label="ΑΦΜ"
+              value={data.AFM}
+              icon={<IdCard className="h-4 w-4 text-zinc-400" />}
+            />
+            <InfoItem
+              label="TRDR"
+              value={data.TRDR}
+              icon={<KeyRound className="h-4 w-4 text-zinc-400" />}
+            />
+
+            <InfoItem
+              label="Τρόπος Πληρωμής"
+              value={data.PAYMENT}
+              icon={<CreditCard className="h-4 w-4 text-zinc-400" />}
+            />
+          </div>
+
         </div>
       </CardContent>
-
+      
       <CardFooter className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-100 bg-zinc-50/80 px-6 py-3 text-xs dark:border-zinc-800 dark:bg-zinc-900/80">
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 px-2 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-100 dark:bg-zinc-700">
@@ -127,11 +143,6 @@ export default function StoreCard({ data }: StoreInfoCardProps) {
             PIN B: {data.PIN_B}
           </span>
         </div>
-
-        <span className="inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-[0.16em] text-zinc-400">
-          <KeyRound className="h-3 w-3" />
-          TRDR: {data.TRDR}
-        </span>
       </CardFooter>
     </Card>
   )

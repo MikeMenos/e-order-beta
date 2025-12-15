@@ -19,6 +19,8 @@ import { useGetFamilies } from "@/hooks/useGetFamilies";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { AddToCartPayload } from "@/lib/interfaces";
+import { useAddToCart } from "@/hooks/useAddToCart";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -50,17 +52,64 @@ export default function Header() {
     trdr: currentBranch?.TRDR,
     branch: branchNumber,
   });
+  const { mutate: addToCartMutation } = useAddToCart();
+
 
   if (!hydrated) return null;
   if (pathname === "/login") return null;
 
   const handleBranchChange = (branch: string) => {
     setOpen(false);
-    setBasketId(currentBranch?.BASKET_KEY ?? "");
+    if (currentBranch?.BASKET_KEY === '0') {
+      const payload: AddToCartPayload = {
+        service: "setData",
+        clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
+        appId: process.env.NEXT_PUBLIC_APP_ID!,
+        OBJECT: "SALDOC",
+        KEY: "",
+        data: {
+          SALDOC: [
+            {
+              SERIES: "7001",
+              TRDR: Number(currentBranch?.TRDR),
+              TRDBRANCH: Number(branchNumber),
+              PAYMENT: 1006,
+              TRUCKS: 2,
+              DELIVDATE: '',
+              COMMENTS: '',
+              REMARKS: "",
+            },
+          ],
+          MTRDOC: [
+            {
+              TRUCKS: 2,
+              DELIVDATE: '',
+            },
+          ],
+
+          ITELINES: [{
+            "LINENUM": 9000001,
+            "MTRL": 2924,
+            "QTY2": 0.1
+          }],
+        },
+      };
+
+      addToCartMutation(payload, {
+        onSuccess: (data) => {
+          setBasketId(data.id!)
+        },
+      });
+
+    } else {
+      setBasketId(currentBranch?.BASKET_KEY!);
+    }
+
     setBranchNumber(branch);
 
     router.push("/");
   };
+
   const handleLogout = async () => {
     setBranchNumber(undefined);
     setClientData(undefined);
@@ -108,7 +157,7 @@ export default function Header() {
                   <DropdownMenuLabel>Επιλογή καταστήματος</DropdownMenuLabel>
 
                   {clientData?.data.map((branch) => {
-                    const isActive = branch.BASKET_KEY === basketId;
+                    const isActive = branch.BRANCH === branchNumber;
 
                     return (
                       <DropdownMenuItem

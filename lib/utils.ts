@@ -29,7 +29,7 @@ export function buildUpdatedLines(params: {
     })) ?? [];
 
   const clickedMtrl = Number(product.ITEMUID || product.MTRL);
-  console.log(clickedMtrl);
+
   if (isDelete) {
     return existingLines.filter((l) => l.MTRL !== clickedMtrl);
   }

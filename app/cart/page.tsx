@@ -131,9 +131,6 @@ export default function Cart() {
         setComments("");
         setDelivDate("");
       },
-      onError: () => {
-        errorToast("Σφάλμα κατά την αποστολή της παραγγελίας σας");
-      },
     });
   };
 
