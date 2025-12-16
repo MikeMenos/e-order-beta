@@ -1,6 +1,7 @@
 "use client";
 
 import ProductCategories from "@/components/product-categories";
+import Loading from "@/components/ui/loading";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
 import { appStore } from "@/stores/appStore";
 import { redirect } from "next/navigation";
@@ -20,7 +21,7 @@ export default function Home() {
   if (!hydrated) return null;
   if (clientData && clientData?.count > 1 && !branchNumber) redirect("/stores");
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
   return <ProductCategories data={data} />;
 }

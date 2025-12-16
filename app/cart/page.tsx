@@ -3,6 +3,8 @@
 import { CartTotals } from "@/components/cart-totals";
 import { OrderSummary } from "@/components/order-summary";
 import { errorToast, successToast } from "@/components/toasts";
+import EmptyCart from "@/components/ui/empty-cart";
+import Loading from "@/components/ui/loading";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
@@ -140,11 +142,11 @@ export default function Cart() {
       [Number(product.MTRL)]: newQty,
     }));
   };
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
-  if (data?.count === 0) return <div>Το καλάθι σας είναι άδειο.</div>;
+    if (data?.count === 0) return <EmptyCart />;
 
-  return (
+    return (
     <div className="flex md:flex-row flex-col gap-6">
       <OrderSummary items={data} onQtyChange={handleQtyEdit} />
 
@@ -160,5 +162,5 @@ export default function Cart() {
         />
       </div>
     </div>
-  );
+    );
 }

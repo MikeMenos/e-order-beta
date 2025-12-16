@@ -2,6 +2,7 @@
 
 import ProductCard from "@/components/product-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Loading from "@/components/ui/loading";
 import { useGetCart } from "@/hooks/useGetCart";
 import { useGetProductsPerFamily } from "@/hooks/useGetProductsPerFamily";
 import { useHandleOnSubmitProducts } from "@/hooks/useHandleOnSubmitProducts";
@@ -52,7 +53,7 @@ export default function FamilyProducts() {
   if (!hydrated) return null;
   if (clientData && clientData?.count > 1 && !branchNumber) redirect("/stores");
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
   const favProducts = productsWithQty?.filter((p) => p.FAV === "FAV");
   const regProducts = productsWithQty?.filter((p) => p.FAV === "REG");
