@@ -59,7 +59,7 @@ interface BuildAddToCartPayloadParams {
   branch: number;
 }
 
-export const buildAddToCartPayload = ({
+export const buildFirstBasketKeyPayload = ({
   trdr,
   branch,
 }: BuildAddToCartPayloadParams): AddToCartPayload => {

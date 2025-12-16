@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   Card,
   CardHeader,
@@ -17,24 +16,22 @@ import { appStore } from "@/stores/appStore";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { useVerifyPin } from "@/hooks/useVerifyPin";
 import { errorToast } from "@/components/toasts";
+import { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
 
 export default function Login() {
   const router = useRouter();
   const { setClientData } = appStore();
 
-  const [localVat, setLocalVat] = React.useState("");
-  const [backendPin, setBackendPin] = React.useState<string | null>(null);
+  const [localVat, setLocalVat] = useState("");
+  const [backendPin, setBackendPin] = useState<string | null>(null);
 
-  const pinRefs = React.useRef<Array<HTMLInputElement | null>>([]);
-  const [enteredPin, setEnteredPin] = React.useState(Array(6).fill(""));
+  const pinRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const [enteredPin, setEnteredPin] = useState(Array(6).fill(""));
 
   const { mutate: clientDataMutation, isPending } = useGetClientData();
   const pinMutation = useVerifyPin();
 
-  const handlePinChange = (
-    index: number,
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handlePinChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "");
     if (!raw) {
       e.target.value = "";
@@ -60,7 +57,7 @@ export default function Login() {
 
   const handlePinKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: KeyboardEvent<HTMLInputElement>
   ) => {
     if (e.key === "Backspace") {
       if (enteredPin[index]) {

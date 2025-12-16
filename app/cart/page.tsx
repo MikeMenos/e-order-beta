@@ -2,7 +2,7 @@
 
 import { CartTotals } from "@/components/cart-totals";
 import { OrderSummary } from "@/components/order-summary";
-import { errorToast, successToast } from "@/components/toasts";
+import { successToast } from "@/components/toasts";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
@@ -93,7 +93,7 @@ export default function Cart() {
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY: basketId ?? "",
+      KEY: basketId!,
 
       data: {
         SALDOC: [

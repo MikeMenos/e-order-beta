@@ -18,8 +18,9 @@ import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { buildAddToCartPayload, cn } from "@/lib/utils";
+import { buildFirstBasketKeyPayload, cn } from "@/lib/utils";
 import { useAddToCart } from "@/hooks/useAddToCart";
+import { api } from "@/lib/api";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -59,7 +60,7 @@ export default function Header() {
     setOpen(false);
 
     if (currentBranch?.BASKET_KEY === "0") {
-      const payload = buildAddToCartPayload({
+      const payload = buildFirstBasketKeyPayload({
         trdr: Number(currentBranch.TRDR),
         branch: Number(branchNumber),
       });
@@ -79,8 +80,8 @@ export default function Header() {
   const handleLogout = async () => {
     setBranchNumber(undefined);
     setClientData(undefined);
-    setBasketId("");
-    await fetch("/api/logout", { method: "POST" });
+    setBasketId(undefined);
+    await api.post("/api/logout");
     router.replace("/login");
   };
 

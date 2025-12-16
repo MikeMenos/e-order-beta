@@ -7,8 +7,8 @@ type AppState = {
   setClientData: (value: ClientResponse | undefined) => void;
   branchNumber?: string;
   setBranchNumber: (value?: string) => void;
-  basketId: string;
-  setBasketId: (value: string) => void;
+  basketId?: string;
+  setBasketId: (value?: string) => void;
   hydrated: boolean;
   setHydrated: () => void;
 };
@@ -20,7 +20,7 @@ export const appStore = create<AppState>()(
       setClientData: (clientData) => set({ clientData }),
       branchNumber: undefined,
       setBranchNumber: (branchNumber) => set({ branchNumber }),
-      basketId: "",
+      basketId: undefined,
       setBasketId: (basketId) => set({ basketId }),
       hydrated: false,
       setHydrated: () => set({ hydrated: true }),

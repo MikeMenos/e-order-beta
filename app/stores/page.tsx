@@ -3,7 +3,7 @@
 import StoreCard from "@/components/store-card";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { IStoreInfo } from "@/lib/interfaces";
-import { buildAddToCartPayload } from "@/lib/utils";
+import { buildFirstBasketKeyPayload } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -24,7 +24,7 @@ export default function Stores() {
 
   const handleBranchChange = (branch: IStoreInfo) => {
     if (branch.BASKET_KEY === "0") {
-      const payload = buildAddToCartPayload({
+      const payload = buildFirstBasketKeyPayload({
         trdr: Number(branch.TRDR),
         branch: Number(branch.BRANCH),
       });
