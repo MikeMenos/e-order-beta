@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const response = await backend.post(
     "/s1services",
     { clientID, ...payload, appId },
-    { responseType: "arraybuffer" } // 👈 critical
+    { responseType: "arraybuffer" }
   );
 
   const text = iconv.decode(Buffer.from(response.data), "win1253").trim();

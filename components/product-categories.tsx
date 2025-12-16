@@ -7,9 +7,9 @@ interface ProductCategoriesProps {
 }
 
 const categoryImages: Record<string, string> = {
-  DONUT: "/categories/donut.jpg",
-  ΑΡΤΟΠΟΙΗΜΑΤΑ: "/categories/artos.jpg",
-  ΣΦΟΛΙΑΤΑ: "/categories/sfoliata.jpg",
+  DONUT: "/categories/lixoudis.jpg",
+  ΑΡΤΟΠΟΙΗΜΑΤΑ: "/categories/diaxeiros.jpg",
+  ΣΦΟΛΙΑΤΑ: "/categories/diaxeiros.jpg",
   ΑΛΛΟ: "/categories/allo.jpg",
 };
 
