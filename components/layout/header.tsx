@@ -81,7 +81,7 @@ export default function Header() {
     setBranchNumber(undefined);
     setClientData(undefined);
     setBasketId(undefined);
-    await api.post("/api/logout");
+    await fetch("/api/logout", { method: "POST" });
     router.replace("/login");
   };
 
