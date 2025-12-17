@@ -16,6 +16,7 @@ export interface IStoreInfo {
   DISTRICT?: string;
   CITY: string;
   ZIP: string;
+  PHONE01?: string;
   PIN_A: string;
   PIN_B: string;
   PAYMENT?: string;
