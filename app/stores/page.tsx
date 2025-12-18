@@ -18,11 +18,12 @@ export default function Stores() {
     setHydrated();
   }, [setHydrated]);
 
-  const { mutate: addToCartMutation } = useAddToCart();
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
 
   if (!hydrated) return null;
 
   const handleBranchChange = (branch: IStoreInfo) => {
+    if (isPending) return;
     if (branch.BASKET_KEY === "0") {
       const payload = buildFirstBasketKeyPayload({
         trdr: Number(branch.TRDR),
@@ -50,7 +51,7 @@ export default function Stores() {
           onClick={() => handleBranchChange(item)}
           className="cursor-pointer"
         >
-          <StoreCard data={item} />
+          <StoreCard data={item} isPending={isPending} />
         </p>
       ))}
     </>

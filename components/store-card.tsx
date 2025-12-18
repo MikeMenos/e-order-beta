@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   Card,
   CardContent,
@@ -6,22 +6,31 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@/components/ui/card"
-import { Building2, MapPin, Hash, IdCard, KeyRound, Pin, CreditCard } from "lucide-react"
-import { IStoreInfo } from "@/lib/interfaces"
+} from "@/components/ui/card";
+import {
+  Building2,
+  MapPin,
+  Hash,
+  IdCard,
+  KeyRound,
+  Pin,
+  CreditCard,
+} from "lucide-react";
+import { IStoreInfo } from "@/lib/interfaces";
 
 interface StoreInfoCardProps {
-  data: IStoreInfo
+  data: IStoreInfo;
+  isPending: boolean;
 }
 
 interface InfoItemProps {
-  label: string
-  value?: string
-  icon?: React.ReactNode
+  label: string;
+  value?: string;
+  icon?: React.ReactNode;
 }
 
 function InfoItem({ label, value, icon }: InfoItemProps) {
-  if (!value) return null
+  if (!value) return null;
 
   return (
     <div className="flex items-start gap-3 rounded-xl bg-zinc-50 px-3 py-2 text-xs text-zinc-700 shadow-sm dark:bg-zinc-900 dark:text-zinc-200 ">
@@ -33,28 +42,26 @@ function InfoItem({ label, value, icon }: InfoItemProps) {
         <p className="text-sm font-medium break-all">{value}</p>
       </div>
     </div>
-  )
+  );
 }
 
-export default function StoreCard({ data }: StoreInfoCardProps) {
-  const headerMeta = [
-    data.BRANCH && `Υποκατάστημα ${data.BRANCH}`,
-
-  ]
+export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
+  const headerMeta = [data.BRANCH && `Υποκατάστημα ${data.BRANCH}`]
     .filter(Boolean)
-    .join(" • ")
+    .join(" • ");
 
-  const typeLine = [
-    data.BRANCHES && `Σύνολο Υποκαταστημάτων: ${data.BRANCHES}`,
-  ]
+  const typeLine = [data.BRANCHES && `Σύνολο Υποκαταστημάτων: ${data.BRANCHES}`]
     .filter(Boolean)
-    .join(" • ")
+    .join(" • ");
 
-  const addressLine = [data.ADDRESS, data.DISTRICT].filter(Boolean).join(", ")
+  const addressLine = [data.ADDRESS, data.DISTRICT].filter(Boolean).join(", ");
 
   return (
-    <Card className="group overflow-hidden mb-4 border border-zinc-200 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/80">
-
+    <Card
+      className={`group overflow-hidden mb-4 border border-zinc-200 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/80 ${
+        isPending ? "opacity-60" : ""
+      }`}
+    >
       <CardHeader className="flex flex-row items-start justify-between gap-4 pt-2 px-2">
         <div className="space-y-1">
           <CardTitle className="flex items-center gap-2 text-xl font-semibold tracking-tight">
@@ -74,7 +81,6 @@ export default function StoreCard({ data }: StoreInfoCardProps) {
             <p className="mt-1 text-xs uppercase tracking-[0.16em] text-zinc-400">
               {typeLine}
             </p>
-
           )}
         </div>
 
@@ -98,13 +104,11 @@ export default function StoreCard({ data }: StoreInfoCardProps) {
           <span className="rounded-full bg-zinc-900 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.16em] text-zinc-100 dark:bg-zinc-700">
             {data.KEY_CODE}
           </span>
-
         </div>
       </CardHeader>
 
       <CardContent className="border-t border-dashed border-zinc-200 pt-4 text-sm dark:border-zinc-800">
         <div className="flex flex-col gap-4">
-
           <div className="flex flex-col sm:flex-row gap-4">
             <InfoItem
               label="Διεύθυνση"
@@ -128,10 +132,9 @@ export default function StoreCard({ data }: StoreInfoCardProps) {
               icon={<CreditCard className="h-4 w-4 text-zinc-400" />}
             />
           </div>
-
         </div>
       </CardContent>
-      
+
       <CardFooter className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-100 bg-zinc-50/80 px-6 py-3 text-xs dark:border-zinc-800 dark:bg-zinc-900/80">
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 px-2 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-100 dark:bg-zinc-700">
@@ -145,5 +148,5 @@ export default function StoreCard({ data }: StoreInfoCardProps) {
         </div>
       </CardFooter>
     </Card>
-  )
+  );
 }

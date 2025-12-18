@@ -22,7 +22,7 @@ export function useHandleOnSubmitProducts() {
     branch: branchNumber,
   });
 
-  const { mutate: addToCartMutation } = useAddToCart();
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
 
   const onSubmitProducts = (
     product: IProductItem,
@@ -62,5 +62,5 @@ export function useHandleOnSubmitProducts() {
     });
   };
 
-  return { onSubmitProducts, pendingProductId };
+  return { onSubmitProducts, pendingProductId, isPending };
 }

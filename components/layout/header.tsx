@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { buildFirstBasketKeyPayload, cn } from "@/lib/utils";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { api } from "@/lib/api";
+import { IStoreInfo } from "@/lib/interfaces";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -51,18 +52,18 @@ export default function Header() {
     trdr: currentBranch?.TRDR,
     branch: branchNumber,
   });
-  const { mutate: addToCartMutation } = useAddToCart();
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
 
   if (!hydrated) return null;
   if (pathname === "/login") return null;
 
-  const handleBranchChange = (branch: string) => {
+  const handleBranchChange = (branch: IStoreInfo) => {
     setOpen(false);
 
-    if (currentBranch?.BASKET_KEY === "0") {
+    if (branch?.BASKET_KEY === "0") {
       const payload = buildFirstBasketKeyPayload({
-        trdr: Number(currentBranch.TRDR),
-        branch: Number(branchNumber),
+        trdr: Number(branch.TRDR),
+        branch: Number(branch.BRANCH),
       });
 
       addToCartMutation(payload, {
@@ -71,10 +72,10 @@ export default function Header() {
         },
       });
     } else {
-      setBasketId(currentBranch?.BASKET_KEY as string);
+      setBasketId(branch?.BASKET_KEY as string);
     }
 
-    setBranchNumber(branch);
+    setBranchNumber(branch.BRANCH);
     router.push("/");
   };
   const handleLogout = async () => {
@@ -128,9 +129,9 @@ export default function Header() {
 
                     return (
                       <DropdownMenuItem
-                        disabled={isActive}
+                        disabled={isActive || isPending}
                         key={branch.BRANCH}
-                        onClick={() => handleBranchChange(branch.BRANCH)}
+                        onClick={() => handleBranchChange(branch)}
                         className={"cursor-pointer"}
                       >
                         <div className="flex flex-col">
