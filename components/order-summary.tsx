@@ -11,7 +11,7 @@ interface OrderSummaryProps {
 }
 
 export function OrderSummary({ items, onQtyChange }: OrderSummaryProps) {
-  const { onSubmitProducts } = useHandleOnSubmitProducts();
+  const { onSubmitProducts, isPending } = useHandleOnSubmitProducts();
   return (
     <div className="basis-2/3">
       <CardHeader className="border-b border-slate-200 mb-4">
@@ -27,6 +27,7 @@ export function OrderSummary({ items, onQtyChange }: OrderSummaryProps) {
               product={item}
               onQtyChange={onQtyChange}
               onSubmitProducts={onSubmitProducts}
+              isPending={isPending}
             />
           ))}
         </CardContent>

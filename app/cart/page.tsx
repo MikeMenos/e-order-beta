@@ -12,7 +12,7 @@ import { appStore } from "@/stores/appStore";
 import { useState } from "react";
 
 export default function Cart() {
-  const { clientData, branchNumber, basketId } = appStore();
+  const { branchNumber, basketId, currentBranch } = appStore();
 
   const [editedQuantities, setEditedQuantities] = useState<
     Record<number, number>
@@ -20,9 +20,6 @@ export default function Cart() {
   const [comments, setComments] = useState("");
   const [delivDate, setDelivDate] = useState("");
 
-  const currentBranch = clientData?.data.find(
-    (item) => item.BRANCH === branchNumber
-  );
   const { data, isLoading } = useGetCart({
     trdr: currentBranch?.TRDR,
     branch: branchNumber,
@@ -65,7 +62,6 @@ export default function Cart() {
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
       KEY: "",
-
       data: {
         SALDOC: [
           {
@@ -95,7 +91,7 @@ export default function Cart() {
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY: basketId!,
+      KEY: basketId as string,
 
       data: {
         SALDOC: [
@@ -144,9 +140,9 @@ export default function Cart() {
   };
   if (isLoading) return <Loading />;
 
-    if (data?.count === 0) return <EmptyCart />;
+  if (data?.count === 0) return <EmptyCart />;
 
-    return (
+  return (
     <div className="flex md:flex-row flex-col gap-6">
       <OrderSummary items={data} onQtyChange={handleQtyEdit} />
 
@@ -162,5 +158,5 @@ export default function Cart() {
         />
       </div>
     </div>
-    );
+  );
 }

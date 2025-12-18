@@ -1,28 +1,24 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { successToast } from "@/components/toasts";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
-import { appStore } from "@/stores/appStore";
 import { buildUpdatedLines } from "@/lib/utils";
+import { appStore } from "@/stores/appStore";
+import { useState } from "react";
 
 export function useHandleOnSubmitProducts() {
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
 
-  const { basketId, branchNumber, clientData } = appStore();
-  const currentBranch = useMemo(
-    () => clientData?.data.find((item) => item.BRANCH === branchNumber),
-    [clientData, branchNumber]
-  );
+  const { basketId, branchNumber, currentBranch } = appStore();
 
   const { data: cartData } = useGetCart({
     trdr: currentBranch?.TRDR,
     branch: branchNumber,
   });
 
-  const { mutate: addToCartMutation } = useAddToCart();
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
 
   const onSubmitProducts = (
     product: IProductItem,
@@ -43,10 +39,20 @@ export function useHandleOnSubmitProducts() {
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY: basketId ?? "",
+      KEY: basketId as string,
       LOCATEINFO:
         "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
-      data: { ITELINES: updatedLines },
+      data: {
+        ITELINES:
+          updatedLines?.length === 0 && isDelete
+            ? [
+                {
+                  MTRL: 2924,
+                  QTY2: 0.1,
+                },
+              ]
+            : updatedLines,
+      },
     };
 
     addToCartMutation(payload, {
@@ -62,5 +68,5 @@ export function useHandleOnSubmitProducts() {
     });
   };
 
-  return { onSubmitProducts, pendingProductId };
+  return { onSubmitProducts, pendingProductId, isPending };
 }

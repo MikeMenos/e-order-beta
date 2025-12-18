@@ -3,6 +3,7 @@
 import ProductCategories from "@/components/product-categories";
 import Loading from "@/components/ui/loading";
 import { useAddToCart } from "@/hooks/useAddToCart";
+import { useGetClientData } from "@/hooks/useGetClientData";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
 import { buildFirstBasketKeyPayload } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
@@ -11,16 +12,22 @@ import { useEffect } from "react";
 
 export default function Home() {
   const {
-    clientData,
     setHydrated,
     hydrated,
     branchNumber,
     setBasketId,
     setBranchNumber,
+    vat,
   } = appStore();
 
   const { data, isLoading } = useGetFamilies();
   const { mutate: addToCartMutation } = useAddToCart();
+  const { data: clientData, mutate, isPending } = useGetClientData();
+
+  useEffect(() => {
+    if (!vat) return;
+    mutate(vat);
+  }, [vat]);
 
   useEffect(() => {
     appStore.persist.rehydrate();
@@ -46,7 +53,7 @@ export default function Home() {
   if (!hydrated) return null;
   if (clientData && clientData?.count > 1 && !branchNumber) redirect("/stores");
 
-  if (isLoading) return <Loading />;
+  if (isLoading || isPending) return <Loading />;
 
   return <ProductCategories data={data} />;
 }

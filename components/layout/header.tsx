@@ -20,7 +20,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildFirstBasketKeyPayload, cn } from "@/lib/utils";
 import { useAddToCart } from "@/hooks/useAddToCart";
-import { api } from "@/lib/api";
+import { IStoreInfo } from "@/lib/interfaces";
+import { useGetClientData } from "@/hooks/useGetClientData";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -28,58 +29,56 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const {
-    clientData,
     branchNumber,
     setBranchNumber,
     hydrated,
     setHydrated,
     setBasketId,
-    setClientData,
+    vat,
+    currentBranch,
   } = appStore();
 
-  const currentBranch = clientData?.data.find(
-    (item) => item.BRANCH === branchNumber
-  );
+  const { data: families } = useGetFamilies();
+  const { data: clientData, mutate } = useGetClientData();
 
   useEffect(() => {
-    appStore.persist.rehydrate();
-    setHydrated();
-  }, [setHydrated]);
+    if (!vat) return;
+    mutate(vat);
+  }, [vat]);
 
-  const { data: families } = useGetFamilies();
   const { data } = useGetCart({
     trdr: currentBranch?.TRDR,
     branch: branchNumber,
   });
-  const { mutate: addToCartMutation } = useAddToCart();
 
-  if (!hydrated) return null;
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
+
   if (pathname === "/login") return null;
 
-  const handleBranchChange = (branch: string) => {
+  const handleBranchChange = (branch: IStoreInfo) => {
     setOpen(false);
-
-    if (currentBranch?.BASKET_KEY === "0") {
+    console.log(branch);
+    if (branch?.BASKET_KEY === "0") {
       const payload = buildFirstBasketKeyPayload({
-        trdr: Number(currentBranch.TRDR),
-        branch: Number(branchNumber),
+        trdr: Number(branch.TRDR),
+        branch: Number(branch.BRANCH),
       });
 
       addToCartMutation(payload, {
         onSuccess: (data) => {
           setBasketId(data.id!);
+          mutate(vat as string);
         },
       });
     } else {
-      setBasketId(currentBranch?.BASKET_KEY as string);
+      setBasketId(branch?.BASKET_KEY as string);
     }
 
-    setBranchNumber(branch);
+    setBranchNumber(branch.BRANCH);
     router.push("/");
   };
   const handleLogout = async () => {
     setBranchNumber(undefined);
-    setClientData(undefined);
     setBasketId(undefined);
     await fetch("/api/logout", { method: "POST" });
     router.replace("/login");
@@ -128,9 +127,9 @@ export default function Header() {
 
                     return (
                       <DropdownMenuItem
-                        disabled={isActive}
+                        disabled={isActive || isPending}
                         key={branch.BRANCH}
-                        onClick={() => handleBranchChange(branch.BRANCH)}
+                        onClick={() => handleBranchChange(branch)}
                         className={"cursor-pointer"}
                       >
                         <div className="flex flex-col">
