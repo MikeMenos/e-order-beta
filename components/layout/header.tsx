@@ -16,12 +16,12 @@ import { ShoppingCart, LogOut, ChevronDown } from "lucide-react";
 import { useGetCart } from "@/hooks/useGetCart";
 import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildFirstBasketKeyPayload, cn } from "@/lib/utils";
 import { useAddToCart } from "@/hooks/useAddToCart";
-import { api } from "@/lib/api";
 import { IStoreInfo } from "@/lib/interfaces";
+import { useGetClientData } from "@/hooks/useGetClientData";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -29,18 +29,13 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const {
-    clientData,
     branchNumber,
     setBranchNumber,
     hydrated,
     setHydrated,
     setBasketId,
-    setClientData,
+    vat,
   } = appStore();
-
-  const currentBranch = clientData?.data.find(
-    (item) => item.BRANCH === branchNumber
-  );
 
   useEffect(() => {
     appStore.persist.rehydrate();
@@ -48,10 +43,22 @@ export default function Header() {
   }, [setHydrated]);
 
   const { data: families } = useGetFamilies();
+  const { data: clientData, mutate } = useGetClientData();
+
+  useEffect(() => {
+    if (!vat) return;
+    mutate(vat);
+  }, [vat]);
+
+  const currentBranch = useMemo(
+    () => clientData?.data.find((item) => item.BRANCH === branchNumber),
+    [clientData]
+  );
   const { data } = useGetCart({
     trdr: currentBranch?.TRDR,
     branch: branchNumber,
   });
+
   const { mutate: addToCartMutation, isPending } = useAddToCart();
 
   if (!hydrated) return null;
@@ -80,7 +87,6 @@ export default function Header() {
   };
   const handleLogout = async () => {
     setBranchNumber(undefined);
-    setClientData(undefined);
     setBasketId(undefined);
     await fetch("/api/logout", { method: "POST" });
     router.replace("/login");

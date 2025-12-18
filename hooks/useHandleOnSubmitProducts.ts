@@ -1,17 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { successToast } from "@/components/toasts";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
 import { buildUpdatedLines } from "@/lib/utils";
+import { useGetClientData } from "./useGetClientData";
 
 export function useHandleOnSubmitProducts() {
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
 
-  const { basketId, branchNumber, clientData } = appStore();
+  const { basketId, branchNumber, vat } = appStore();
+
+  const { data: clientData, mutate } = useGetClientData();
+
+  useEffect(() => {
+    if (!vat) return;
+    mutate(vat);
+  }, [vat]);
+
   const currentBranch = useMemo(
     () => clientData?.data.find((item) => item.BRANCH === branchNumber),
     [clientData, branchNumber]
@@ -46,6 +55,10 @@ export function useHandleOnSubmitProducts() {
       KEY: basketId ?? "",
       LOCATEINFO:
         "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
+      // LOCATEINFO:
+      //   updatedLines.length === 0
+      //     ? undefined
+      //     : "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
       data: { ITELINES: updatedLines },
     };
 

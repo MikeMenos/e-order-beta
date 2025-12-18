@@ -1,12 +1,11 @@
-import { ClientResponse } from "@/lib/interfaces";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type AppState = {
-  clientData?: ClientResponse;
-  setClientData: (value: ClientResponse | undefined) => void;
   branchNumber?: string;
   setBranchNumber: (value?: string) => void;
+  vat?: string;
+  setVat: (value?: string) => void;
   basketId?: string;
   setBasketId: (value?: string) => void;
   hydrated: boolean;
@@ -16,10 +15,10 @@ type AppState = {
 export const appStore = create<AppState>()(
   persist(
     (set) => ({
-      clientData: undefined,
-      setClientData: (clientData) => set({ clientData }),
       branchNumber: undefined,
       setBranchNumber: (branchNumber) => set({ branchNumber }),
+      vat: undefined,
+      setVat: (vat) => set({ vat }),
       basketId: undefined,
       setBasketId: (basketId) => set({ basketId }),
       hydrated: false,

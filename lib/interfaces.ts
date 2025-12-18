@@ -92,6 +92,13 @@ export interface AddToCartPayload {
   appId: string;
   OBJECT: "SALDOC";
   KEY: string;
-  LOCATEINFO?: "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
+  LOCATEINFO?: "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME";
   data: DataPayload;
 }
+
+export type CartResponse = {
+  success: false;
+  errorcode?: number;
+  error?: string;
+  id?: string;
+};
