@@ -12,17 +12,16 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { appStore } from "@/stores/appStore";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { useVerifyPin } from "@/hooks/useVerifyPin";
 import { errorToast } from "@/components/toasts";
-import { ChangeEvent, KeyboardEvent, useRef, useState, useEffect } from "react";
+import { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
+import { appStore } from "@/stores/appStore";
 
 export default function Login() {
   const router = useRouter();
-  const { setClientData } = appStore();
+  const { vat, setVat } = appStore();
 
-  const [localVat, setLocalVat] = useState("");
   const [backendPin, setBackendPin] = useState<string | null>(null);
 
   const pinRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -83,12 +82,11 @@ export default function Login() {
   };
 
   const onSubmitVat = () => {
-    if (!localVat) return;
+    if (!vat) return;
 
-    clientDataMutation(localVat, {
+    clientDataMutation(vat, {
       onSuccess: (data) => {
         setBackendPin(data.data[0].PIN_A);
-        setClientData(data);
       },
       onError: () => {
         errorToast("Δε βρέθηκαν στοιχεία για το συγκεκριμένο ΑΦΜ");
@@ -125,8 +123,8 @@ export default function Login() {
                 <Label htmlFor="AFM">ΑΦΜ</Label>
                 <Input
                   id="AFM"
-                  value={localVat}
-                  onChange={(e) => setLocalVat(e.target.value)}
+                  value={vat}
+                  onChange={(e) => setVat(e.target.value)}
                   placeholder="Πληκτρολογήστε το ΑΦΜ σας"
                   required
                 />
@@ -161,7 +159,7 @@ export default function Login() {
             <Button
               className="w-full"
               onClick={onSubmitVat}
-              disabled={isPending}
+              disabled={isPending || !vat}
             >
               {isPending ? "Παρακαλώ περιμένετε..." : "Συνέχεια"}
             </Button>

@@ -4,6 +4,7 @@ import ProductCard from "@/components/product-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loading from "@/components/ui/loading";
 import { useGetCart } from "@/hooks/useGetCart";
+import { useGetClientData } from "@/hooks/useGetClientData";
 import { useGetProductsPerFamily } from "@/hooks/useGetProductsPerFamily";
 import { useHandleOnSubmitProducts } from "@/hooks/useHandleOnSubmitProducts";
 import { IProductItem } from "@/lib/interfaces";
@@ -12,21 +13,30 @@ import { redirect, usePathname } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 export default function FamilyProducts() {
-  const { clientData, setHydrated, hydrated, branchNumber } = appStore();
+  const { setHydrated, hydrated, branchNumber, vat } = appStore();
   const pathname = usePathname();
   const family = decodeURIComponent(pathname.split("/")[2] || "").trim();
+
+  const { data: clientData, mutate } = useGetClientData();
+
   const trdr = clientData?.data[0].TRDR as string;
   const branch = clientData?.data[0].BRANCH as string;
-  const currentBranch = clientData?.data.find(
-    (item) => item.BRANCH === branchNumber
+  const currentBranch = useMemo(
+    () => clientData?.data.find((item) => item.BRANCH === branchNumber),
+    [clientData, branchNumber]
   );
+
+  const { data, isLoading } = useGetProductsPerFamily({ family, trdr, branch });
 
   useEffect(() => {
     appStore.persist.rehydrate();
     setHydrated();
   }, [setHydrated]);
 
-  const { data, isLoading } = useGetProductsPerFamily({ family, trdr, branch });
+  useEffect(() => {
+    if (!vat) return;
+    mutate(vat);
+  }, [vat]);
 
   const { data: cartData } = useGetCart({
     trdr: currentBranch?.TRDR,

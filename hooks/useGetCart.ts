@@ -16,6 +16,5 @@ export function useGetCart({
       return data;
     },
     enabled: Boolean(trdr && branch),
-    staleTime: 0,
   });
 }
