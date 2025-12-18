@@ -52,14 +52,20 @@ export function useHandleOnSubmitProducts() {
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY: basketId ?? "",
+      KEY: basketId as string,
       LOCATEINFO:
         "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
-      // LOCATEINFO:
-      //   updatedLines.length === 0
-      //     ? undefined
-      //     : "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
-      data: { ITELINES: updatedLines },
+      data: {
+        ITELINES:
+          updatedLines?.length === 0 && isDelete
+            ? [
+                {
+                  MTRL: 2924,
+                  QTY2: 0.1,
+                },
+              ]
+            : updatedLines,
+      },
     };
 
     addToCartMutation(payload, {

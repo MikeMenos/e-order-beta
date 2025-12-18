@@ -103,7 +103,7 @@ export default function Cart() {
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY: basketId!,
+      KEY: basketId as string,
 
       data: {
         SALDOC: [
