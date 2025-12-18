@@ -4,13 +4,11 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardFooter,
+  CardDescription
 } from "@/components/ui/card";
 import {
   Building2,
   MapPin,
-  Hash,
   IdCard,
   KeyRound,
   Pin,
@@ -57,6 +55,7 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
   const addressLine = [data.ADDRESS, data.DISTRICT].filter(Boolean).join(", ");
 
   return (
+ 
     <Card
       className={`group overflow-hidden mb-4 border border-zinc-200 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/80 ${
         isPending ? "opacity-60" : ""
@@ -93,16 +92,10 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
               </span>
             )}
 
-            {data.BRANCH && (
-              <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm dark:bg-zinc-800 dark:text-zinc-100">
-                <Hash className="mr-1 h-3 w-3" />
-                {data.BRANCH}
-              </span>
-            )}
           </div>
 
           <span className="rounded-full bg-zinc-900 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.16em] text-zinc-100 dark:bg-zinc-700">
-            {data.KEY_CODE}
+           Υποκατάστημα: {data.BRANCH}
           </span>
         </div>
       </CardHeader>
@@ -115,38 +108,28 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
               value={`${addressLine} - Τ.Κ. ${data.ZIP}`}
               icon={<MapPin className="h-4 w-4 text-zinc-400" />}
             />
-            <InfoItem
+            {/* <InfoItem
               label="ΑΦΜ"
               value={data.AFM}
               icon={<IdCard className="h-4 w-4 text-zinc-400" />}
-            />
-            <InfoItem
+            /> */}
+            {/* <InfoItem
               label="TRDR"
               value={data.TRDR}
               icon={<KeyRound className="h-4 w-4 text-zinc-400" />}
-            />
+            /> */}
 
-            <InfoItem
+            {/* <InfoItem
               label="Τρόπος Πληρωμής"
               value={data.PAYMENT}
               icon={<CreditCard className="h-4 w-4 text-zinc-400" />}
-            />
+            /> */}
           </div>
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-100 bg-zinc-50/80 px-6 py-3 text-xs dark:border-zinc-800 dark:bg-zinc-900/80">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 px-2 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-100 dark:bg-zinc-700">
-            <Pin className="h-3 w-3" />
-            PIN A: {data.PIN_A}
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-200 px-2 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
-            <Pin className="h-3 w-3" />
-            PIN B: {data.PIN_B}
-          </span>
-        </div>
-      </CardFooter>
     </Card>
+ 
   );
 }
+

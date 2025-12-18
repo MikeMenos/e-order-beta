@@ -16,7 +16,7 @@ import { appStore } from "@/stores/appStore";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { useVerifyPin } from "@/hooks/useVerifyPin";
 import { errorToast } from "@/components/toasts";
-import { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useRef, useState, useEffect } from "react";
 
 export default function Login() {
   const router = useRouter();
@@ -30,6 +30,14 @@ export default function Login() {
 
   const { mutate: clientDataMutation, isPending } = useGetClientData();
   const pinMutation = useVerifyPin();
+
+  useEffect(() => {
+    if (!backendPin) return;
+
+    setTimeout(() => {
+      pinRefs.current[0]?.focus();
+    }, 0);
+  }, [backendPin]);
 
   const handlePinChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "");

@@ -21,6 +21,7 @@ export interface IStoreInfo {
   PIN_B: string;
   PAYMENT?: string;
   BASKET_KEY?: string;
+  GROUP_CHAIN?: string;
 }
 
 export interface IFamilyCategories {
