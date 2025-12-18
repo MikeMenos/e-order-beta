@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { useVerifyPin } from "@/hooks/useVerifyPin";
 import { errorToast } from "@/components/toasts";
-import { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useRef, useState, useEffect } from "react";
 import { appStore } from "@/stores/appStore";
 
 export default function Login() {
