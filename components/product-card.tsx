@@ -70,6 +70,18 @@ const ProductCard: FC<ProductCardProps> = ({
     }
   };
 
+  const isFamilyRoute = /^\/products\/[^/]+$/.test(pathname);
+
+  const incrementQty = () => {
+    const next = Number(qty || 0) + 1;
+    handleQtyChange(String(next), setQty);
+  };
+
+  const decrementQty = () => {
+    const next = Math.max(0, Number(qty || 0) - 1);
+    handleQtyChange(String(next), setQty);
+  };
+
   return (
     <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 w-full max-w-4xl mx-auto mb-2">
       <CardContent className="sm:p-3">
@@ -100,10 +112,6 @@ const ProductCard: FC<ProductCardProps> = ({
                   <span className="ml-1 font-medium">{product.CODE}</span>
                 </span>
 
-                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
-                  MTRL:
-                  <span className="ml-1 font-medium">{product.MTRL}</span>
-                </span>
               </div>
             </div>
 
@@ -123,13 +131,48 @@ const ProductCard: FC<ProductCardProps> = ({
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center justify-end gap-2">
                 <div className="relative">
-                  <Input
-                    className="min-w-12 text-center text-sm font-medium tabular-nums"
-                    value={qty}
-                    type="number"
-                    onChange={(e) => handleQtyChange(e.target.value, setQty)}
-                    min={0}
-                  />
+                  {isFamilyRoute && (
+                    <div className="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-white">
+                      <button
+                        type="button"
+                        onClick={decrementQty}
+                        className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
+                        disabled={isPending || Number(qty || 0) <= 0}
+                        aria-label="Decrease quantity"
+                      >
+                        −
+                      </button>
+
+                      <Input
+                        className="w-12 min-w-12 text-center border-0 focus-visible:ring-0 text-sm font-medium tabular-nums"
+                        value={qty}
+                        type="number"
+                        onChange={(e) => handleQtyChange(e.target.value, setQty)}
+                        min={0}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={incrementQty}
+                        className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
+                        disabled={isPending}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
+                  )}
+
+                  {!isFamilyRoute && (
+                    <Input
+                      className="min-w-12 text-center text-sm font-medium tabular-nums"
+                      value={qty}
+                      type="number"
+                      onChange={(e) => handleQtyChange(e.target.value, setQty)}
+                      min={0}
+                    />
+                  )}
+
                   {error && (
                     <p className="text-xs text-red-500 w-44 text-center mx-auto absolute top-10">
                       {error}
