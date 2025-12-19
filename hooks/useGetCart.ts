@@ -1,4 +1,3 @@
-import { buildFirstBasketKeyPayload } from "./../lib/utils";
 import { api } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import type { ICart } from "@/lib/interfaces";
@@ -11,15 +10,19 @@ export function useGetCart({
   trdr?: string;
   branch?: string;
 }) {
-  const { basketId } = appStore();
-  console.log(basketId);
+  const { currentBranch } = appStore();
+  console.log(trdr);
+  console.log(branch);
+  console.log(currentBranch);
   return useQuery<ICart, Error>({
-    queryKey: ["cart", branch, basketId],
+    queryKey: ["cart", branch, currentBranch],
     queryFn: async () => {
-      const { data } = await api.post("/get-cart", { trdr, branch });
+      const { data } = await api.post("/get-cart", {
+        trdr: trdr ?? currentBranch?.TRDR,
+        branch: branch ?? currentBranch?.BRANCH,
+      });
       return data;
     },
-    staleTime: 200,
 
     enabled: Boolean(trdr && branch),
   });
