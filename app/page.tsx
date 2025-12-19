@@ -35,7 +35,11 @@ export default function Home() {
   }, [setHydrated]);
 
   useEffect(() => {
-    if (clientData && clientData?.count === 1) {
+    if (
+      clientData &&
+      clientData?.count === 1 &&
+      clientData?.data[0].BASKET_KEY !== "0"
+    ) {
       const payload = buildFirstBasketKeyPayload({
         trdr: Number(clientData?.data[0].TRDR),
         branch: Number(clientData?.data[0].BRANCH),
