@@ -38,7 +38,7 @@ export default function Home() {
     if (
       clientData &&
       clientData?.count === 1 &&
-      clientData?.data[0].BASKET_KEY !== "0"
+      clientData?.data[0].BASKET_KEY === "0"
     ) {
       const payload = buildFirstBasketKeyPayload({
         trdr: Number(clientData?.data[0].TRDR),
