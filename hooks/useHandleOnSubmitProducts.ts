@@ -49,8 +49,7 @@ export function useHandleOnSubmitProducts() {
       qty,
       isDelete,
     });
-    console.log(currentBranch);
-    console.log(basketId);
+
     const payload: AddToCartPayload = {
       service: "setData",
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,

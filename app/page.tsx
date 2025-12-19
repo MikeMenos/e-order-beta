@@ -36,8 +36,6 @@ export default function Home() {
     setHydrated();
   }, [setHydrated]);
 
-  console.log(currentBranch);
-
   useEffect(() => {
     if (
       clientData &&
