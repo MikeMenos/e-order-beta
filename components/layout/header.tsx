@@ -42,6 +42,11 @@ export default function Header() {
   const { data: clientData, mutate } = useGetClientData();
 
   useEffect(() => {
+    appStore.persist.rehydrate();
+    setHydrated();
+  }, [setHydrated]);
+
+  useEffect(() => {
     if (!vat) return;
     mutate(vat);
   }, [vat]);
@@ -53,11 +58,12 @@ export default function Header() {
 
   const { mutate: addToCartMutation, isPending } = useAddToCart();
 
+  if (!hydrated) return null;
   if (pathname === "/login") return null;
 
   const handleBranchChange = (branch: IStoreInfo) => {
     setOpen(false);
-    console.log(branch);
+
     if (branch?.BASKET_KEY === "0") {
       const payload = buildFirstBasketKeyPayload({
         trdr: Number(branch.TRDR),
