@@ -7,10 +7,12 @@ import { useGetClientData } from "@/hooks/useGetClientData";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
 import { buildFirstBasketKeyPayload } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
+import { useQueryClient } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Home() {
+  const queryClient = useQueryClient();
   const {
     setHydrated,
     hydrated,
@@ -49,6 +51,7 @@ export default function Home() {
         onSuccess: (data) => {
           setBasketId(data.id!);
           setBranchNumber(clientData?.data[0].BRANCH);
+          queryClient.invalidateQueries({ queryKey: ["cart"] });
         },
       });
     }
@@ -59,6 +62,7 @@ export default function Home() {
     ) {
       setBranchNumber(clientData?.data[0].BRANCH);
       setBasketId(clientData?.data[0].BASKET_KEY);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     }
   }, [clientData]);
 
