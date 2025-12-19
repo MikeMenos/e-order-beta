@@ -16,10 +16,10 @@ export default function Home() {
   const {
     setHydrated,
     hydrated,
-    branchNumber,
     setBasketId,
-    setBranchNumber,
+    currentBranch,
     vat,
+    setCurrentBranch,
   } = appStore();
 
   const { data, isLoading } = useGetFamilies();
@@ -50,7 +50,7 @@ export default function Home() {
       addToCartMutation(payload, {
         onSuccess: (data) => {
           setBasketId(data.id!);
-          setBranchNumber(clientData?.data[0].BRANCH);
+          setCurrentBranch(clientData?.data[0]);
           queryClient.invalidateQueries({ queryKey: ["cart"] });
         },
       });
@@ -60,14 +60,15 @@ export default function Home() {
       clientData?.count === 1 &&
       clientData?.data[0].BASKET_KEY !== "0"
     ) {
-      setBranchNumber(clientData?.data[0].BRANCH);
       setBasketId(clientData?.data[0].BASKET_KEY);
+      setCurrentBranch(clientData?.data[0]);
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     }
   }, [clientData]);
 
   if (!hydrated) return null;
-  if (clientData && clientData?.count > 1 && !branchNumber) redirect("/stores");
+  if (clientData && clientData?.count > 1 && !currentBranch?.BRANCH)
+    redirect("/stores");
 
   if (isLoading || isPending) return <Loading />;
 

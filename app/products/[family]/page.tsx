@@ -13,18 +13,14 @@ import { redirect, usePathname } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 export default function FamilyProducts() {
-  const { setHydrated, hydrated, branchNumber, vat } = appStore();
+  const { setHydrated, hydrated, currentBranch, vat } = appStore();
   const pathname = usePathname();
   const family = decodeURIComponent(pathname.split("/")[2] || "").trim();
 
   const { data: clientData, mutate } = useGetClientData();
 
-  const trdr = clientData?.data[0].TRDR as string;
-  const branch = clientData?.data[0].BRANCH as string;
-  const currentBranch = useMemo(
-    () => clientData?.data.find((item) => item.BRANCH === branchNumber),
-    [clientData, branchNumber]
-  );
+  const trdr = currentBranch?.TRDR as string;
+  const branch = currentBranch?.BRANCH as string;
 
   const { data, isLoading } = useGetProductsPerFamily({ family, trdr, branch });
 
@@ -38,10 +34,7 @@ export default function FamilyProducts() {
     mutate(vat);
   }, [vat]);
 
-  const { data: cartData } = useGetCart({
-    trdr: currentBranch?.TRDR,
-    branch: branchNumber,
-  });
+  const { data: cartData } = useGetCart({ trdr, branch });
 
   const { onSubmitProducts, pendingProductId } = useHandleOnSubmitProducts();
 
@@ -61,7 +54,8 @@ export default function FamilyProducts() {
   }, [data, cartData]);
 
   if (!hydrated) return null;
-  if (clientData && clientData?.count > 1 && !branchNumber) redirect("/stores");
+  if (clientData && clientData?.count > 1 && !currentBranch?.BRANCH)
+    redirect("/stores");
 
   if (isLoading) return <Loading />;
 

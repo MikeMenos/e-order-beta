@@ -10,10 +10,10 @@ import { useGetCart } from "@/hooks/useGetCart";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Cart() {
-  const { branchNumber, basketId, vat } = appStore();
+  const { basketId, vat, currentBranch } = appStore();
 
   const [editedQuantities, setEditedQuantities] = useState<
     Record<number, number>
@@ -21,20 +21,19 @@ export default function Cart() {
   const [comments, setComments] = useState("");
   const [delivDate, setDelivDate] = useState("");
 
-  const { data: clientData, mutate } = useGetClientData();
+  const { mutate } = useGetClientData();
 
   useEffect(() => {
     if (!vat) return;
     mutate(vat);
   }, [vat]);
 
-  const currentBranch = useMemo(
-    () => clientData?.data.find((item) => item.BRANCH === branchNumber),
-    [clientData, branchNumber]
-  );
+  const trdr = currentBranch?.TRDR as string;
+  const branch = currentBranch?.BRANCH as string;
+
   const { data, isLoading } = useGetCart({
-    trdr: currentBranch?.TRDR,
-    branch: branchNumber,
+    trdr,
+    branch,
   });
 
   const { mutate: addToCartMutation, isPending } = useAddToCart();
@@ -79,7 +78,7 @@ export default function Cart() {
           {
             SERIES: "7024",
             TRDR: Number(currentBranch?.TRDR),
-            TRDBRANCH: Number(branchNumber),
+            TRDBRANCH: Number(currentBranch?.BRANCH),
             PAYMENT: 1006,
             TRUCKS: 2,
             DELIVDATE: delivDate,
@@ -110,7 +109,7 @@ export default function Cart() {
           {
             SERIES: "7001",
             TRDR: Number(currentBranch?.TRDR),
-            TRDBRANCH: Number(branchNumber),
+            TRDBRANCH: Number(currentBranch?.BRANCH),
             PAYMENT: 1006,
             TRUCKS: 2,
             DELIVDATE: "",

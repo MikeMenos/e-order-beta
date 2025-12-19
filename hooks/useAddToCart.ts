@@ -25,7 +25,7 @@ export function useAddToCart() {
     },
     onError: (error) => {
       console.log(error);
-      errorToast(error.message);
+      errorToast(error?.message);
     },
   });
 }

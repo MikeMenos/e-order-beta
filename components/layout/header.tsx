@@ -18,7 +18,7 @@ import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { buildFirstBasketKeyPayload, cn } from "@/lib/utils";
+import { buildFirstBasketKeyPayload } from "@/lib/utils";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { IStoreInfo } from "@/lib/interfaces";
 import { useGetClientData } from "@/hooks/useGetClientData";
@@ -29,8 +29,6 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const {
-    branchNumber,
-    setBranchNumber,
     hydrated,
     setHydrated,
     setBasketId,
@@ -52,9 +50,12 @@ export default function Header() {
     mutate(vat);
   }, [vat]);
 
+  const trdr = currentBranch?.TRDR as string;
+  const branch = currentBranch?.BRANCH as string;
+
   const { data } = useGetCart({
-    trdr: currentBranch?.TRDR,
-    branch: branchNumber,
+    trdr,
+    branch,
   });
 
   const { mutate: addToCartMutation, isPending } = useAddToCart();
@@ -81,11 +82,10 @@ export default function Header() {
       setBasketId(branch?.BASKET_KEY as string);
     }
 
-    setBranchNumber(branch.BRANCH);
+    setCurrentBranch(branch);
     router.push("/");
   };
   const handleLogout = async () => {
-    setBranchNumber(undefined);
     setBasketId(undefined);
     setCurrentBranch(undefined);
     await fetch("/api/logout", { method: "POST" });
@@ -131,7 +131,7 @@ export default function Header() {
                   <DropdownMenuLabel>Επιλογή καταστήματος</DropdownMenuLabel>
 
                   {clientData?.data.map((branch) => {
-                    const isActive = branch.BRANCH === branchNumber;
+                    const isActive = branch.BRANCH === currentBranch?.BRANCH;
 
                     return (
                       <DropdownMenuItem
@@ -159,8 +159,8 @@ export default function Header() {
                     className="flex items-center gap-2 px-2 sm:px-3 p-6"
                   >
                     <div className="flex flex-col items-start">
-                      <span className="text-[10px] uppercase tracking-wide text-slate-500">
-                        Καταστημα
+                      <span className="text-[10px] tracking-wide text-slate-500">
+                        ΚΑΤΑΣΤΗΜΑ
                       </span>
                       <span className="text-xs sm:text-sm font-medium leading-tight">
                         {currentBranch?.NAME}
