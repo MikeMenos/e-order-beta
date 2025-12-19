@@ -10,20 +10,20 @@ export function useGetCart({
   trdr?: string;
   branch?: string;
 }) {
-  const { currentBranch } = appStore();
-  console.log(trdr);
-  console.log(branch);
-  console.log(currentBranch);
+  const currentBranch = appStore((s) => s.currentBranch);
+
+  const effectiveTrdr = trdr ?? currentBranch?.TRDR;
+  const effectiveBranch = branch ?? currentBranch?.BRANCH;
+
   return useQuery<ICart, Error>({
-    queryKey: ["cart", branch, currentBranch],
+    queryKey: ["cart", effectiveTrdr, effectiveBranch],
+    enabled: Boolean(effectiveTrdr && effectiveBranch),
     queryFn: async () => {
       const { data } = await api.post("/get-cart", {
-        trdr: trdr ?? currentBranch?.TRDR,
-        branch: branch ?? currentBranch?.BRANCH,
+        trdr: effectiveTrdr,
+        branch: effectiveBranch,
       });
       return data;
     },
-
-    enabled: Boolean(trdr && branch),
   });
 }
