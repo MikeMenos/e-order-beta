@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Stores() {
-  const { hydrated, setHydrated, setBranchNumber, setBasketId, vat } =
+  const { hydrated, setHydrated, setBasketId, vat, setCurrentBranch } =
     appStore();
   const router = useRouter();
 
@@ -50,7 +50,7 @@ export default function Stores() {
       router.push("/");
     }
 
-    setBranchNumber(branch.BRANCH);
+    setCurrentBranch(branch);
   };
   return (
     <>

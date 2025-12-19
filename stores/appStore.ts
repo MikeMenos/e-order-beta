@@ -3,9 +3,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 type AppState = {
-  branchNumber?: string;
-  setBranchNumber: (value?: string) => void;
-
   currentBranch?: ClientResponse["data"][number];
   setCurrentBranch: (branch?: ClientResponse["data"][number]) => void;
 
@@ -22,9 +19,6 @@ type AppState = {
 export const appStore = create<AppState>()(
   persist(
     (set) => ({
-      branchNumber: undefined,
-      setBranchNumber: (branchNumber) => set({ branchNumber }),
-
       currentBranch: undefined,
       setCurrentBranch: (currentBranch) => set({ currentBranch }),
 

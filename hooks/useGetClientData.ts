@@ -4,7 +4,7 @@ import { appStore } from "@/stores/appStore";
 import type { ClientResponse } from "@/lib/interfaces";
 
 export function useGetClientData() {
-  const branchNumber = appStore((s) => s.branchNumber);
+  const currentBranch = appStore((s) => s.currentBranch);
   const setCurrentBranch = appStore((s) => s.setCurrentBranch);
 
   return useMutation<ClientResponse, Error, string>({
@@ -13,13 +13,13 @@ export function useGetClientData() {
       return data;
     },
     onSuccess: (data) => {
-      if (!branchNumber) return;
+      if (!currentBranch?.BRANCH) return;
 
-      const currentBranch = data.data.find(
-        (item) => item.BRANCH === branchNumber
+      const newBranch = data.data.find(
+        (item) => item.BRANCH === currentBranch?.BRANCH
       );
 
-      setCurrentBranch(currentBranch);
+      setCurrentBranch(newBranch);
     },
   });
 }

@@ -12,18 +12,26 @@ import { appStore } from "@/stores/appStore";
 export function useHandleOnSubmitProducts() {
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
 
-  const { basketId, branchNumber, vat, currentBranch } = appStore();
+  const { basketId, vat, currentBranch, setHydrated } = appStore();
 
   const { mutate } = useGetClientData();
+
+  useEffect(() => {
+    appStore.persist.rehydrate();
+    setHydrated();
+  }, [setHydrated]);
 
   useEffect(() => {
     if (!vat) return;
     mutate(vat);
   }, [vat]);
 
+  const trdr = currentBranch?.TRDR as string;
+  const branch = currentBranch?.BRANCH as string;
+
   const { data: cartData } = useGetCart({
-    trdr: currentBranch?.TRDR,
-    branch: branchNumber,
+    trdr,
+    branch,
   });
 
   const { mutate: addToCartMutation, isPending } = useAddToCart();
