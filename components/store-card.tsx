@@ -128,8 +128,19 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
         </div>
       </CardContent>
 
+      {/* <CardFooter className="flex flex-wrap items-center justify-between gap-3 border-t border-zinc-100 bg-zinc-50/80 px-6 py-3 text-xs dark:border-zinc-800 dark:bg-zinc-900/80">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-900 px-2 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-100 dark:bg-zinc-700">
+            <Pin className="h-3 w-3" />
+            PIN A: {data.PIN_A}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-zinc-200 px-2 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-700 dark:bg-zinc-800 dark:text-zinc-100">
+            <Pin className="h-3 w-3" />
+            PIN B: {data.PIN_B}
+          </span>
+        </div>
+      </CardFooter> */}
     </Card>
- 
   );
 }
 

@@ -38,9 +38,9 @@ export default function Header() {
   } = appStore();
 
   useEffect(() => {
-    appStore.persist.rehydrate();
-    setHydrated();
-  }, [setHydrated]);
+    if (!vat) return;
+    mutate(vat);
+  }, [vat]);
 
   const { data: families } = useGetFamilies();
   const { data: clientData, mutate } = useGetClientData();
@@ -61,12 +61,10 @@ export default function Header() {
 
   const { mutate: addToCartMutation, isPending } = useAddToCart();
 
-  if (!hydrated) return null;
   if (pathname === "/login") return null;
 
   const handleBranchChange = (branch: IStoreInfo) => {
     setOpen(false);
-
     if (branch?.BASKET_KEY === "0") {
       const payload = buildFirstBasketKeyPayload({
         trdr: Number(branch.TRDR),
@@ -76,6 +74,7 @@ export default function Header() {
       addToCartMutation(payload, {
         onSuccess: (data) => {
           setBasketId(data.id!);
+          mutate(vat as string);
         },
       });
     } else {

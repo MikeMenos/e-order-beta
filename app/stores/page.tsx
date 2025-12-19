@@ -41,6 +41,7 @@ export default function Stores() {
       addToCartMutation(payload, {
         onSuccess: (data) => {
           setBasketId(data.id!);
+          mutate(vat as string);
           router.push("/");
         },
       });

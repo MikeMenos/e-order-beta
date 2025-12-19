@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 import React from "react";
 
 export const metadata: Metadata = {
+  manifest: "/manifest.webmanifest",
   title: "Ergastirion Manager",
   icons: {
     icon: "/logo.png",

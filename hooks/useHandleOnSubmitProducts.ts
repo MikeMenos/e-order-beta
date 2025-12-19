@@ -5,9 +5,9 @@ import { successToast } from "@/components/toasts";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
-import { appStore } from "@/stores/appStore";
 import { buildUpdatedLines } from "@/lib/utils";
 import { useGetClientData } from "./useGetClientData";
+import { appStore } from "@/stores/appStore";
 
 export function useHandleOnSubmitProducts() {
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
