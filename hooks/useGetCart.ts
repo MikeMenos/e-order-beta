@@ -15,6 +15,7 @@ export function useGetCart({
       const { data } = await api.post("/get-cart", { trdr, branch });
       return data;
     },
+    staleTime: 200,
     enabled: Boolean(trdr && branch),
   });
 }
