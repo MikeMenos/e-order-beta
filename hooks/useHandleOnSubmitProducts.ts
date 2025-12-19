@@ -12,19 +12,14 @@ import { appStore } from "@/stores/appStore";
 export function useHandleOnSubmitProducts() {
   const [pendingProductId, setPendingProductId] = useState<string | null>(null);
 
-  const { basketId, branchNumber, vat } = appStore();
+  const { basketId, branchNumber, vat, currentBranch } = appStore();
 
-  const { data: clientData, mutate } = useGetClientData();
+  const { mutate } = useGetClientData();
 
   useEffect(() => {
     if (!vat) return;
     mutate(vat);
   }, [vat]);
-
-  const currentBranch = useMemo(
-    () => clientData?.data.find((item) => item.BRANCH === branchNumber),
-    [clientData, branchNumber]
-  );
 
   const { data: cartData } = useGetCart({
     trdr: currentBranch?.TRDR,
@@ -52,7 +47,7 @@ export function useHandleOnSubmitProducts() {
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY: basketId as string,
+      KEY: basketId ? currentBranch?.BASKET_KEY || "" : "",
       LOCATEINFO:
         "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
       data: {
