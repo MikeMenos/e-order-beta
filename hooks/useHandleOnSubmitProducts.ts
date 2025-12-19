@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { successToast } from "@/components/toasts";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
@@ -41,13 +41,14 @@ export function useHandleOnSubmitProducts() {
       qty,
       isDelete,
     });
-
+    console.log(currentBranch);
+    console.log(basketId);
     const payload: AddToCartPayload = {
       service: "setData",
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY: basketId ? currentBranch?.BASKET_KEY || "" : "",
+      KEY: basketId as string,
       LOCATEINFO:
         "ITELINES:MTRL,LINENUM,QTY1,QTY2,MTRL_MTRL_CODE,MTRL_MTRL_NAME",
       data: {

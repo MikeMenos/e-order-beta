@@ -52,6 +52,14 @@ export default function Home() {
         },
       });
     }
+    if (
+      clientData &&
+      clientData?.count === 1 &&
+      clientData?.data[0].BASKET_KEY !== "0"
+    ) {
+      setBranchNumber(clientData?.data[0].BRANCH);
+      setBasketId(clientData?.data[0].BASKET_KEY);
+    }
   }, [clientData]);
 
   if (!hydrated) return null;

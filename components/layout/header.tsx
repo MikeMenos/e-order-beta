@@ -36,6 +36,7 @@ export default function Header() {
     setBasketId,
     vat,
     currentBranch,
+    setCurrentBranch,
   } = appStore();
 
   const { data: families } = useGetFamilies();
@@ -86,6 +87,7 @@ export default function Header() {
   const handleLogout = async () => {
     setBranchNumber(undefined);
     setBasketId(undefined);
+    setCurrentBranch(undefined);
     await fetch("/api/logout", { method: "POST" });
     router.replace("/login");
   };
