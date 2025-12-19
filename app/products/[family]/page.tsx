@@ -13,18 +13,16 @@ import { redirect, usePathname } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 export default function FamilyProducts() {
-  const { setHydrated, hydrated, branchNumber, vat } = appStore();
+  const { setHydrated, hydrated, currentBranch, vat } = appStore();
   const pathname = usePathname();
   const family = decodeURIComponent(pathname.split("/")[2] || "").trim();
 
   const { data: clientData, mutate } = useGetClientData();
 
-  const trdr = clientData?.data[0].TRDR as string;
-  const branch = clientData?.data[0].BRANCH as string;
-  const currentBranch = useMemo(
-    () => clientData?.data.find((item) => item.BRANCH === branchNumber),
-    [clientData, branchNumber]
-  );
+  const trdr = currentBranch?.TRDR ? String(currentBranch.TRDR) : undefined;
+  const branch = currentBranch?.BRANCH
+    ? String(currentBranch.BRANCH)
+    : undefined;
 
   const { data, isLoading } = useGetProductsPerFamily({ family, trdr, branch });
 
@@ -36,12 +34,9 @@ export default function FamilyProducts() {
   useEffect(() => {
     if (!vat) return;
     mutate(vat);
-  }, [vat]);
+  }, [vat, mutate]);
 
-  const { data: cartData } = useGetCart({
-    trdr: currentBranch?.TRDR,
-    branch: branchNumber,
-  });
+  const { data: cartData } = useGetCart({ trdr, branch });
 
   const { onSubmitProducts, pendingProductId } = useHandleOnSubmitProducts();
 
@@ -61,7 +56,8 @@ export default function FamilyProducts() {
   }, [data, cartData]);
 
   if (!hydrated) return null;
-  if (clientData && clientData?.count > 1 && !branchNumber) redirect("/stores");
+  if (clientData && clientData?.count > 1 && !currentBranch?.BRANCH)
+    redirect("/stores");
 
   if (isLoading) return <Loading />;
 
@@ -85,11 +81,6 @@ export default function FamilyProducts() {
                 </span>
               </div>
 
-              {favProducts &&
-                favProducts?.length > 0 &&
-                regProducts &&
-                regProducts?.length > 0 && <hr className="my-4" />}
-
               <div className="space-y-3">
                 {favProducts.map((item) => (
                   <ProductCard
@@ -103,14 +94,9 @@ export default function FamilyProducts() {
             </section>
           )}
 
-          {favProducts &&
-            favProducts?.length > 0 &&
-            regProducts &&
-            regProducts?.length > 0 && <hr className="my-2" />}
-
           {regProducts && regProducts.length > 0 && (
             <section>
-              <div className="border-b border-slate-200 pb-2 mb-3">
+              <div className="border-b border-slate-200 pb-2 mb-3 mt-4">
                 <span className="text-lg font-semibold">Άλλα Προϊόντα</span>
               </div>
 

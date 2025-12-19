@@ -7,7 +7,7 @@ export async function postCart(
   payload: AddToCartPayload
 ): Promise<CartResponse> {
   const { data } = await api.post<CartResponse>("/add-to-cart", payload);
-  console.log(data);
+
   if (data && data?.success === false) {
     throw new Error(data.error);
   }
@@ -24,8 +24,7 @@ export function useAddToCart() {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (error) => {
-      console.log(error);
-      errorToast(error.message);
+      errorToast(error?.message || "Σφάλμα");
     },
   });
 }

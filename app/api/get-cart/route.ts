@@ -1,18 +1,28 @@
 import { NextResponse } from "next/server";
 import { backend } from "@/lib/backend";
-import iconv from "iconv-lite";
+import { decodeBackendResponse } from "@/lib/api-utils";
 
 export async function POST(req: Request) {
+  try {
     const { branch, trdr } = await req.json();
     const clientID = process.env.CLIENT_ID;
 
-    const { data } = await backend.post(
-        "/s1services/js/api.web/ITEMS_IN_BASKET",
-        { clientID, trdr, branch },
-        { responseType: "arraybuffer" }
+    const response = await backend.post(
+      "/s1services/js/api.web/ITEMS_IN_BASKET",
+      { clientID, trdr, branch },
+      { responseType: "arraybuffer" }
     );
 
-    const text = iconv.decode(Buffer.from(data), "win1253");
-
-    return NextResponse.json(JSON.parse(text));
+    return decodeBackendResponse(response);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Unknown error occurred",
+        errorcode: -1,
+      },
+      { status: 500 }
+    );
+  }
 }

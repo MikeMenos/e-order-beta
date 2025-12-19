@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Stores() {
-  const { hydrated, setHydrated, setBranchNumber, setBasketId, vat } =
+  const { hydrated, setHydrated, setBasketId, vat, setCurrentBranch } =
     appStore();
   const router = useRouter();
 
@@ -25,7 +25,7 @@ export default function Stores() {
   useEffect(() => {
     if (!vat) return;
     mutate(vat);
-  }, [vat]);
+  }, [vat, mutate]);
 
   if (!hydrated) return null;
 
@@ -40,17 +40,21 @@ export default function Stores() {
 
       addToCartMutation(payload, {
         onSuccess: (data) => {
-          setBasketId(data.id!);
-          mutate(vat as string);
+          if (data.id) {
+            setBasketId(data.id);
+          }
+          if (vat) {
+            mutate(vat);
+          }
           router.push("/");
         },
       });
-    } else {
-      setBasketId(branch.BASKET_KEY as string);
+    } else if (branch.BASKET_KEY) {
+      setBasketId(branch.BASKET_KEY);
       router.push("/");
     }
 
-    setBranchNumber(branch.BRANCH);
+    setCurrentBranch(branch);
   };
   return (
     <>

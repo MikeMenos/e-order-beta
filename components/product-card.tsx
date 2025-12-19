@@ -106,13 +106,14 @@ const ProductCard: FC<ProductCardProps> = ({
                 {product.DESCRIPTION || product.FULL_DESCRIPTION}
               </div>
 
-              <div className="flex flex-row gap-1 text-[11px] sm:text-xs text-slate-600">
-                <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
-                  Κωδικός:
-                  <span className="ml-1 font-medium">{product.CODE}</span>
-                </span>
-
-              </div>
+              {product.CODE && (
+                <div className="flex flex-row gap-1 text-[11px] sm:text-xs text-slate-600">
+                  <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
+                    Κωδικός:
+                    <span className="ml-1 font-medium">{product.CODE}</span>
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-row gap-1 text-[11px] sm:text-xs text-slate-600 mt-1">
@@ -120,10 +121,12 @@ const ProductCard: FC<ProductCardProps> = ({
                 {product.SXESI} τεμάχια / {product.ORDER_UNIT?.toLowerCase()}
               </span>
 
-              <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">
-                Προμηθευτής:
-                <span className="ml-1 font-medium">{product.SUPPLIER}</span>
-              </span>
+              {product.SUPPLIER && (
+                <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">
+                  Προμηθευτής:
+                  <span className="ml-1 font-medium">{product.SUPPLIER}</span>
+                </span>
+              )}
             </div>
           </div>
 
@@ -147,7 +150,9 @@ const ProductCard: FC<ProductCardProps> = ({
                         className="w-12 min-w-12 text-center border-0 focus-visible:ring-0 text-sm font-medium tabular-nums"
                         value={qty}
                         type="number"
-                        onChange={(e) => handleQtyChange(e.target.value, setQty)}
+                        onChange={(e) =>
+                          handleQtyChange(e.target.value, setQty)
+                        }
                         min={0}
                       />
 
