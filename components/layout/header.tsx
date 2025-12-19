@@ -16,7 +16,7 @@ import { ShoppingCart, LogOut, ChevronDown } from "lucide-react";
 import { useGetCart } from "@/hooks/useGetCart";
 import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildFirstBasketKeyPayload, cn } from "@/lib/utils";
 import { useAddToCart } from "@/hooks/useAddToCart";
@@ -35,25 +35,22 @@ export default function Header() {
     setHydrated,
     setBasketId,
     vat,
+    currentBranch,
   } = appStore();
-
-  useEffect(() => {
-    if (!vat) return;
-    mutate(vat);
-  }, [vat]);
 
   const { data: families } = useGetFamilies();
   const { data: clientData, mutate } = useGetClientData();
 
   useEffect(() => {
+    appStore.persist.rehydrate();
+    setHydrated();
+  }, [setHydrated]);
+
+  useEffect(() => {
     if (!vat) return;
     mutate(vat);
   }, [vat]);
 
-  const currentBranch = useMemo(
-    () => clientData?.data.find((item) => item.BRANCH === branchNumber),
-    [clientData]
-  );
   const { data } = useGetCart({
     trdr: currentBranch?.TRDR,
     branch: branchNumber,
@@ -61,10 +58,12 @@ export default function Header() {
 
   const { mutate: addToCartMutation, isPending } = useAddToCart();
 
+  if (!hydrated) return null;
   if (pathname === "/login") return null;
 
   const handleBranchChange = (branch: IStoreInfo) => {
     setOpen(false);
+
     if (branch?.BASKET_KEY === "0") {
       const payload = buildFirstBasketKeyPayload({
         trdr: Number(branch.TRDR),
