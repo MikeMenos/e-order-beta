@@ -24,8 +24,7 @@ export function useAddToCart() {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (error) => {
-      console.log(error);
-      errorToast(error?.message);
+      errorToast(error?.message || "Σφάλμα");
     },
   });
 }

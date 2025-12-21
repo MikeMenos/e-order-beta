@@ -26,10 +26,12 @@ export default function Cart() {
   useEffect(() => {
     if (!vat) return;
     mutate(vat);
-  }, [vat]);
+  }, [vat, mutate]);
 
-  const trdr = currentBranch?.TRDR as string;
-  const branch = currentBranch?.BRANCH as string;
+  const trdr = currentBranch?.TRDR ? String(currentBranch.TRDR) : undefined;
+  const branch = currentBranch?.BRANCH
+    ? String(currentBranch.BRANCH)
+    : undefined;
 
   const { data, isLoading } = useGetCart({
     trdr,
@@ -97,12 +99,16 @@ export default function Cart() {
       },
     };
 
+    if (!basketId) {
+      return;
+    }
+
     const payloadForBasketDeletion: AddToCartPayload = {
       service: "setData",
       clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
       appId: process.env.NEXT_PUBLIC_APP_ID!,
       OBJECT: "SALDOC",
-      KEY: basketId as string,
+      KEY: basketId,
 
       data: {
         SALDOC: [

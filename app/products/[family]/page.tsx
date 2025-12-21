@@ -19,8 +19,10 @@ export default function FamilyProducts() {
 
   const { data: clientData, mutate } = useGetClientData();
 
-  const trdr = currentBranch?.TRDR as string;
-  const branch = currentBranch?.BRANCH as string;
+  const trdr = currentBranch?.TRDR ? String(currentBranch.TRDR) : undefined;
+  const branch = currentBranch?.BRANCH
+    ? String(currentBranch.BRANCH)
+    : undefined;
 
   const { data, isLoading } = useGetProductsPerFamily({ family, trdr, branch });
 
@@ -32,7 +34,7 @@ export default function FamilyProducts() {
   useEffect(() => {
     if (!vat) return;
     mutate(vat);
-  }, [vat]);
+  }, [vat, mutate]);
 
   const { data: cartData } = useGetCart({ trdr, branch });
 
@@ -79,11 +81,6 @@ export default function FamilyProducts() {
                 </span>
               </div>
 
-              {favProducts &&
-                favProducts?.length > 0 &&
-                regProducts &&
-                regProducts?.length > 0 && <hr className="my-4" />}
-
               <div className="space-y-3">
                 {favProducts.map((item) => (
                   <ProductCard
@@ -97,14 +94,9 @@ export default function FamilyProducts() {
             </section>
           )}
 
-          {favProducts &&
-            favProducts?.length > 0 &&
-            regProducts &&
-            regProducts?.length > 0 && <hr className="my-2" />}
-
           {regProducts && regProducts.length > 0 && (
             <section>
-              <div className="border-b border-slate-200 pb-2 mb-3">
+              <div className="border-b border-slate-200 pb-2 mb-3 mt-4">
                 <span className="text-lg font-semibold">Άλλα Προϊόντα</span>
               </div>
 

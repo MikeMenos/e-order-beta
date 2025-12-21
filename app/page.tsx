@@ -29,7 +29,7 @@ export default function Home() {
   useEffect(() => {
     if (!vat) return;
     mutate(vat);
-  }, [vat]);
+  }, [vat, mutate]);
 
   useEffect(() => {
     appStore.persist.rehydrate();
@@ -49,7 +49,9 @@ export default function Home() {
 
       addToCartMutation(payload, {
         onSuccess: (data) => {
-          setBasketId(data.id!);
+          if (data.id) {
+            setBasketId(data.id);
+          }
           setCurrentBranch(clientData?.data[0]);
           queryClient.invalidateQueries({ queryKey: ["cart"] });
         },
@@ -64,7 +66,13 @@ export default function Home() {
       setCurrentBranch(clientData?.data[0]);
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     }
-  }, [clientData]);
+  }, [
+    clientData,
+    addToCartMutation,
+    setBasketId,
+    setCurrentBranch,
+    queryClient,
+  ]);
 
   if (!hydrated) return null;
   if (clientData && clientData?.count > 1 && !currentBranch?.BRANCH)

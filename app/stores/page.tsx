@@ -41,7 +41,7 @@ export default function Stores() {
   useEffect(() => {
     if (!vat) return;
     mutate(vat);
-  }, [vat]);
+  }, [vat, mutate]);
 
   if (!hydrated) return null;
 
@@ -60,13 +60,17 @@ export default function Stores() {
 
       addToCartMutation(payload, {
         onSuccess: (data) => {
-          setBasketId(data.id!);
-          mutate(vat as string);
+          if (data.id) {
+            setBasketId(data.id);
+          }
+          if (vat) {
+            mutate(vat);
+          }
           router.push("/");
         },
       });
-    } else {
-      setBasketId(branch.BASKET_KEY as string);
+    } else if (branch.BASKET_KEY) {
+      setBasketId(branch.BASKET_KEY);
       router.push("/");
     }
 
