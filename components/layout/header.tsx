@@ -114,7 +114,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">
-      <div className="flex h-16 items-center gap-1 sm:gap-2 px-2 sm:px-4 justify-between">
+      <div className="flex h-16 items-center px-2 sm:px-4 justify-between">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <Image src={logo} alt="Logo" width={32} height={32} />
           <span className="hidden sm:inline text-lg font-semibold">
@@ -202,7 +202,6 @@ export default function Header() {
         <div className="flex items-center sm:gap-2 md:gap-4">
           {pathname !== "/stores" && (
             <>
-
               {clientData?.data.length === 1 ? (
                 <>
                   <Button

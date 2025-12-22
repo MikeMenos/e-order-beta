@@ -98,7 +98,7 @@ export default function Stores() {
                 )}
               </span>
 
-              <CardTitle className="text-xl font-semibold tracking-tight leading-tight truncate">
+              <CardTitle className="text-md md:text-xl font-semibold tracking-tight leading-tight truncate">
                 {headStore.GROUP_CHAIN}
                 {headStore.GROUP_CHAIN && headStore.NAME && (
                   <span className="mx-2 text-zinc-400">·</span>
@@ -117,7 +117,6 @@ export default function Stores() {
             </span>
           </div>
         </CardHeader>
-
       )}
 
       {stores.map((item) => (
