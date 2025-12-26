@@ -18,7 +18,13 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+        link:
+          "text-primary underline-offset-4 hover:underline",
+        brand:
+          "bg-[color:var(--color-brand)] text-[color:var(--color-brand-foreground)] hover:opacity-90 focus-visible:ring-[color:var(--color-brand-ring)]",
+
+        brandOutline:
+          "border border-[color:var(--color-brand)] bg-transparent text-[color:var(--color-brand-foreground)] hover:bg-[color:var(--color-brand-light)] focus-visible:ring-[color:var(--color-brand-ring)]",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

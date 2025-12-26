@@ -70,8 +70,6 @@ const ProductCard: FC<ProductCardProps> = ({
     }
   };
 
-  const isFamilyRoute = /^\/products\/[^/]+$/.test(pathname);
-
   const incrementQty = () => {
     const next = Number(qty || 0) + 1;
     handleQtyChange(String(next), setQty);
@@ -134,17 +132,17 @@ const ProductCard: FC<ProductCardProps> = ({
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center justify-end gap-2">
                 <div className="relative">
-                  {isFamilyRoute && (
                     <div className="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-white">
-                      <button
+                      <Button
                         type="button"
+                        variant="brand"
                         onClick={decrementQty}
                         className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
                         disabled={isPending || Number(qty || 0) <= 0}
                         aria-label="Decrease quantity"
                       >
                         −
-                      </button>
+                      </Button>
 
                       <Input
                         className="w-12 min-w-12 text-center border-0 focus-visible:ring-0 text-sm font-medium tabular-nums"
@@ -156,28 +154,18 @@ const ProductCard: FC<ProductCardProps> = ({
                         min={0}
                       />
 
-                      <button
+                      <Button
                         type="button"
+                        variant="brand"
                         onClick={incrementQty}
                         className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
                         disabled={isPending}
                         aria-label="Increase quantity"
                       >
                         +
-                      </button>
+                      </Button>
                     </div>
-                  )}
-
-                  {!isFamilyRoute && (
-                    <Input
-                      className="min-w-12 text-center text-sm font-medium tabular-nums"
-                      value={qty}
-                      type="number"
-                      onChange={(e) => handleQtyChange(e.target.value, setQty)}
-                      min={0}
-                    />
-                  )}
-
+              
                   {error && (
                     <p className="text-xs text-red-500 w-44 text-center mx-auto absolute top-10">
                       {error}
