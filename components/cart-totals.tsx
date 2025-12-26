@@ -5,6 +5,7 @@ import { IProductItem } from "@/lib/interfaces";
 import { ShoppingCart } from "lucide-react";
 import { useMemo } from "react";
 import { Input } from "./ui/input";
+import { Label } from "@radix-ui/react-dropdown-menu";
 
 interface CartTotalsProps {
   items?: IProductItem[];
@@ -52,21 +53,17 @@ export function CartTotals({
   return (
     <div className="basis-2/3">
       <Card className="border border-slate-200/80 shadow-none rounded-2xl bg-slate-50">
-        <CardHeader className="border-b border-slate-200">
+        <CardHeader className=" border-slate-200">
           <CardTitle className="text-base sm:text-lg">
             Σύνολο Παραγγελίας
           </CardTitle>
         </CardHeader>
 
         <CardContent className="pb-4 space-y-4 text-sm p-0">
-          <div className="px-5 flex items-center justify-between pt-3">
-            <span className="text-slate-500">Σύνολο τεμαχίων</span>
-            <span className="font-semibold">{totals.totalQty}</span>
-          </div>
           <div className="px-5 space-y-1">
-            <label className="text-xs font-medium text-slate-500">
+            <Label className="text-xs text-slate-500">
               Επιλογή: Ημερομηνία Παράδοσης
-            </label>
+            </Label>
             <Input
               className="bg-white"
               type="date"
@@ -75,10 +72,11 @@ export function CartTotals({
               min={new Date().toISOString().split("T")[0]}
             />
           </div>
+
           <div className="px-5 space-y-1">
-            <label className="text-xs font-medium text-slate-500">
+            <Label className="text-xs text-slate-500">
               Σχόλια Παραγγελίας
-            </label>
+            </Label>
             <Textarea
               className="bg-white"
               value={comments}

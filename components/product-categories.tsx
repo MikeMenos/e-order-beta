@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { IFamilyCategories } from "@/lib/interfaces";
 import Link from "next/link";
+import Heading from "@/components/layout/heading";
 
 interface ProductCategoriesProps {
   data?: IFamilyCategories[];
@@ -15,17 +16,12 @@ const categoryImages: Record<string, string> = {
 
 export default function ProductCategories({ data }: ProductCategoriesProps) {
   return (
-    <section className="w-full max-w-5xl mx-auto space-y-6">
-      <div className="flex flex-col gap-2">
-        <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em]"></div>
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Επιλέξτε οικογένεια προϊόντων
-        </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Οι διαθέσιμες οικογένειες προϊόντων από το σύστημά σας.
-        </p>
-      </div>
-
+    <>
+          <Heading
+        title="Επιλέξτε οικογένεια προϊόντων"
+        description="Οι διαθέσιμες οικογένειες προϊόντων από το σύστημά σας."
+      />
+      
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {data?.map((item, index) => (
           <Link href={`/products/${item.FAMILY.trim()}`} key={index}>
@@ -33,7 +29,7 @@ export default function ProductCategories({ data }: ProductCategoriesProps) {
           </Link>
         ))}
       </div>
-    </section>
+    </>
   );
 }
 

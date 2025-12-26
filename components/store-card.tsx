@@ -71,10 +71,6 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
                 <p className="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
                   {branchTitle}
                 </p>
-
-                <span className="rounded-full bg-zinc-900 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.16em] text-zinc-100 dark:bg-zinc-700">
-                  {data.BRANCH}
-                </span>
               </div>
 
               {cityLine ? (
@@ -91,6 +87,7 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
               {data.CITY}
             </span>
           ) : null}
+          
         </div>
 
         <div className="my-4 border-t border-dashed border-zinc-200 dark:border-zinc-800" />
