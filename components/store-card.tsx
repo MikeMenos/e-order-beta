@@ -21,17 +21,24 @@ function InfoItem({ label, value, icon, href }: InfoItemProps) {
   return (
     <div className="flex items-start gap-3 rounded-xl bg-zinc-50 px-3 py-2 text-xs text-zinc-700 shadow-sm dark:bg-zinc-900 dark:text-zinc-200">
       {icon && <span className="mt-2">{icon}</span>}
+
       <div className="space-y-0.5">
         <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-zinc-400">
           {label}
         </p>
 
         {href ? (
-          <a href={href} className="text-sm font-medium break-words hover:underline">
+          <a
+            href={href}
+            onClick={(e) => e.stopPropagation()}
+            className="text-sm font-medium wrap-break-word hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {value}
           </a>
         ) : (
-          <p className="text-sm font-medium break-words">{value}</p>
+          <p className="text-sm font-medium wrap-break-word">{value}</p>
         )}
       </div>
     </div>
@@ -44,8 +51,15 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
 
   const addressLine = [data.ADDRESS, data.DISTRICT].filter(Boolean).join(", ");
   const fullAddress = addressLine || undefined;
+  const mapsHref = fullAddress
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        [fullAddress, data.CITY].filter(Boolean).join(", ")
+      )}`
+    : undefined;
 
-  const cityLine = [data.CITY, data.ZIP ? `Τ.Κ. ${data.ZIP}` : ""].filter(Boolean).join(" • ");
+  const cityLine = [data.CITY, data.ZIP ? `Τ.Κ. ${data.ZIP}` : ""]
+    .filter(Boolean)
+    .join(" • ");
 
   const phone = (data.PHONE01 ?? "").trim() || undefined;
   const phoneHref = phone ? `tel:${phone.replace(/\s+/g, "")}` : undefined;
@@ -96,6 +110,7 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
           <InfoItem
             label="Διεύθυνση"
             value={fullAddress}
+            href={mapsHref}
             icon={<MapPin className="h-4 w-4 text-zinc-400" />}
           />
 

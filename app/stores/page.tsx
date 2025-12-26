@@ -98,11 +98,12 @@ export default function Stores() {
                 )}
               </span>
 
-              <CardTitle className="text-xl font-semibold tracking-tight leading-tight truncate">
-                {[headStore.GROUP_CHAIN, headStore.NAME]
-                  .map(v => (v && v.trim() !== "-" ? v : null))
-                  .filter(Boolean)
-                  .join(" · ")}
+              <CardTitle className="text-md md:text-xl font-semibold tracking-tight leading-tight truncate">
+                {headStore.GROUP_CHAIN}
+                {headStore.GROUP_CHAIN && headStore.NAME && (
+                  <span className="mx-2 text-zinc-400">·</span>
+                )}
+                {headStore.NAME}
               </CardTitle>
             </div>
 
@@ -116,7 +117,6 @@ export default function Stores() {
             </span>
           </div>
         </CardHeader>
-
       )}
 
       {stores.map((item) => (
