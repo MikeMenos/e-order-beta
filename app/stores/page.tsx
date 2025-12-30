@@ -80,7 +80,7 @@ export default function Stores() {
   return (
     <>
       {headStore && (
-        <CardHeader className=" border-slate-200 mb-4 px-0">
+        <CardHeader className="mb-4 px-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <span className="flex h-10 w-10 shrink-0 overflow-hidden rounded-full bg-zinc-100 shadow-sm dark:bg-zinc-800">
@@ -99,12 +99,19 @@ export default function Stores() {
               </span>
 
               <CardTitle className="text-md md:text-xl font-semibold tracking-tight leading-tight truncate">
-                {headStore.GROUP_CHAIN}
-                {headStore.GROUP_CHAIN && headStore.NAME && (
-                  <span className="mx-2 text-zinc-400">·</span>
+                {headStore.GROUP_CHAIN ? (
+                  <>
+                    {headStore.GROUP_CHAIN}
+                    {headStore.NAME && (
+                      <span className="mx-2 text-zinc-400">·</span>
+                    )}
+                    {headStore.NAME}
+                  </>
+                ) : (
+                  headStore.NAME
                 )}
-                {headStore.NAME}
               </CardTitle>
+
             </div>
 
             <span

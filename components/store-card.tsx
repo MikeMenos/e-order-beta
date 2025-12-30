@@ -53,8 +53,8 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
   const fullAddress = addressLine || undefined;
   const mapsHref = fullAddress
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-        [fullAddress, data.CITY].filter(Boolean).join(", ")
-      )}`
+      [fullAddress, data.CITY].filter(Boolean).join(", ")
+    )}`
     : undefined;
 
   const cityLine = [data.CITY, data.ZIP ? `Τ.Κ. ${data.ZIP}` : ""]
@@ -96,12 +96,18 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
           </div>
 
           {data.CITY ? (
-            <span className="hidden sm:inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm dark:bg-zinc-800 dark:text-zinc-100 whitespace-nowrap">
-              <MapPin className="mr-1 h-3 w-3" />
-              {data.CITY}
-            </span>
+            <div className="hidden sm:flex flex-col items-end gap-1 whitespace-nowrap">
+              <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 shadow-sm dark:bg-zinc-800 dark:text-zinc-100">
+                <MapPin className="mr-1 h-3 w-3" />
+                {data.CITY}
+              </span>
+
+              <span className="inline-flex items-center rounded-full bg-chart-6 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white shadow-sm">
+                {data.BRANCH}
+              </span>
+            </div>
           ) : null}
-          
+
         </div>
 
         <div className="my-4 border-t border-dashed border-zinc-200 dark:border-zinc-800" />

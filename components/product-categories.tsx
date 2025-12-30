@@ -17,11 +17,11 @@ const categoryImages: Record<string, string> = {
 export default function ProductCategories({ data }: ProductCategoriesProps) {
   return (
     <>
-          <Heading
+      <Heading
         title="Επιλέξτε οικογένεια προϊόντων"
         description="Οι διαθέσιμες οικογένειες προϊόντων από το σύστημά σας."
       />
-      
+
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {data?.map((item, index) => (
           <Link href={`/products/${item.FAMILY.trim()}`} key={index}>
@@ -43,7 +43,18 @@ function CategoryCard({ family }: CategoryCardProps) {
 
   return (
     <div>
-      <Card className="group overflow-hidden border border-zinc-200 bg-brand-light shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/80">
+      <Card
+        className="
+      group overflow-hidden
+      border border-brand/20
+      bg-brand/10
+      shadow-sm backdrop-blur-sm
+      transition
+      hover:-translate-y-1 hover:border-brand/40 hover:shadow-md
+      dark:border-brand/30
+      dark:bg-brand/20
+    "
+      >
         <div className="flex justify-center p-4">
           <img
             src={imageSrc}
@@ -53,11 +64,12 @@ function CategoryCard({ family }: CategoryCardProps) {
         </div>
 
         <CardContent className="p-3 text-center">
-          <h3 className="text-sm font-semibold tracking-tight text-zinc-700 dark:text-zinc-200">
+          <h3 className="text-sm font-semibold tracking-tight text-brand dark:text-brand-light">
             {family}
           </h3>
         </CardContent>
       </Card>
     </div>
+
   );
 }

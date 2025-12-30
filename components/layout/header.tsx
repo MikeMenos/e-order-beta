@@ -66,9 +66,6 @@ export default function Header() {
     ? String(currentBranch.BRANCH)
     : undefined;
 
-  // const trdr = currentBranch?.TRDR as string;
-  // const branch = currentBranch?.BRANCH as string;
-
   const { data } = useGetCart({
     trdr,
     branch,
@@ -116,10 +113,10 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">
       <div className="flex h-16 items-center px-2 sm:px-4 justify-between">
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <Image src={logo} alt="Logo" width={32} height={32} />
-          <span className="hidden sm:inline text-lg font-semibold">
+          <Image src={logo} alt="Logo" width={150} height={30} />
+          {/* <span className="hidden sm:inline text-lg font-bold text-(--color-chart-6) hover:opacity-90 transition">
             Ergastirion Manager
-          </span>
+          </span> */}
         </Link>
 
         {pathname !== "/stores" && (
