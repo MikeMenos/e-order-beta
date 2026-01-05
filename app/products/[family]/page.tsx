@@ -75,8 +75,8 @@ export default function FamilyProducts() {
         <CardContent className="p-0 lg:p-3 space-y-6 text-sm">
           {favProducts && favProducts.length > 0 && (
             <section>
-              <div className="border-b border-slate-200 pb-2 mb-3">
-                <span className="text-lg font-semibold">
+              <div className="relative pb-2 mb-3">
+                <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white">
                   Αγαπημένα Προϊόντα
                 </span>
               </div>
@@ -96,8 +96,10 @@ export default function FamilyProducts() {
 
           {regProducts && regProducts.length > 0 && (
             <section>
-              <div className="border-b border-slate-200 pb-2 mb-3 mt-4">
-                <span className="text-lg font-semibold">Άλλα Προϊόντα</span>
+              <div className="pb-2 mb-3 mt-4">
+                <span className="inline-flex items-center rounded-full bg-black px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white">
+                  Άλλα Προϊόντα
+                </span>
               </div>
 
               <div className="space-y-3">

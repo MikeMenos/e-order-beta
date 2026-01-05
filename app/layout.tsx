@@ -23,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={cn(
           "bg-zinc-50  dark:bg-zinc-900 text-foreground antialiased",
           "min-h-screen flex flex-col"

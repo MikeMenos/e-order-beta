@@ -102,7 +102,7 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
                 {data.CITY}
               </span>
 
-              <span className="inline-flex items-center rounded-full bg-chart-6 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white shadow-sm">
+              <span className="inline-flex items-center rounded-full bg-primary px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white shadow-sm">
                 {data.BRANCH}
               </span>
             </div>

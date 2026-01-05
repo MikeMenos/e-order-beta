@@ -135,7 +135,7 @@ const ProductCard: FC<ProductCardProps> = ({
                     <div className="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-white">
                       <Button
                         type="button"
-                        variant="brand"
+                        variant="secondary"
                         onClick={decrementQty}
                         className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
                         disabled={isPending || Number(qty || 0) <= 0}
@@ -156,7 +156,7 @@ const ProductCard: FC<ProductCardProps> = ({
 
                       <Button
                         type="button"
-                        variant="brand"
+                        variant="secondary"
                         onClick={incrementQty}
                         className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
                         disabled={isPending}

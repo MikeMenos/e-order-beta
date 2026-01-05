@@ -44,16 +44,7 @@ function CategoryCard({ family }: CategoryCardProps) {
   return (
     <div>
       <Card
-        className="
-      group overflow-hidden
-      border border-brand/20
-      bg-brand/10
-      shadow-sm backdrop-blur-sm
-      transition
-      hover:-translate-y-1 hover:border-brand/40 hover:shadow-md
-      dark:border-brand/30
-      dark:bg-brand/20
-    "
+        className="group overflow-hidden border border-none bg-primary/30 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-md dark:border-primary/30 dark:bg-primary/20"
       >
         <div className="flex justify-center p-4">
           <img
@@ -64,7 +55,7 @@ function CategoryCard({ family }: CategoryCardProps) {
         </div>
 
         <CardContent className="p-3 text-center">
-          <h3 className="text-sm font-semibold tracking-tight text-brand dark:text-brand-light">
+          <h3 className="text-sm font-semibold tracking-tight text-primary dark:text-primary-foreground">
             {family}
           </h3>
         </CardContent>

@@ -110,10 +110,10 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">
-      <div className="flex h-16 items-center px-2 sm:px-4 justify-between">
+    <header className="sticky top-0 z-50 w-full max-w-full overflow-x-hidden border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">
+      <div className="flex h-16 w-full max-w-full min-w-0 items-center px-2 sm:px-4 justify-between overflow-x-hidden">
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <Image src={logo} alt="Logo" width={150} height={30} />
+          <Image src={logo} alt="Logo" width={120} height={30} className="sm:w-[150px] w-[120px] h-auto" />
           {/* <span className="hidden sm:inline text-lg font-bold text-(--color-chart-6) hover:opacity-90 transition">
             Ergastirion Manager
           </span> */}
@@ -196,77 +196,96 @@ export default function Header() {
           </>
         )}
 
-        <div className="flex items-center sm:gap-2 md:gap-4">
+        <div className="flex items-center sm:gap-2 md:gap-4 min-w-0">
           {pathname !== "/stores" && (
             <>
-              {clientData?.data.length === 1 ? (
-                <>
-                  <Button
-                    variant="ghost"
-                    className="flex items-center gap-2 px-2 sm:px-3 p-6 cursor-default"
-                    disabled
-                  >
-                    <div className="flex flex-col items-start">
-                      <span className="text-[10px] tracking-wide text-slate-500">
-                        ΚΑΤΑΣΤΗΜΑ
-                      </span>
-                      <span className="text-xs sm:text-sm font-medium leading-tight">
-                        {currentBranch?.NAME}
-                      </span>
-                      <span className="text-[10px] text-slate-500 truncate max-w-[140px] sm:max-w-[200px]">
-                        {currentBranch?.ADDRESS}
-                      </span>
-                    </div>
-                  </Button>
-                </>
-              ) : (
-                <DropdownMenu open={open} onOpenChange={setOpen}>
-                  <DropdownMenuContent align="end" className="w-64">
-                    <DropdownMenuLabel>Επιλογή καταστήματος</DropdownMenuLabel>
-
-                    {clientData?.data.map((branch) => {
-                      const isActive = branch.BRANCH === currentBranch?.BRANCH;
-
-                      return (
-                        <DropdownMenuItem
-                          disabled={isActive || isPending}
-                          key={branch.BRANCH}
-                          onClick={() => handleBranchChange(branch)}
-                          className={"cursor-pointer"}
-                        >
-                          <div className="flex flex-col">
-                            <span className="text-sm font-medium">
-                              {branch.NAME}
-                            </span>
-                            <span className="text-xs text-slate-500">
-                              {branch.ADDRESS}
-                            </span>
-                          </div>
-                        </DropdownMenuItem>
-                      );
-                    })}
-                  </DropdownMenuContent>
-
-                  <DropdownMenuTrigger asChild>
+              {pathname !== "/stores" && (
+                <div className="min-w-0">
+                  {clientData?.data.length === 1 ? (
                     <Button
                       variant="ghost"
-                      className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:p-6"
+                      disabled
+                      className="min-w-0 cursor-default px-2 sm:px-3 py-2 sm:py-3"
                     >
-                      <div className="flex flex-col items-start">
+                      <div className="min-w-0 w-[170px] sm:w-[240px] flex flex-col items-start text-left">
                         <span className="text-[10px] tracking-wide text-slate-500">
                           ΚΑΤΑΣΤΗΜΑ
                         </span>
-                        <span className="text-xs sm:text-sm font-medium leading-tight">
+
+                        <span
+                          className="w-full truncate text-xs sm:text-sm font-medium leading-tight"
+                          title={currentBranch?.NAME}
+                        >
                           {currentBranch?.NAME}
                         </span>
-                        <span className="text-[10px] text-slate-500 truncate max-w-[140px] sm:max-w-[200px]">
+
+                        <span
+                          className="w-full truncate text-[10px] text-slate-500"
+                          title={currentBranch?.ADDRESS}
+                        >
                           {currentBranch?.ADDRESS}
                         </span>
                       </div>
-                      <ChevronDown className="block h-4 w-4" />
                     </Button>
-                  </DropdownMenuTrigger>
-                </DropdownMenu>
+                  ) : (
+                    <DropdownMenu open={open} onOpenChange={setOpen}>
+                      <DropdownMenuContent align="end" className="w-72 bg-white">
+                        <DropdownMenuLabel>Επιλογή καταστήματος</DropdownMenuLabel>
+
+                        {clientData?.data.map((branch) => {
+                          const isActive = branch.BRANCH === currentBranch?.BRANCH;
+
+                          return (
+                            <DropdownMenuItem
+                              disabled={isActive || isPending}
+                              key={branch.BRANCH}
+                              onClick={() => handleBranchChange(branch)}
+                              className="cursor-pointer"
+                            >
+                              <div className="min-w-0 flex flex-col">
+                                <span className="truncate text-sm font-medium" title={branch.NAME}>
+                                  {branch.NAME}
+                                </span>
+                                <span className="truncate text-xs text-slate-500" title={branch.ADDRESS}>
+                                  {branch.ADDRESS}
+                                </span>
+                              </div>
+                            </DropdownMenuItem>
+                          );
+                        })}
+                      </DropdownMenuContent>
+
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="min-w-0 px-2 sm:px-3 py-2 sm:py-3 flex items-center gap-2"
+                        >
+                          <div className="min-w-0 w-[170px] sm:w-[240px] flex flex-col items-start text-left">
+                            <span className="text-[10px] tracking-wide text-slate-500">
+                              ΚΑΤΑΣΤΗΜΑ
+                            </span>
+
+                            <span
+                              className="w-full truncate text-xs sm:text-sm font-medium leading-tight"
+                              title={currentBranch?.NAME}
+                            >
+                              {currentBranch?.NAME}
+                            </span>
+
+                            <span
+                              className="w-full truncate text-[10px] text-slate-500"
+                              title={currentBranch?.ADDRESS}
+                            >
+                              {currentBranch?.ADDRESS}
+                            </span>
+                          </div>
+
+                          <ChevronDown className="h-4 w-4 shrink-0" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </DropdownMenu>
+                  )}
+                </div>
               )}
 
               {/* Cart Button */}
@@ -274,7 +293,7 @@ export default function Header() {
                 <Link href="/cart" aria-label="Καλάθι" className="relative">
                   <ShoppingCart className="h-5 w-5" />
                   {data && data.count > 0 && (
-                    <span className="absolute -top-1 -left-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-semibold text-white">
+                    <span className="absolute -top-1 -left-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-white">
                       {data.count}
                     </span>
                   )}
