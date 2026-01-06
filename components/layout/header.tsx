@@ -158,31 +158,27 @@ export default function Header() {
                         const isActive = branch.BRANCH === currentBranch?.BRANCH;
 
                         return (
-                          <DrawerClose key={branch.BRANCH} asChild>
-                            <Button
-                              type="button"
-                              variant={isActive ? "secondary" : "ghost"}
-                              className="w-full justify-start"
-                              disabled={isActive || isPending}
-                              onClick={() => {
-                                handleBranchChange(branch);
-                                setDrawerOpen(false);
-                              }}
-                            >
-                              <div className="min-w-0 flex flex-col items-start text-left">
-                                <span className="truncate text-sm font-medium">
-                                  {branch.NAME}
-                                </span>
-                                <span className="truncate text-xs text-slate-500">
-                                  {branch.ADDRESS}
-                                </span>
-                              </div>
-                            </Button>
-                          </DrawerClose>
+                          <Button
+                            key={branch.BRANCH}
+                            type="button"
+                            variant={isActive ? "secondary" : "ghost"}
+                            className="w-full justify-start"
+                            disabled={isActive || isPending}
+                            onClick={async () => {
+                              await handleBranchChange(branch); 
+                              setDrawerOpen(false);            
+                            }}
+                          >
+                            <div className="min-w-0 flex flex-col items-start text-left">
+                              <span className="truncate text-sm font-medium">{branch.NAME}</span>
+                              <span className="truncate text-xs text-slate-500">{branch.ADDRESS}</span>
+                            </div>
+                          </Button>
                         );
                       })}
                     </nav>
                   )}
+
                 </div>
 
                 <Separator />
