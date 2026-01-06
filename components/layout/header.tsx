@@ -140,18 +140,6 @@ export default function Header() {
                 </DrawerHeader>
 
                 <div className="px-4 pb-4">
-                  <div className="mb-3">
-                    <div className="text-[10px] tracking-wide text-slate-500">
-                      ΤΡΕΧΟΝ ΚΑΤΑΣΤΗΜΑ
-                    </div>
-                    <div className="truncate text-sm font-medium leading-tight">
-                      {currentBranch?.NAME}
-                    </div>
-                    <div className="truncate text-xs text-slate-500">
-                      {currentBranch?.ADDRESS}
-                    </div>
-                  </div>
-
                   {clientData && clientData.data.length > 1 && (
                     <nav className="flex flex-col gap-2">
                       {clientData.data.map((branch) => {
@@ -161,24 +149,31 @@ export default function Header() {
                           <Button
                             key={branch.BRANCH}
                             type="button"
-                            variant={isActive ? "secondary" : "ghost"}
-                            className="w-full justify-start"
+                            variant="ghost"
+                            className={`w-full justify-start ${isActive ? "bg-primary rounded-full text-white hover:bg-primary py-5" : ""
+                              }`}
                             disabled={isActive || isPending}
                             onClick={async () => {
-                              await handleBranchChange(branch); 
-                              setDrawerOpen(false);            
+                              await handleBranchChange(branch);
+                              setDrawerOpen(false);
                             }}
                           >
                             <div className="min-w-0 flex flex-col items-start text-left">
-                              <span className="truncate text-sm font-medium">{branch.NAME}</span>
-                              <span className="truncate text-xs text-slate-500">{branch.ADDRESS}</span>
+                              <span className="truncate text-sm font-medium">
+                                {branch.NAME}
+                              </span>
+                              <span
+                                className={`truncate text-xs ${isActive ? "text-white/80" : "text-slate-500"
+                                  }`}
+                              >
+                                {branch.ADDRESS}
+                              </span>
                             </div>
                           </Button>
                         );
                       })}
                     </nav>
                   )}
-
                 </div>
 
                 <Separator />
@@ -198,19 +193,24 @@ export default function Header() {
 
             <div className="flex flex-1 min-w-0 overflow-x-auto">
               <nav className="ml-4 flex items-center gap-1 md:gap-2">
-                {families?.map((family) => (
-                  <Button
-                    key={family.FAMILY}
-                    asChild
-                    variant="ghost"
-                    size="sm"
-                    className="whitespace-nowrap text-xs font-medium"
-                  >
-                    <Link href={`/products/${encodeURIComponent(family.FAMILY)}`}>
-                      {family.FAMILY}
-                    </Link>
-                  </Button>
-                ))}
+                {families?.map((family) => {
+                  const href = `/products/${encodeURIComponent(family.FAMILY)}`;
+                  const isActive = pathname === href;
+
+                  return (
+                    <Button
+                      key={family.FAMILY}
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className={`whitespace-nowrap text-xs font-medium transition-colors duration-300 ${isActive
+                        ? "bg-primary font-bold text-white hover:bg-primary rounded-full sm:px-4 sm:py-1"
+                        : ""
+                        }`}>
+                      <Link href={href}>{family.FAMILY}</Link>
+                    </Button>
+                  );
+                })}
               </nav>
             </div>
           </>

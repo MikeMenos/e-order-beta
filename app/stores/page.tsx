@@ -7,9 +7,10 @@ import { useGetClientData } from "@/hooks/useGetClientData";
 import { IStoreInfo } from "@/lib/interfaces";
 import { buildFirstBasketKeyPayload } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
-import { Building2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import logoIcon from "@/public/logo-icon.png";
+import Image from "next/image";
 
 function getGroupChainIconSrc(groupChain?: string) {
   const text = (groupChain ?? "").toUpperCase();
@@ -80,47 +81,49 @@ export default function Stores() {
   return (
     <>
       {headStore && (
-        <CardHeader className="mb-4 px-0">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+        <CardHeader className="mb-4 px-0 overflow-x-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 min-w-0">
             <div className="flex items-center gap-3 min-w-0">
-              <span className="flex h-10 w-s shrink-0 overflow-hiddenshadow-sm dark:bg-zinc-800">
+              <span className="flex h-8 md:h-12 w-auto max-w-10 md:max-w-16 shrink-0 items-center justify-center overflow-hidden dark:bg-zinc-800">
                 {headerIconSrc ? (
                   <img
                     src={headerIconSrc}
                     alt="Group icon"
-                    className="h-full w-full object-cover"
+                    className="h-full w-auto object-contain"
                   />
                 ) : (
-                  <Building2
-                    className="h-6 w-6 m-auto text-zinc-500 dark:text-zinc-200"
-                    aria-hidden="true"
+                  <Image
+                    src={logoIcon}
+                    alt="Logo"
+                    className="h-full w-auto object-contain opacity-80 gap-0.5"
                   />
                 )}
               </span>
 
-              <CardTitle className="text-md md:text-xl font-semibold tracking-tight leading-tight truncate">
-                {headStore.NAME}
+
+              <CardTitle className="min-w-0 flex-1 truncate text-sm md:text-xl font-semibold tracking-tight leading-tight">
+                {(headStore.NAME ?? "").split("-")[0].trim()}
               </CardTitle>
             </div>
 
-            <span
-              className="text-xs uppercase tracking-[0.16em] text-zinc-400 whitespace-nowrap pl-[52px] sm:pl-0"
-            >
+            <span className="text-xs uppercase tracking-[0.16em] text-zinc-400 whitespace-nowrap sm:pl-0">
               ΑΦΜ {headStore.AFM}
             </span>
           </div>
         </CardHeader>
       )}
 
-      {stores.map((item) => (
-        <div
-          key={item.KEY_CODE ?? item.BRANCH}
-          onClick={() => handleBranchChange(item)}
-          className="cursor-pointer"
-        >
-          <StoreCard data={item} isPending={isPending} />
-        </div>
-      ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {stores.map((item) => (
+          <div
+            key={item.KEY_CODE ?? item.BRANCH}
+            onClick={() => handleBranchChange(item)}
+            className="cursor-pointer"
+          >
+            <StoreCard data={item} isPending={isPending} />
+          </div>
+        ))}
+      </div>
     </>
   );
 }

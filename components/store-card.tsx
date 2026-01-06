@@ -67,19 +67,15 @@ export default function StoreCard({ data, isPending }: StoreInfoCardProps) {
   return (
     <Card
       className={[
-        "group overflow-hidden mb-4 border border-zinc-200 bg-white shadow-sm",
+        "group overflow-hidden mb-4 shadow-sm",
         "transition hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md",
         "dark:border-zinc-800 dark:bg-zinc-900/80",
         isPending ? "opacity-60 pointer-events-none" : "",
       ].join(" ")}
     >
-      <CardContent className="p-4 sm:p-5">
+      <CardContent className="p-0 sm:p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3 min-w-0">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 shadow-sm dark:bg-zinc-800 dark:text-zinc-200">
-              <Building2 className="h-4 w-4" />
-            </span>
-
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <p className="text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">

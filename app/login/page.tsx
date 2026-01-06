@@ -17,6 +17,9 @@ import { useVerifyPin } from "@/hooks/useVerifyPin";
 import { errorToast } from "@/components/toasts";
 import { ChangeEvent, KeyboardEvent, useRef, useState, useEffect } from "react";
 import { appStore } from "@/stores/appStore";
+import Image from "next/image";
+import logo from "@/public/logo.png";
+import logoIcon from "@/public/logo-icon.png";
 
 export default function Login() {
   const router = useRouter();
@@ -107,8 +110,26 @@ export default function Login() {
   };
 
   return (
-    <div className=" min-h-screen flex items-center justify-center">
-      <Card className="w-[400px]">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4">
+      <div className="flex flex-col items-center gap-1 py-8">
+
+        <Image
+          src={logoIcon}
+          alt="Logo icon"
+          width={50}
+          height={50}
+          className="h-20 w-20"
+        />
+
+        <Image
+          src={logo}
+          alt="Logo"
+          width={300}
+          height={60}
+          className="h-10 w-auto mt-0 sm:h-16"
+        />
+      </div>
+      <Card className="w-full max-w-[400px]">
         <CardHeader>
           <CardTitle>Καλωσορίσατε στην εφαρμογή</CardTitle>
           <CardDescription>
