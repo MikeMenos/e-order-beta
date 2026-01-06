@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/public/logo.png";
+import logoIcon from "@/public/logo-icon.png";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,7 +23,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
-import { ShoppingCart, LogOut, ChevronDown, Menu } from "lucide-react";
+import { ShoppingCart, LogOut, ChevronDown, Menu, Icon } from "lucide-react";
 import { useGetCart } from "@/hooks/useGetCart";
 import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
@@ -112,11 +113,11 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full max-w-full overflow-x-hidden border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">
       <div className="flex h-16 w-full max-w-full min-w-0 items-center px-2 sm:px-4 justify-between overflow-x-hidden">
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <Image src={logo} alt="Logo" width={120} height={30} className="sm:w-[150px] w-[120px] h-auto" />
-          {/* <span className="hidden sm:inline text-lg font-bold text-(--color-chart-6) hover:opacity-90 transition">
-            Ergastirion Manager
-          </span> */}
+        <Link href="/" className="flex items-center gap-0 shrink-0">
+          <Image src={logoIcon} alt="Logo" width={36} height={36} className="h-10 w-10 translate-y-px" />
+          {pathname === "/stores" && (
+            <Image src={logo} alt="Logo" width={150} height={40} className="h-10 w-auto sm:h-11" priority />
+          )}
         </Link>
 
         {pathname !== "/stores" && (
@@ -132,40 +133,65 @@ export default function Header() {
                   <Menu className="h-5 w-5" />
                 </Button>
               </DrawerTrigger>
+
               <DrawerContent>
                 <DrawerHeader>
-                  <DrawerTitle>Κατηγορίες</DrawerTitle>
+                  <DrawerTitle>Επιλογή καταστήματος</DrawerTitle>
                 </DrawerHeader>
+
                 <div className="px-4 pb-4">
-                  <nav className="flex flex-col gap-2">
-                    {families?.map((family) => (
-                      <DrawerClose key={family.FAMILY} asChild>
-                        <Button
-                          asChild
-                          variant="ghost"
-                          className="w-full justify-start"
-                        >
-                          <Link
-                            href={`/products/${encodeURIComponent(
-                              family.FAMILY
-                            )}`}
-                          >
-                            {family.FAMILY}
-                          </Link>
-                        </Button>
-                      </DrawerClose>
-                    ))}
-                  </nav>
+                  <div className="mb-3">
+                    <div className="text-[10px] tracking-wide text-slate-500">
+                      ΤΡΕΧΟΝ ΚΑΤΑΣΤΗΜΑ
+                    </div>
+                    <div className="truncate text-sm font-medium leading-tight">
+                      {currentBranch?.NAME}
+                    </div>
+                    <div className="truncate text-xs text-slate-500">
+                      {currentBranch?.ADDRESS}
+                    </div>
+                  </div>
+
+                  {clientData && clientData.data.length > 1 && (
+                    <nav className="flex flex-col gap-2">
+                      {clientData.data.map((branch) => {
+                        const isActive = branch.BRANCH === currentBranch?.BRANCH;
+
+                        return (
+                          <DrawerClose key={branch.BRANCH} asChild>
+                            <Button
+                              type="button"
+                              variant={isActive ? "secondary" : "ghost"}
+                              className="w-full justify-start"
+                              disabled={isActive || isPending}
+                              onClick={() => {
+                                handleBranchChange(branch);
+                                setDrawerOpen(false);
+                              }}
+                            >
+                              <div className="min-w-0 flex flex-col items-start text-left">
+                                <span className="truncate text-sm font-medium">
+                                  {branch.NAME}
+                                </span>
+                                <span className="truncate text-xs text-slate-500">
+                                  {branch.ADDRESS}
+                                </span>
+                              </div>
+                            </Button>
+                          </DrawerClose>
+                        );
+                      })}
+                    </nav>
+                  )}
                 </div>
+
                 <Separator />
+
                 <DrawerFooter>
-                  <Button
-                    variant="outline"
-                    className="w-full bg-red-500 text-white hover:bg-red-600 hover:text-white"
-                    onClick={() => {
-                      setDrawerOpen(false);
-                      handleLogout();
-                    }}
+                  <Button variant="outline" className="w-full bg-red-500 text-white hover:bg-red-600 hover:text-white" onClick={() => {
+                    setDrawerOpen(false);
+                    handleLogout();
+                  }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
@@ -174,7 +200,7 @@ export default function Header() {
               </DrawerContent>
             </Drawer>
 
-            <div className="hidden md:flex flex-1 overflow-x-auto">
+            <div className="flex flex-1 min-w-0 overflow-x-auto">
               <nav className="ml-4 flex items-center gap-1 md:gap-2">
                 {families?.map((family) => (
                   <Button
@@ -184,9 +210,7 @@ export default function Header() {
                     size="sm"
                     className="whitespace-nowrap text-xs font-medium"
                   >
-                    <Link
-                      href={`/products/${encodeURIComponent(family.FAMILY)}`}
-                    >
+                    <Link href={`/products/${encodeURIComponent(family.FAMILY)}`}>
                       {family.FAMILY}
                     </Link>
                   </Button>
@@ -199,7 +223,7 @@ export default function Header() {
         <div className="flex items-center sm:gap-2 md:gap-4 min-w-0">
           {pathname !== "/stores" && (
             <>
-              {pathname !== "/stores" && (
+              <div className="hidden md:block min-w-0">
                 <div className="min-w-0">
                   {clientData?.data.length === 1 ? (
                     <Button
@@ -207,7 +231,7 @@ export default function Header() {
                       disabled
                       className="min-w-0 cursor-default px-2 sm:px-3 py-2 sm:py-3"
                     >
-                      <div className="min-w-0 w-[170px] sm:w-[240px] flex flex-col items-start text-left">
+                      <div className="min-w-0 w-[170px] sm:w-60 flex flex-col items-start text-left">
                         <span className="text-[10px] tracking-wide text-slate-500">
                           ΚΑΤΑΣΤΗΜΑ
                         </span>
@@ -243,10 +267,16 @@ export default function Header() {
                               className="cursor-pointer"
                             >
                               <div className="min-w-0 flex flex-col">
-                                <span className="truncate text-sm font-medium" title={branch.NAME}>
+                                <span
+                                  className="truncate text-sm font-medium"
+                                  title={branch.NAME}
+                                >
                                   {branch.NAME}
                                 </span>
-                                <span className="truncate text-xs text-slate-500" title={branch.ADDRESS}>
+                                <span
+                                  className="truncate text-xs text-slate-500"
+                                  title={branch.ADDRESS}
+                                >
                                   {branch.ADDRESS}
                                 </span>
                               </div>
@@ -260,7 +290,7 @@ export default function Header() {
                           variant="ghost"
                           className="min-w-0 px-2 sm:px-3 py-2 sm:py-3 flex items-center gap-2"
                         >
-                          <div className="min-w-0 w-[170px] sm:w-[240px] flex flex-col items-start text-left">
+                          <div className="min-w-0 w-[170px] sm:w-60 flex flex-col items-start text-left">
                             <span className="text-[10px] tracking-wide text-slate-500">
                               ΚΑΤΑΣΤΗΜΑ
                             </span>
@@ -286,9 +316,8 @@ export default function Header() {
                     </DropdownMenu>
                   )}
                 </div>
-              )}
+              </div>
 
-              {/* Cart Button */}
               <Button variant="ghost" size="icon" asChild>
                 <Link href="/cart" aria-label="Καλάθι" className="relative">
                   <ShoppingCart className="h-5 w-5" />
@@ -301,6 +330,7 @@ export default function Header() {
               </Button>
             </>
           )}
+
 
           <Button
             variant="outline"
