@@ -9,8 +9,12 @@ import { usePathname } from "next/navigation";
 import { IProductItem } from "@/lib/interfaces";
 import { Input } from "./ui/input";
 
-export const placeholderImage =
-  "https://images.pexels.com/photos/2955820/pexels-photo-2955820.jpeg";
+export const placeholderImage: Record<string, string> = {
+  DONUT: "/categories/donuts.jpg",
+  ΑΡΤΟΠΟΙΗΜΑΤΑ: "/categories/artos.jpg",
+  ΣΦΟΛΙΑΤΑ: "/categories/sfol.jpg",
+  ΑΛΛΟ: "/categories/allo.jpg",
+};
 
 interface ProductCardProps {
   product: IProductItem;
@@ -35,9 +39,11 @@ const ProductCard: FC<ProductCardProps> = ({
   const [error, setError] = useState("");
 
   const IMAGE_BASE_URL = "https://ergastiri.oncloud.gr/s1services?filename=";
-  const imageUrl = product.IMAGE
-    ? `${IMAGE_BASE_URL}${product.IMAGE}`
-    : placeholderImage;
+
+  const categoryKey = product.FAMILY?.trim().toUpperCase();
+  const imageUrl = product.IMAGE?.trim()
+    ? `${IMAGE_BASE_URL}${product.IMAGE.trim()}`
+    : placeholderImage[categoryKey] ?? "/categories/allo.jpg";
 
   const onAddProductToBasket = () => {
     if (typeof qty === "number" && qty <= 0) {
@@ -85,7 +91,7 @@ const ProductCard: FC<ProductCardProps> = ({
       <CardContent className="sm:p-3">
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center">
           <div className="h-24 w-h-24 sm:h-24 sm:w-24 rounded-xl bg-slate-50 overflow-hidden">
-            <Image
+            <img
               src={imageUrl}
               alt={product.TITLE}
               className="h-full w-full object-cover"
@@ -103,21 +109,14 @@ const ProductCard: FC<ProductCardProps> = ({
               <div className="text-s text-slate-500">
                 {product.DESCRIPTION || product.FULL_DESCRIPTION}
               </div>
-
-              {product.CODE && (
-                <div className="flex flex-row gap-1 text-[11px] sm:text-xs text-slate-600">
-                  <span className="inline-flex w-fit items-center rounded-full border border-slate-200 px-2 py-1">
-                    Κωδικός:
-                    <span className="ml-1 font-medium">{product.CODE}</span>
-                  </span>
-                </div>
-              )}
             </div>
 
             <div className="flex flex-row gap-1 text-[11px] sm:text-xs text-slate-600 mt-1">
-              <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">
-                {product.SXESI} τεμάχια / {product.ORDER_UNIT?.toLowerCase()}
-              </span>
+              {/* {product.SUPPLIER && (
+                <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">
+                  {product.SXESI} τεμάχια / {product.ORDER_UNIT?.toLowerCase()}
+                </span>
+              )} */}
 
               {product.SUPPLIER && (
                 <span className="inline-flex w-fit self-start items-center rounded-full border border-slate-200 px-2 py-1">
@@ -132,40 +131,40 @@ const ProductCard: FC<ProductCardProps> = ({
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center justify-end gap-2">
                 <div className="relative">
-                    <div className="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-white">
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={decrementQty}
-                        className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
-                        disabled={isPending || Number(qty || 0) <= 0}
-                        aria-label="Decrease quantity"
-                      >
-                        −
-                      </Button>
+                  <div className="flex items-center rounded-xl border border-slate-200 overflow-hidden bg-white">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={decrementQty}
+                      className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
+                      disabled={isPending || Number(qty || 0) <= 0}
+                      aria-label="Decrease quantity"
+                    >
+                      −
+                    </Button>
 
-                      <Input
-                        className="w-12 min-w-12 text-center border-0 focus-visible:ring-0 text-sm font-medium tabular-nums"
-                        value={qty}
-                        type="number"
-                        onChange={(e) =>
-                          handleQtyChange(e.target.value, setQty)
-                        }
-                        min={0}
-                      />
+                    <Input
+                      className="w-12 min-w-12 text-center border-0 focus-visible:ring-0 text-sm font-medium tabular-nums"
+                      value={qty}
+                      type="number"
+                      onChange={(e) =>
+                        handleQtyChange(e.target.value, setQty)
+                      }
+                      min={0}
+                    />
 
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={incrementQty}
-                        className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
-                        disabled={isPending}
-                        aria-label="Increase quantity"
-                      >
-                        +
-                      </Button>
-                    </div>
-              
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={incrementQty}
+                      className="px-2.5 py-1.5 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
+                      disabled={isPending}
+                      aria-label="Increase quantity"
+                    >
+                      +
+                    </Button>
+                  </div>
+
                   {error && (
                     <p className="text-xs text-red-500 w-44 text-center mx-auto absolute top-10">
                       {error}

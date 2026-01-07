@@ -18,7 +18,7 @@ export function OrderSummary({ items, onQtyChange }: OrderSummaryProps) {
       <Heading
         title="Σύνοψη Παραγγελίας"
       />
-      <Card className="border-0 shadow-none rounded-2xl">
+      <Card className="shadow-none rounded-2xl">
         <CardContent className="p-0 md:p-0 lg:p-0 space-y-3 text-sm">
           {items?.data.map((item) => (
             <ProductCard

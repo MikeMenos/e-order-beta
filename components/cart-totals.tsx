@@ -55,7 +55,7 @@ export function CartTotals({
       <Card className="border border-slate-200/80 shadow-none rounded-2xl bg-slate-50">
         <CardHeader className=" border-slate-200">
           <CardTitle className="text-base sm:text-lg">
-            Σύνολο Παραγγελίας
+            Λεπτομέριες Παραγγελίας
           </CardTitle>
         </CardHeader>
 

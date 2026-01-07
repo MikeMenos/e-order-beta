@@ -82,48 +82,52 @@ export default function Stores() {
     <>
       {headStore && (
         <CardHeader className="mb-4 px-0 overflow-x-hidden">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 min-w-0">
-            <div className="flex items-center gap-3 min-w-0">
-              <span className="flex h-8 md:h-12 w-auto max-w-10 md:max-w-16 shrink-0 items-center justify-center overflow-hidden dark:bg-zinc-800">
-                {headerIconSrc ? (
-                  <img
-                    src={headerIconSrc}
-                    alt="Group icon"
-                    className="h-full w-auto object-contain"
-                  />
-                ) : (
-                  <Image
-                    src={logoIcon}
-                    alt="Logo"
-                    className="h-full w-auto object-contain opacity-80 gap-0.5"
-                  />
-                )}
-              </span>
+          <div className="flex flex-col gap-2 min-w-0">
+       
+            <span className="flex h-8 md:h-12 w-25 md:w-32 items-center justify-center overflow-hidden dark:bg-zinc-800">
+              {headerIconSrc ? (
+                <img
+                  src={headerIconSrc}
+                  alt="Group icon"
+                  className="h-full w-full object-contain"
+                />
+              ) : (
+                <Image
+                  src={logoIcon}
+                  alt="Logo"
+                  className="h-full w-full object-contain opacity-80"
+                />
+              )}
+            </span>
 
-
-              <CardTitle className="min-w-0 flex-1 truncate text-sm md:text-xl font-semibold tracking-tight leading-tight">
+            <div className="flex items-center justify-between gap-3 min-w-0">
+              <CardTitle className="min-w-0 truncate text-sm md:text-xl font-semibold tracking-tight leading-tight">
                 {(headStore.NAME ?? "").split("-")[0].trim()}
               </CardTitle>
-            </div>
 
-            <span className="text-xs uppercase tracking-[0.16em] text-zinc-400 whitespace-nowrap sm:pl-0">
-              ΑΦΜ {headStore.AFM}
-            </span>
+              {headStore.AFM && (
+                <span className="shrink-0 text-xs uppercase tracking-[0.16em] text-zinc-400">
+                  ΑΦΜ {headStore.AFM}
+                </span>
+              )}
+            </div>
           </div>
         </CardHeader>
+
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y">
         {stores.map((item) => (
           <div
             key={item.KEY_CODE ?? item.BRANCH}
             onClick={() => handleBranchChange(item)}
-            className="cursor-pointer"
+            className="mb-4 break-inside-avoid cursor-pointer"
           >
             <StoreCard data={item} isPending={isPending} />
           </div>
         ))}
       </div>
+
     </>
   );
 }

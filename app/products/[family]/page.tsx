@@ -11,7 +11,6 @@ import { IProductItem } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import Heading from "@/components/layout/heading";
 
 export default function FamilyProducts() {
   const { setHydrated, hydrated, currentBranch, vat } = appStore();
@@ -66,11 +65,7 @@ export default function FamilyProducts() {
   const regProducts = productsWithQty?.filter((p) => p.FAV === "REG");
 
   return (
-    <div>
-      <Heading
-        title={data?.[0]?.FAMILY ?? "Προϊόντα"}
-      />
-
+    <>
       <Card className="shadow-none rounded-2xl">
         <CardContent className="p-0 lg:p-3 space-y-6 text-sm">
           {favProducts && favProducts.length > 0 && (
@@ -116,6 +111,10 @@ export default function FamilyProducts() {
           )}
         </CardContent>
       </Card>
-    </div>
+    </>
   );
 }
+
+ {/* <Heading
+        title={data?.[0]?.FAMILY ?? "Προϊόντα"}
+      /> */}

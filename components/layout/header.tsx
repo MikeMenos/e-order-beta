@@ -115,12 +115,12 @@ export default function Header() {
       <div className="flex h-16 w-full max-w-full min-w-0 items-center px-2 sm:px-4 justify-between overflow-x-hidden">
         <Link href="/" className="flex items-center gap-0 shrink-0">
           <Image src={logoIcon} alt="Logo" width={36} height={36} className="h-10 w-10 translate-y-px" />
-          {pathname === "/stores" && (
+          {!pathname.startsWith("/products") && (
             <Image src={logo} alt="Logo" width={150} height={40} className="h-10 w-auto sm:h-11" priority />
           )}
         </Link>
 
-        {pathname !== "/stores" && (
+        {pathname !== "/stores" && pathname !== "/" && (
           <>
             <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
               <DrawerTrigger asChild>
@@ -217,7 +217,7 @@ export default function Header() {
         )}
 
         <div className="flex items-center sm:gap-2 md:gap-4 min-w-0">
-          {pathname !== "/stores" && (
+          {pathname !== "/stores" && pathname !== "/" && (
             <>
               <div className="hidden md:block min-w-0">
                 <div className="min-w-0">
