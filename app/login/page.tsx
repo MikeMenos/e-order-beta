@@ -155,7 +155,7 @@ export default function Login() {
             {backendPin && (
               <div className="grid gap-2">
                 <Label>6-ψήφιο PIN</Label>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-6 gap-2 w-full">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <Input
                       key={i}
@@ -164,7 +164,7 @@ export default function Login() {
                       }}
                       maxLength={1}
                       inputMode="numeric"
-                      className="h-12 w-12 text-center text-xl font-semibold"
+                      className="w-full min-w-0 h-11 sm:h-12 text-center text-lg sm:text-xl font-semibold px-0"
                       onChange={(e) => handlePinChange(i, e)}
                       onKeyDown={(e) => handlePinKeyDown(i, e)}
                     />

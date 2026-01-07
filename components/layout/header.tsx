@@ -327,16 +327,19 @@ export default function Header() {
             </>
           )}
 
+          {(pathname === "/stores" || pathname === "/") && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="sm:hidden bg-red-500 text-white hover:bg-red-600 hover:text-white"
+              onClick={handleLogout}
+            >
+              <LogOut className="mr-1 h-4 w-4" />
+              Logout
+            </Button>
+          )}
 
-          <Button
-            variant="outline"
-            size="sm"
-            className="hidden sm:inline-flex bg-red-500 text-white hover:bg-red-600 hover:text-white"
-            onClick={handleLogout}
-          >
-            <LogOut className="mr-1 h-4 w-4" />
-            Logout
-          </Button>
+
         </div>
       </div>
     </header>
