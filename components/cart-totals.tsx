@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { IProductItem } from "@/lib/interfaces";
 import { ShoppingCart } from "lucide-react";
-import { useMemo } from "react";
 import { Input } from "./ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
 
@@ -26,21 +25,6 @@ export function CartTotals({
   setDelivDate,
   isPending,
 }: CartTotalsProps) {
-  const totals = useMemo(() => {
-    const totalQty = items?.reduce((acc, item) => {
-      const qty = Number(item.Qty2) || 0;
-      return acc + qty;
-    }, 0);
-
-    const totalAmount = items?.reduce((acc, item) => {
-      const qty = Number(item.Qty2) || 0;
-      const price = Number(item.PRICE_PER_MU1) || 0;
-      return acc + qty * price;
-    }, 0);
-
-    return { totalQty, totalAmount };
-  }, [items]);
-
   const handleSendOrderClick = () => {
     if (onSendOrder && items) {
       onSendOrder({
@@ -74,9 +58,7 @@ export function CartTotals({
           </div>
 
           <div className="px-5 space-y-1">
-            <Label className="text-xs text-slate-500">
-              Σχόλια Παραγγελίας
-            </Label>
+            <Label className="text-xs text-slate-500">Σχόλια Παραγγελίας</Label>
             <Textarea
               className="bg-white"
               value={comments}

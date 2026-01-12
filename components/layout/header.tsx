@@ -114,9 +114,22 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full max-w-full overflow-x-hidden border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">
       <div className="flex h-16 w-full max-w-full min-w-0 items-center px-2 sm:px-4 justify-between overflow-x-hidden">
         <Link href="/" className="flex items-center gap-0 shrink-0">
-          <Image src={logoIcon} alt="Logo" width={36} height={36} className="h-10 w-10 translate-y-px" />
+          <Image
+            src={logoIcon}
+            alt="Logo"
+            width={36}
+            height={36}
+            className="h-10 w-10 translate-y-px"
+          />
           {!pathname.startsWith("/products") && (
-            <Image src={logo} alt="Logo" width={150} height={40} className="h-10 w-auto sm:h-11" priority />
+            <Image
+              src={logo}
+              alt="Logo"
+              width={150}
+              height={40}
+              className="h-10 w-auto sm:h-11"
+              priority
+            />
           )}
         </Link>
 
@@ -143,15 +156,19 @@ export default function Header() {
                   {clientData && clientData.data.length > 1 && (
                     <nav className="flex flex-col gap-2">
                       {clientData.data.map((branch) => {
-                        const isActive = branch.BRANCH === currentBranch?.BRANCH;
+                        const isActive =
+                          branch.BRANCH === currentBranch?.BRANCH;
 
                         return (
                           <Button
                             key={branch.BRANCH}
                             type="button"
                             variant="ghost"
-                            className={`w-full justify-start ${isActive ? "bg-primary rounded-full text-white hover:bg-primary py-5" : ""
-                              }`}
+                            className={`w-full justify-start ${
+                              isActive
+                                ? "bg-primary rounded-full text-white hover:bg-primary py-5"
+                                : ""
+                            }`}
                             disabled={isActive || isPending}
                             onClick={async () => {
                               await handleBranchChange(branch);
@@ -163,8 +180,9 @@ export default function Header() {
                                 {branch.NAME}
                               </span>
                               <span
-                                className={`truncate text-xs ${isActive ? "text-white/80" : "text-slate-500"
-                                  }`}
+                                className={`truncate text-xs ${
+                                  isActive ? "text-white/80" : "text-slate-500"
+                                }`}
                               >
                                 {branch.ADDRESS}
                               </span>
@@ -179,10 +197,13 @@ export default function Header() {
                 <Separator />
 
                 <DrawerFooter>
-                  <Button variant="outline" className="w-full bg-red-500 text-white hover:bg-red-600 hover:text-white" onClick={() => {
-                    setDrawerOpen(false);
-                    handleLogout();
-                  }}
+                  <Button
+                    variant="outline"
+                    className="w-full bg-red-500 text-white hover:bg-red-600 hover:text-white"
+                    onClick={() => {
+                      setDrawerOpen(false);
+                      handleLogout();
+                    }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
@@ -203,10 +224,12 @@ export default function Header() {
                       asChild
                       variant="ghost"
                       size="sm"
-                      className={`whitespace-nowrap text-xs font-medium transition-colors duration-300 ${isActive
-                        ? "bg-primary font-bold text-white hover:bg-primary rounded-full sm:px-4 sm:py-1"
-                        : ""
-                        }`}>
+                      className={`whitespace-nowrap text-xs font-medium transition-colors duration-300 ${
+                        isActive
+                          ? "bg-primary font-bold text-white hover:bg-primary rounded-full sm:px-4 sm:py-1"
+                          : ""
+                      }`}
+                    >
                       <Link href={href}>{family.FAMILY}</Link>
                     </Button>
                   );
@@ -249,11 +272,17 @@ export default function Header() {
                     </Button>
                   ) : (
                     <DropdownMenu open={open} onOpenChange={setOpen}>
-                      <DropdownMenuContent align="end" className="w-72 bg-white">
-                        <DropdownMenuLabel>Επιλογή καταστήματος</DropdownMenuLabel>
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-72 bg-white"
+                      >
+                        <DropdownMenuLabel>
+                          Επιλογή καταστήματος
+                        </DropdownMenuLabel>
 
                         {clientData?.data.map((branch) => {
-                          const isActive = branch.BRANCH === currentBranch?.BRANCH;
+                          const isActive =
+                            branch.BRANCH === currentBranch?.BRANCH;
 
                           return (
                             <DropdownMenuItem
@@ -327,19 +356,15 @@ export default function Header() {
             </>
           )}
 
-          {(pathname === "/stores" || pathname === "/") && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="sm:hidden bg-red-500 text-white hover:bg-red-600 hover:text-white"
-              onClick={handleLogout}
-            >
-              <LogOut className="mr-1 h-4 w-4" />
-              Logout
-            </Button>
-          )}
-
-
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-red-500 text-white hover:bg-red-600 hover:text-white"
+            onClick={handleLogout}
+          >
+            <LogOut className="mr-1 h-4 w-4" />
+            Logout
+          </Button>
         </div>
       </div>
     </header>

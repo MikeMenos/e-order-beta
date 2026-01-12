@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState, useCallback } from "react";
 import { CartTotals } from "@/components/cart-totals";
 import { OrderSummary } from "@/components/order-summary";
 import { successToast } from "@/components/toasts";
@@ -10,7 +11,6 @@ import { useGetCart } from "@/hooks/useGetCart";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
-import { useEffect, useState } from "react";
 
 export default function Cart() {
   const { basketId, vat, currentBranch } = appStore();
@@ -21,142 +21,145 @@ export default function Cart() {
   const [comments, setComments] = useState("");
   const [delivDate, setDelivDate] = useState("");
 
-  const { mutate } = useGetClientData();
+  const { mutate: getClientData } = useGetClientData();
 
   useEffect(() => {
     if (!vat) return;
-    mutate(vat);
-  }, [vat, mutate]);
+    getClientData(vat);
+  }, [vat, getClientData]);
 
   const trdr = currentBranch?.TRDR ? String(currentBranch.TRDR) : undefined;
   const branch = currentBranch?.BRANCH
     ? String(currentBranch.BRANCH)
     : undefined;
 
-  const { data, isLoading } = useGetCart({
-    trdr,
-    branch,
-  });
+  const { data, isLoading } = useGetCart({ trdr, branch });
 
-  const { mutate: addToCartMutation, isPending } = useAddToCart();
+  const { mutateAsync: addToCart, isPending } = useAddToCart();
 
-  const handleSendOrder = ({
-    comments,
-    delivDate,
-  }: {
-    comments: string;
-    delivDate: string;
-  }) => {
-    if (!data?.data) return;
+  const handleSendOrder = useCallback(
+    async ({
+      comments,
+      delivDate,
+    }: {
+      comments: string;
+      delivDate: string;
+    }) => {
+      if (!data || !data.data) return;
+      if (!basketId) return;
 
-    const BASE_LINENUM = 9000001;
+      const BASE_LINENUM = 9000001;
 
-    const existingLines =
-      data?.data?.map((line: IProductItem, index) => ({
-        LINENUM: BASE_LINENUM + index,
-        MTRL: Number(line.MTRL),
-        QTY2: Number(line.Qty2),
-      })) ?? [];
+      const existingLines =
+        data.data.map((line: IProductItem, index) => ({
+          LINENUM: BASE_LINENUM + index,
+          MTRL: Number(line.MTRL),
+          QTY2: Number(line.Qty2),
+        })) ?? [];
 
-    const updatedLines = existingLines.map((line) => {
-      const delta = editedQuantities[line.MTRL];
+      const updatedLines = existingLines.map((line) => {
+        const delta = editedQuantities[line.MTRL];
+        if (delta === undefined) return line;
+        return { ...line, QTY2: delta };
+      });
 
-      if (delta === undefined) return line;
-
-      return {
-        ...line,
-        QTY2: delta,
+      const payload: AddToCartPayload = {
+        service: "setData",
+        clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
+        appId: process.env.NEXT_PUBLIC_APP_ID!,
+        OBJECT: "SALDOC",
+        KEY: "",
+        data: {
+          SALDOC: [
+            {
+              SERIES: "7024",
+              TRDR: Number(currentBranch?.TRDR),
+              TRDBRANCH: Number(currentBranch?.BRANCH),
+              PAYMENT: 1006,
+              TRUCKS: 2,
+              DELIVDATE: delivDate,
+              COMMENTS: comments,
+              REMARKS: "",
+            },
+          ],
+          MTRDOC: [
+            {
+              TRUCKS: 2,
+              DELIVDATE: delivDate,
+            },
+          ],
+          ITELINES: updatedLines,
+        },
       };
-    });
 
-    const payload: AddToCartPayload = {
-      service: "setData",
-      clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
-      appId: process.env.NEXT_PUBLIC_APP_ID!,
-      OBJECT: "SALDOC",
-      KEY: "",
-      data: {
-        SALDOC: [
-          {
-            SERIES: "7024",
-            TRDR: Number(currentBranch?.TRDR),
-            TRDBRANCH: Number(currentBranch?.BRANCH),
-            PAYMENT: 1006,
-            TRUCKS: 2,
-            DELIVDATE: delivDate,
-            COMMENTS: comments,
-            REMARKS: "",
-          },
-        ],
-        MTRDOC: [
-          {
-            TRUCKS: 2,
-            DELIVDATE: delivDate,
-          },
-        ],
+      const payloadForBasketDeletion: AddToCartPayload = {
+        service: "setData",
+        clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
+        appId: process.env.NEXT_PUBLIC_APP_ID!,
+        OBJECT: "SALDOC",
+        KEY: basketId,
+        data: {
+          SALDOC: [
+            {
+              SERIES: "7001",
+              TRDR: Number(currentBranch?.TRDR),
+              TRDBRANCH: Number(currentBranch?.BRANCH),
+              PAYMENT: 1006,
+              TRUCKS: 2,
+              DELIVDATE: "",
+              COMMENTS: "",
+              REMARKS: "",
+            },
+          ],
+          MTRDOC: [
+            {
+              TRUCKS: 2,
+              DELIVDATE: "",
+            },
+          ],
+          ITELINES: [
+            {
+              MTRL: 2924,
+              QTY2: 0.1,
+            },
+          ],
+        },
+      };
 
-        ITELINES: updatedLines,
-      },
-    };
+      try {
+        // 1) place order
+        await addToCart(payload);
 
-    if (!basketId) {
-      return;
-    }
+        // 2) clear basket
+        await addToCart(payloadForBasketDeletion);
 
-    const payloadForBasketDeletion: AddToCartPayload = {
-      service: "setData",
-      clientID: process.env.NEXT_PUBLIC_CLIENT_ID!,
-      appId: process.env.NEXT_PUBLIC_APP_ID!,
-      OBJECT: "SALDOC",
-      KEY: basketId,
-
-      data: {
-        SALDOC: [
-          {
-            SERIES: "7001",
-            TRDR: Number(currentBranch?.TRDR),
-            TRDBRANCH: Number(currentBranch?.BRANCH),
-            PAYMENT: 1006,
-            TRUCKS: 2,
-            DELIVDATE: "",
-            COMMENTS: "",
-            REMARKS: "",
-          },
-        ],
-        MTRDOC: [
-          {
-            TRUCKS: 2,
-            DELIVDATE: "",
-          },
-        ],
-
-        ITELINES: [
-          {
-            MTRL: 2924,
-            QTY2: 0.1,
-          },
-        ],
-      },
-    };
-
-    addToCartMutation(payload, {
-      onSuccess: () => {
-        addToCartMutation(payloadForBasketDeletion);
+        // UI feedback
         successToast("Η παραγγελία σας έχει σταλθεί");
         setComments("");
         setDelivDate("");
-      },
-    });
-  };
+        setEditedQuantities({});
+      } catch {}
+    },
+    [
+      addToCart,
+      basketId,
+      currentBranch,
+      data,
+      editedQuantities,
+      setComments,
+      setDelivDate,
+      setEditedQuantities,
+    ]
+  );
 
-  const handleQtyEdit = (product: IProductItem, newQty: number) => {
+  const handleQtyEdit = useCallback((product: IProductItem, newQty: number) => {
     setEditedQuantities((prev) => ({
       ...prev,
       [Number(product.MTRL)]: newQty,
     }));
-  };
-  if (isLoading) return <Loading />;
+  }, []);
 
+  if (isLoading) return <Loading />;
   if (data?.count === 0) return <EmptyCart />;
 
   return (
