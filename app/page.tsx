@@ -77,8 +77,14 @@ export default function Home() {
   ]);
 
   if (!hydrated) return null;
+
+  // If there are more than one branch, and the current branch is not set, redirect to the stores page
   if (clientData && clientData?.count > 1 && !currentBranch?.BRANCH)
     redirect("/stores");
+
+  // If the current branch is Artigiano, redirect to the Artigiano products page
+  if (clientData && clientData?.data[0].GROUP_CHAIN === "ARTIGIANO")
+    redirect("/products/ARTIGIANO");
 
   if (isLoading || isPending) return <Loading />;
 

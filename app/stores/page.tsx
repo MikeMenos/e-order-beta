@@ -68,13 +68,21 @@ export default function Stores() {
           if (vat) {
             mutate(vat);
           }
-          router.push("/");
+          if (branch.GROUP_CHAIN === "ARTIGIANO") {
+            router.push("/products/ARTIGIANO");
+          } else {
+            router.push("/");
+          }
         },
       });
       // If there is only one branch, and the basket key is not 0, we need to set the basket key
     } else if (branch.BASKET_KEY) {
       setBasketId(branch.BASKET_KEY);
-      router.push("/");
+      if (branch.GROUP_CHAIN === "ARTIGIANO") {
+        router.push("/products/ARTIGIANO");
+      } else {
+        router.push("/");
+      }
     }
 
     setCurrentBranch(branch);

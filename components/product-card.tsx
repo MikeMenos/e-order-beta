@@ -3,7 +3,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Trash2 } from "lucide-react";
-import Image from "next/image";
 import { FC, useState } from "react";
 import { usePathname } from "next/navigation";
 import { IProductItem } from "@/lib/interfaces";
@@ -147,9 +146,7 @@ const ProductCard: FC<ProductCardProps> = ({
                       className="w-12 min-w-12 text-center border-0 focus-visible:ring-0 text-sm font-medium tabular-nums"
                       value={qty}
                       type="number"
-                      onChange={(e) =>
-                        handleQtyChange(e.target.value, setQty)
-                      }
+                      onChange={(e) => handleQtyChange(e.target.value, setQty)}
                       min={0}
                     />
 
