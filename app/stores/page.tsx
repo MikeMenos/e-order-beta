@@ -53,6 +53,7 @@ export default function Stores() {
   const handleBranchChange = (branch: IStoreInfo) => {
     if (isPending) return;
 
+    // If there is only one branch, and the basket key is 0, we need to create a new basket with a 'fake' addition of a product to the cart
     if (branch.BASKET_KEY === "0") {
       const payload = buildFirstBasketKeyPayload({
         trdr: Number(branch.TRDR),
@@ -70,6 +71,7 @@ export default function Stores() {
           router.push("/");
         },
       });
+      // If there is only one branch, and the basket key is not 0, we need to set the basket key
     } else if (branch.BASKET_KEY) {
       setBasketId(branch.BASKET_KEY);
       router.push("/");
@@ -83,7 +85,6 @@ export default function Stores() {
       {headStore && (
         <CardHeader className="mb-4 px-0 overflow-x-hidden">
           <div className="flex flex-col gap-2 min-w-0">
-       
             <span className="flex h-8 md:h-12 w-25 md:w-32 items-center justify-center overflow-hidden dark:bg-zinc-800">
               {headerIconSrc ? (
                 <img
@@ -113,7 +114,6 @@ export default function Stores() {
             </div>
           </div>
         </CardHeader>
-
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y">
@@ -127,7 +127,6 @@ export default function Stores() {
           </div>
         ))}
       </div>
-
     </>
   );
 }

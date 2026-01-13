@@ -359,7 +359,7 @@ export default function Header() {
           <Button
             variant="outline"
             size="sm"
-            className="bg-red-500 text-white hover:bg-red-600 hover:text-white"
+            className="hidden md:block bg-red-500 text-white hover:bg-red-600 hover:text-white"
             onClick={handleLogout}
           >
             <LogOut className="mr-1 h-4 w-4" />

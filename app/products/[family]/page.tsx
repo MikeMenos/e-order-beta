@@ -1,7 +1,7 @@
 "use client";
 
 import ProductCard from "@/components/product-card";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Loading from "@/components/ui/loading";
 import { useGetCart } from "@/hooks/useGetCart";
 import { useGetClientData } from "@/hooks/useGetClientData";
@@ -115,6 +115,8 @@ export default function FamilyProducts() {
   );
 }
 
- {/* <Heading
+{
+  /* <Heading
         title={data?.[0]?.FAMILY ?? "Προϊόντα"}
-      /> */}
+      /> */
+}

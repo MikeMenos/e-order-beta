@@ -37,6 +37,7 @@ export default function Home() {
   }, [setHydrated]);
 
   useEffect(() => {
+    // If there is only one branch, and the basket key is 0, we need to create a new basket with a 'fake' addition of a product to the cart
     if (
       clientData &&
       clientData?.count === 1 &&
@@ -57,6 +58,7 @@ export default function Home() {
         },
       });
     }
+    // If there is only one branch, and the basket key is not 0, we need to set the basket key
     if (
       clientData &&
       clientData?.count === 1 &&
