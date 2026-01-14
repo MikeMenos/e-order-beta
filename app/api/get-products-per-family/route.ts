@@ -8,8 +8,12 @@ export async function POST(req: Request) {
 
     const clientID = process.env.CLIENT_ID;
 
+    const url = !family
+      ? "/s1services/js/api.web/ITEMS_PER_CUST_ART"
+      : "/s1services/js/api.web/ITEMS_PER_CUST_NEW";
+
     const response = await backend.post(
-      "/s1services/js/api.web/ITEMS_PER_CUST_NEW",
+      url,
       { branch, trdr, family, clientID },
       { responseType: "arraybuffer" }
     );

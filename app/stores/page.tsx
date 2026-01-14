@@ -15,7 +15,7 @@ import Image from "next/image";
 function getGroupChainIconSrc(groupChain?: string) {
   const text = (groupChain ?? "").toUpperCase();
 
-  if (text.includes("ARTIGIANO")) {
+  if (text.includes("L'ARTIGIANO")) {
     return "/group-chain/lartigiano.png";
   }
 
@@ -68,8 +68,8 @@ export default function Stores() {
           if (vat) {
             mutate(vat);
           }
-          if (branch.GROUP_CHAIN === "ARTIGIANO") {
-            router.push("/products/ARTIGIANO");
+          if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
+            router.push("/products/L'ARTIGIANO");
           } else {
             router.push("/");
           }
@@ -78,8 +78,8 @@ export default function Stores() {
       // If there is only one branch, and the basket key is not 0, we need to set the basket key
     } else if (branch.BASKET_KEY) {
       setBasketId(branch.BASKET_KEY);
-      if (branch.GROUP_CHAIN === "ARTIGIANO") {
-        router.push("/products/ARTIGIANO");
+      if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
+        router.push("/products/L'ARTIGIANO");
       } else {
         router.push("/");
       }

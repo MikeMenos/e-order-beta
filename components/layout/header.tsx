@@ -100,8 +100,8 @@ export default function Header() {
     }
 
     setCurrentBranch(branch);
-    if (branch.GROUP_CHAIN === "ARTIGIANO") {
-      router.push("/products/ARTIGIANO");
+    if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
+      router.push("/products/L'ARTIGIANO");
     } else {
       router.push("/");
     }

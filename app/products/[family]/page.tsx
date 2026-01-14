@@ -13,18 +13,33 @@ import { redirect, usePathname } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 export default function FamilyProducts() {
-  const { setHydrated, hydrated, currentBranch, vat } = appStore();
+  const {
+    setHydrated,
+    hydrated,
+    currentBranch,
+    vat,
+    setCurrentBranch,
+    setBasketId,
+  } = appStore();
   const pathname = usePathname();
   const family = decodeURIComponent(pathname.split("/")[2] || "").trim();
 
   const { data: clientData, mutate } = useGetClientData();
 
-  const trdr = currentBranch?.TRDR ? String(currentBranch.TRDR) : undefined;
-  const branch = currentBranch?.BRANCH
-    ? String(currentBranch.BRANCH)
+  const trdr = clientData?.data[0].TRDR
+    ? String(clientData?.data[0].TRDR)
     : undefined;
+  const branch = clientData?.data[0].BRANCH
+    ? String(clientData?.data[0].BRANCH)
+    : undefined;
+  const familyName =
+    clientData?.data[0].GROUP_CHAIN === "L'ARTIGIANO" ? undefined : family;
 
-  const { data, isLoading } = useGetProductsPerFamily({ family, trdr, branch });
+  const { data, isLoading, refetch } = useGetProductsPerFamily({
+    family: familyName,
+    trdr,
+    branch,
+  });
 
   useEffect(() => {
     appStore.persist.rehydrate();
@@ -35,6 +50,18 @@ export default function FamilyProducts() {
     if (!vat) return;
     mutate(vat);
   }, [vat, mutate]);
+
+  useEffect(() => {
+    if (
+      clientData &&
+      clientData?.count === 1 &&
+      clientData?.data[0].GROUP_CHAIN === "L'ARTIGIANO"
+    ) {
+      setCurrentBranch(clientData?.data[0]);
+      setBasketId(clientData?.data[0].BASKET_KEY);
+      refetch();
+    }
+  }, [clientData]);
 
   const { data: cartData } = useGetCart({ trdr, branch });
 
@@ -56,6 +83,7 @@ export default function FamilyProducts() {
   }, [data, cartData]);
 
   if (!hydrated) return null;
+
   if (clientData && clientData?.count > 1 && !currentBranch?.BRANCH)
     redirect("/stores");
 
