@@ -1,7 +1,7 @@
 "use client";
 
 import ProductCard from "@/components/product-card";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Loading from "@/components/ui/loading";
 import { useGetCart } from "@/hooks/useGetCart";
 import { useGetClientData } from "@/hooks/useGetClientData";
@@ -13,18 +13,47 @@ import { redirect, usePathname } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 export default function FamilyProducts() {
-  const { setHydrated, hydrated, currentBranch, vat } = appStore();
+  const {
+    setHydrated,
+    hydrated,
+    currentBranch,
+    vat,
+    setCurrentBranch,
+    setBasketId,
+  } = appStore();
   const pathname = usePathname();
   const family = decodeURIComponent(pathname.split("/")[2] || "").trim();
 
   const { data: clientData, mutate } = useGetClientData();
 
-  const trdr = currentBranch?.TRDR ? String(currentBranch.TRDR) : undefined;
-  const branch = currentBranch?.BRANCH
-    ? String(currentBranch.BRANCH)
-    : undefined;
+  // Derive trdr and branch from currentBranch if available, otherwise fall back to clientData
+  // This ensures the query has the correct params even before currentBranch is set
+  const { trdr, branch } = useMemo(() => {
+    // Prefer currentBranch if it's already set
+    if (currentBranch?.TRDR && currentBranch?.BRANCH) {
+      return {
+        trdr: String(currentBranch.TRDR),
+        branch: String(currentBranch.BRANCH),
+      };
+    }
 
-  const { data, isLoading } = useGetProductsPerFamily({ family, trdr, branch });
+    // Fall back to clientData if currentBranch is not yet set
+    if (clientData?.count === 1 && clientData?.data[0]) {
+      const firstBranch = clientData.data[0];
+      return {
+        trdr: firstBranch.TRDR ? String(firstBranch.TRDR) : undefined,
+        branch: firstBranch.BRANCH ? String(firstBranch.BRANCH) : undefined,
+      };
+    }
+
+    return { trdr: undefined, branch: undefined };
+  }, [currentBranch, clientData]);
+
+  const { data, isLoading } = useGetProductsPerFamily({
+    family,
+    trdr,
+    branch,
+  });
 
   useEffect(() => {
     appStore.persist.rehydrate();
@@ -35,6 +64,22 @@ export default function FamilyProducts() {
     if (!vat) return;
     mutate(vat);
   }, [vat, mutate]);
+
+  // Set currentBranch when clientData is available for L'ARTIGIANO
+  // The query will automatically refetch when trdr/branch change via useMemo
+  useEffect(() => {
+    if (
+      clientData &&
+      clientData.count === 1 &&
+      clientData.data[0]?.GROUP_CHAIN === "L'ARTIGIANO" &&
+      !currentBranch?.BRANCH
+    ) {
+      setCurrentBranch(clientData.data[0]);
+      if (clientData.data[0].BASKET_KEY) {
+        setBasketId(clientData.data[0].BASKET_KEY);
+      }
+    }
+  }, [clientData, currentBranch, setBasketId, setCurrentBranch]);
 
   const { data: cartData } = useGetCart({ trdr, branch });
 
@@ -56,6 +101,7 @@ export default function FamilyProducts() {
   }, [data, cartData]);
 
   if (!hydrated) return null;
+
   if (clientData && clientData?.count > 1 && !currentBranch?.BRANCH)
     redirect("/stores");
 
@@ -114,7 +160,3 @@ export default function FamilyProducts() {
     </>
   );
 }
-
- {/* <Heading
-        title={data?.[0]?.FAMILY ?? "Προϊόντα"}
-      /> */}

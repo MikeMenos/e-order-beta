@@ -37,6 +37,7 @@ export default function Home() {
   }, [setHydrated]);
 
   useEffect(() => {
+    // If there is only one branch, and the basket key is 0, we need to create a new basket with a 'fake' addition of a product to the cart
     if (
       clientData &&
       clientData?.count === 1 &&
@@ -57,6 +58,7 @@ export default function Home() {
         },
       });
     }
+    // If there is only one branch, and the basket key is not 0, we need to set the basket key
     if (
       clientData &&
       clientData?.count === 1 &&
@@ -75,8 +77,14 @@ export default function Home() {
   ]);
 
   if (!hydrated) return null;
+
+  // If there are more than one branch, and the current branch is not set, redirect to the stores page
   if (clientData && clientData?.count > 1 && !currentBranch?.BRANCH)
     redirect("/stores");
+
+  // If the current branch is Artigiano, redirect to the Artigiano products page
+  if (clientData && clientData?.data[0].GROUP_CHAIN === "L'ARTIGIANO")
+    redirect("/products/LARTIGIANO");
 
   if (isLoading || isPending) return <Loading />;
 

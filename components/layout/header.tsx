@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
@@ -23,7 +22,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Separator } from "@/components/ui/separator";
-import { ShoppingCart, LogOut, ChevronDown, Menu, Icon } from "lucide-react";
+import { ShoppingCart, LogOut, ChevronDown, Menu } from "lucide-react";
 import { useGetCart } from "@/hooks/useGetCart";
 import { appStore } from "@/stores/appStore";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
@@ -101,7 +100,11 @@ export default function Header() {
     }
 
     setCurrentBranch(branch);
-    router.push("/");
+    if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
+      router.push("/products/L'ARTIGIANO");
+    } else {
+      router.push("/");
+    }
   };
   const handleLogout = async () => {
     setBasketId(undefined);
@@ -121,16 +124,14 @@ export default function Header() {
             height={36}
             className="h-10 w-10 translate-y-px"
           />
-          {!pathname.startsWith("/products") && (
-            <Image
-              src={logo}
-              alt="Logo"
-              width={150}
-              height={40}
-              className="h-10 w-auto sm:h-11"
-              priority
-            />
-          )}
+          <Image
+            src={logo}
+            alt="Logo"
+            width={150}
+            height={40}
+            className="hidden sm:block h-10 w-auto sm:h-11"
+            priority
+          />
         </Link>
 
         {pathname !== "/stores" && pathname !== "/" && (
@@ -154,7 +155,7 @@ export default function Header() {
 
                 <div className="px-4 pb-4">
                   {clientData && clientData.data.length > 1 && (
-                    <nav className="flex flex-col gap-2">
+                    <nav className="flex flex-col gap-4">
                       {clientData.data.map((branch) => {
                         const isActive =
                           branch.BRANCH === currentBranch?.BRANCH;
@@ -356,10 +357,24 @@ export default function Header() {
             </>
           )}
 
+          {/* Logout button for mobile - homepage or stores page only */}
+          {(pathname === "/" || pathname === "/stores") && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="md:hidden bg-red-500 text-white hover:bg-red-600 hover:text-white"
+              onClick={handleLogout}
+            >
+              <LogOut className="mr-1 h-4 w-4" />
+              Logout
+            </Button>
+          )}
+
+          {/* Logout button for desktop - all pages */}
           <Button
             variant="outline"
             size="sm"
-            className="bg-red-500 text-white hover:bg-red-600 hover:text-white"
+            className="hidden md:flex bg-red-500 text-white hover:bg-red-600 hover:text-white"
             onClick={handleLogout}
           >
             <LogOut className="mr-1 h-4 w-4" />
