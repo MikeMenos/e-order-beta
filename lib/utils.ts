@@ -96,3 +96,17 @@ export const buildFirstBasketKeyPayload = ({
     },
   };
 };
+
+export function getGroupChainIconSrc(groupChain?: string) {
+  const text = (groupChain ?? "").toUpperCase();
+
+  if (text.includes("L'ARTIGIANO")) {
+    return "/group-chain/lartigiano.png";
+  }
+
+  if (text.includes("BEAT")) {
+    return "/group-chain/beat.png";
+  }
+
+  return null;
+}

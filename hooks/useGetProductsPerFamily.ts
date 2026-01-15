@@ -12,9 +12,6 @@ export function useGetProductsPerFamily({ family, trdr, branch }: Params) {
   return useQuery<IProductItem[], Error>({
     queryKey: ["products-per-family", family, trdr, branch],
     queryFn: async () => {
-      console.log("family", family);
-      console.log("trdr", trdr);
-      console.log("branch", branch);
       const { data } = await api.post("/get-products-per-family", {
         family,
         trdr,

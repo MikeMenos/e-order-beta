@@ -23,7 +23,7 @@ import logoIcon from "@/public/logo-icon.png";
 
 export default function Login() {
   const router = useRouter();
-  const { vat, setVat } = appStore();
+  const { vat, setVat, setCurrentBranch, setBasketId } = appStore();
 
   const [backendPin, setBackendPin] = useState<string | null>(null);
 
@@ -32,6 +32,11 @@ export default function Login() {
 
   const { mutate: clientDataMutation, isPending } = useGetClientData();
   const pinMutation = useVerifyPin();
+
+  useEffect(() => {
+    setCurrentBranch(undefined);
+    setBasketId(undefined);
+  }, [setCurrentBranch, setBasketId]);
 
   useEffect(() => {
     if (!backendPin) return;
@@ -110,9 +115,8 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen flex flex-col items-center justify-start">
       <div className="flex flex-col items-center gap-1 py-8">
-
         <Image
           src={logoIcon}
           alt="Logo icon"
@@ -154,7 +158,20 @@ export default function Login() {
 
             {backendPin && (
               <div className="grid gap-2">
-                <Label>6-ψήφιο PIN</Label>
+                <div className="flex items-center justify-between mb-2">
+                  <Label>6-ψήφιο PIN</Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="text-slate-500 hover:text-slate-700"
+                    onClick={() => {
+                      setBackendPin(null);
+                      setEnteredPin(Array(6).fill(""));
+                    }}
+                  >
+                    Επιστροφή στο ΑΦΜ
+                  </Button>
+                </div>
                 <div className="grid grid-cols-6 gap-2 w-full">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <Input

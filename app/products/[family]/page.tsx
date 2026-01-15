@@ -3,14 +3,16 @@
 import ProductCard from "@/components/product-card";
 import { Card, CardContent } from "@/components/ui/card";
 import Loading from "@/components/ui/loading";
+import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { useGetProductsPerFamily } from "@/hooks/useGetProductsPerFamily";
 import { useHandleOnSubmitProducts } from "@/hooks/useHandleOnSubmitProducts";
 import { IProductItem } from "@/lib/interfaces";
+import { buildFirstBasketKeyPayload } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
 import { redirect, usePathname } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 export default function FamilyProducts() {
   const {
@@ -25,6 +27,9 @@ export default function FamilyProducts() {
   const family = decodeURIComponent(pathname.split("/")[2] || "").trim();
 
   const { data: clientData, mutate } = useGetClientData();
+
+  const { mutate: addToCartMutation } = useAddToCart();
+  const hasTriggeredBasketCreation = useRef(false);
 
   // Derive trdr and branch from currentBranch if available, otherwise fall back to clientData
   // This ensures the query has the correct params even before currentBranch is set
@@ -68,18 +73,54 @@ export default function FamilyProducts() {
   // Set currentBranch when clientData is available for L'ARTIGIANO
   // The query will automatically refetch when trdr/branch change via useMemo
   useEffect(() => {
+    // If there is only one branch, and the basket key is 0, we need to create a new basket with a 'fake' addition of a product to the cart
+    if (
+      clientData &&
+      clientData?.count === 1 &&
+      clientData.data[0]?.GROUP_CHAIN === "L'ARTIGIANO" &&
+      clientData?.data[0].BASKET_KEY === "0" &&
+      !hasTriggeredBasketCreation.current &&
+      // Only run if currentBranch is not already set for this branch
+      (!currentBranch ||
+        currentBranch.TRDR !== clientData.data[0].TRDR ||
+        currentBranch.BRANCH !== clientData.data[0].BRANCH)
+    ) {
+      hasTriggeredBasketCreation.current = true;
+      const payload = buildFirstBasketKeyPayload({
+        trdr: Number(clientData?.data[0].TRDR),
+        branch: Number(clientData?.data[0].BRANCH),
+      });
+
+      addToCartMutation(payload, {
+        onSuccess: (data) => {
+          if (data.id) {
+            setBasketId(data.id);
+          }
+          setCurrentBranch(clientData?.data[0]);
+        },
+      });
+    }
+
     if (
       clientData &&
       clientData.count === 1 &&
       clientData.data[0]?.GROUP_CHAIN === "L'ARTIGIANO" &&
-      !currentBranch?.BRANCH
+      clientData?.data[0].BASKET_KEY !== "0"
     ) {
       setCurrentBranch(clientData.data[0]);
       if (clientData.data[0].BASKET_KEY) {
         setBasketId(clientData.data[0].BASKET_KEY);
       }
+      // Reset the ref when BASKET_KEY is not "0" to allow future basket creation if needed
+      hasTriggeredBasketCreation.current = false;
     }
-  }, [clientData, currentBranch, setBasketId, setCurrentBranch]);
+  }, [
+    clientData,
+    currentBranch,
+    setBasketId,
+    setCurrentBranch,
+    addToCartMutation,
+  ]);
 
   const { data: cartData } = useGetCart({ trdr, branch });
 
@@ -116,7 +157,7 @@ export default function FamilyProducts() {
         <CardContent className="p-0 lg:p-3 space-y-6 text-sm">
           {favProducts && favProducts.length > 0 && (
             <section>
-              <div className="relative pb-2 mb-3">
+              <div className="relative mb-3">
                 <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white">
                   Αγαπημένα Προϊόντα
                 </span>
@@ -137,7 +178,7 @@ export default function FamilyProducts() {
 
           {regProducts && regProducts.length > 0 && (
             <section>
-              <div className="pb-2 mb-3 mt-4">
+              <div className="mb-3">
                 <span className="inline-flex items-center rounded-full bg-black px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white">
                   Άλλα Προϊόντα
                 </span>

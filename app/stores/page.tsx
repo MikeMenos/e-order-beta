@@ -5,26 +5,12 @@ import { CardHeader, CardTitle } from "@/components/ui/card";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { IStoreInfo } from "@/lib/interfaces";
-import { buildFirstBasketKeyPayload } from "@/lib/utils";
+import { buildFirstBasketKeyPayload, getGroupChainIconSrc } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import logoIcon from "@/public/logo-icon.png";
 import Image from "next/image";
-
-function getGroupChainIconSrc(groupChain?: string) {
-  const text = (groupChain ?? "").toUpperCase();
-
-  if (text.includes("L'ARTIGIANO")) {
-    return "/group-chain/lartigiano.png";
-  }
-
-  if (text.includes("BEAT")) {
-    return "/group-chain/beat.png";
-  }
-
-  return null;
-}
 
 export default function Stores() {
   const { hydrated, setHydrated, setBasketId, vat, setCurrentBranch } =

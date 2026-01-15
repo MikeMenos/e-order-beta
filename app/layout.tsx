@@ -31,7 +31,7 @@ export default function RootLayout({
       >
         <QueryProvider>
           <Header />
-          <main className="mx-auto w-full max-w-6xl px-4 py-6 flex-1">
+          <main className="mx-auto w-full max-w-6xl p-2 flex-1">
             {children}
           </main>
 
