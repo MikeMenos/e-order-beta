@@ -84,7 +84,7 @@ export default function Home() {
 
   // If the current branch is Artigiano, redirect to the Artigiano products page
   if (clientData && clientData?.data[0].GROUP_CHAIN === "L'ARTIGIANO")
-    redirect("/products/ARTIGIANO");
+    redirect("/products/LARTIGIANO");
 
   if (isLoading || isPending) return <Loading />;
 

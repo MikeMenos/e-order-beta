@@ -26,17 +26,31 @@ export default function FamilyProducts() {
 
   const { data: clientData, mutate } = useGetClientData();
 
-  const trdr = clientData?.data[0].TRDR
-    ? String(clientData?.data[0].TRDR)
-    : undefined;
-  const branch = clientData?.data[0].BRANCH
-    ? String(clientData?.data[0].BRANCH)
-    : undefined;
-  const familyName =
-    clientData?.data[0].GROUP_CHAIN === "L'ARTIGIANO" ? undefined : family;
+  // Derive trdr and branch from currentBranch if available, otherwise fall back to clientData
+  // This ensures the query has the correct params even before currentBranch is set
+  const { trdr, branch } = useMemo(() => {
+    // Prefer currentBranch if it's already set
+    if (currentBranch?.TRDR && currentBranch?.BRANCH) {
+      return {
+        trdr: String(currentBranch.TRDR),
+        branch: String(currentBranch.BRANCH),
+      };
+    }
 
-  const { data, isLoading, refetch } = useGetProductsPerFamily({
-    family: familyName,
+    // Fall back to clientData if currentBranch is not yet set
+    if (clientData?.count === 1 && clientData?.data[0]) {
+      const firstBranch = clientData.data[0];
+      return {
+        trdr: firstBranch.TRDR ? String(firstBranch.TRDR) : undefined,
+        branch: firstBranch.BRANCH ? String(firstBranch.BRANCH) : undefined,
+      };
+    }
+
+    return { trdr: undefined, branch: undefined };
+  }, [currentBranch, clientData]);
+
+  const { data, isLoading } = useGetProductsPerFamily({
+    family,
     trdr,
     branch,
   });
@@ -51,17 +65,21 @@ export default function FamilyProducts() {
     mutate(vat);
   }, [vat, mutate]);
 
+  // Set currentBranch when clientData is available for L'ARTIGIANO
+  // The query will automatically refetch when trdr/branch change via useMemo
   useEffect(() => {
     if (
       clientData &&
-      clientData?.count === 1 &&
-      clientData?.data[0].GROUP_CHAIN === "L'ARTIGIANO"
+      clientData.count === 1 &&
+      clientData.data[0]?.GROUP_CHAIN === "L'ARTIGIANO" &&
+      !currentBranch?.BRANCH
     ) {
-      setCurrentBranch(clientData?.data[0]);
-      setBasketId(clientData?.data[0].BASKET_KEY);
-      refetch();
+      setCurrentBranch(clientData.data[0]);
+      if (clientData.data[0].BASKET_KEY) {
+        setBasketId(clientData.data[0].BASKET_KEY);
+      }
     }
-  }, [clientData]);
+  }, [clientData, currentBranch, setBasketId, setCurrentBranch]);
 
   const { data: cartData } = useGetCart({ trdr, branch });
 
@@ -141,10 +159,4 @@ export default function FamilyProducts() {
       </Card>
     </>
   );
-}
-
-{
-  /* <Heading
-        title={data?.[0]?.FAMILY ?? "Προϊόντα"}
-      /> */
 }
