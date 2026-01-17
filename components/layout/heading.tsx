@@ -17,12 +17,12 @@ export default function Heading({
     return (
         <div
             className={cn(
-                "mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+                "mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
                 className
             )}
         >
             <div className="flex flex-col gap-1">
-                <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+                <h1 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
                     {title}
                 </h1>
 

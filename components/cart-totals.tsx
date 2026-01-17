@@ -44,7 +44,7 @@ export function CartTotals({
         </CardHeader>
 
         <CardContent className="pb-4 space-y-4 text-sm p-0">
-          <div className="px-5 space-y-1">
+          <div className="px-3 space-y-1">
             <Label className="text-xs text-slate-500">
               Επιλογή: Ημερομηνία Παράδοσης
             </Label>
@@ -57,7 +57,7 @@ export function CartTotals({
             />
           </div>
 
-          <div className="px-5 space-y-1">
+          <div className="px-3 space-y-1">
             <Label className="text-xs text-slate-500">Σχόλια Παραγγελίας</Label>
             <Textarea
               className="bg-white"
