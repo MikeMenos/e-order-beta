@@ -135,7 +135,7 @@ export default function Login() {
       </div>
       <Card className="w-full max-w-[400px]">
         <CardHeader>
-          <CardTitle>Καλωσορίσατε στην εφαρμογή</CardTitle>
+          <CardTitle className="mt-2">Καλωσορίσατε στην εφαρμογή</CardTitle>
           <CardDescription>
             Εισάγετε τα στοιχεία σας για να συνδεθείτε
           </CardDescription>

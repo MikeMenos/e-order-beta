@@ -73,6 +73,8 @@ export interface SalDocEntry {
 export interface MtrDocEntry {
   TRUCKS: number;
   DELIVDATE: string;
+  DEPTRDR?: number;
+  BILLTRDR?: number;
 }
 
 export interface ItemLineEntry {

@@ -5,15 +5,14 @@ import { CardHeader, CardTitle } from "@/components/ui/card";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { IStoreInfo } from "@/lib/interfaces";
-import { buildFirstBasketKeyPayload, getGroupChainIconSrc } from "@/lib/utils";
+import { buildFirstBasketKeyPayload } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import logoIcon from "@/public/logo-icon.png";
-import Image from "next/image";
+
 
 export default function Stores() {
-  const { hydrated, setHydrated, setBasketId, vat, setCurrentBranch } =
+  const { hydrated, setHydrated, setBasketId, vat, setCurrentBranch,currentBranch} =
     appStore();
   const router = useRouter();
 
@@ -34,7 +33,6 @@ export default function Stores() {
 
   const stores = data?.data ?? [];
   const headStore = stores[0];
-  const headerIconSrc = getGroupChainIconSrc(headStore?.GROUP_CHAIN);
 
   const handleBranchChange = (branch: IStoreInfo) => {
     if (isPending) return;
@@ -55,7 +53,7 @@ export default function Stores() {
             mutate(vat);
           }
           if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
-            router.push("/products/L'ARTIGIANO");
+            router.push("/products/LARTIGIANO");
           } else {
             router.push("/");
           }
@@ -65,7 +63,7 @@ export default function Stores() {
     } else if (branch.BASKET_KEY) {
       setBasketId(branch.BASKET_KEY);
       if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
-        router.push("/products/L'ARTIGIANO");
+        router.push("/products/LARTIGIANO");
       } else {
         router.push("/");
       }
@@ -79,21 +77,6 @@ export default function Stores() {
       {headStore && (
         <CardHeader className="mb-4 px-0 overflow-x-hidden">
           <div className="flex flex-col gap-2 min-w-0">
-            <span className="flex h-8 md:h-12 w-25 md:w-32 items-center justify-center overflow-hidden dark:bg-zinc-800">
-              {headerIconSrc ? (
-                <img
-                  src={headerIconSrc}
-                  alt="Group icon"
-                  className="h-full w-full object-contain"
-                />
-              ) : (
-                <Image
-                  src={logoIcon}
-                  alt="Logo"
-                  className="h-full w-full object-contain opacity-80"
-                />
-              )}
-            </span>
 
             <div className="flex items-center justify-between gap-3 min-w-0">
               <CardTitle className="min-w-0 truncate text-sm md:text-xl font-semibold tracking-tight leading-tight">

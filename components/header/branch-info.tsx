@@ -13,6 +13,7 @@ export function BranchInfo({
   className = "",
   isActive = false,
 }: BranchInfoProps) {
+  
   return (
     <div className={`min-w-0 flex flex-col items-start text-left ${className}`}>
       {showLabel && (
@@ -30,9 +31,9 @@ export function BranchInfo({
         className={`w-full truncate text-[10px] ${
           isActive ? "text-white/80" : "text-slate-500"
         }`}
-        title={branch.ADDRESS}
+        title={branch.ADDRESS} 
       >
-        {branch.ADDRESS}
+        {branch.ADDRESS}, {branch.ZIP} - {branch.CITY}
       </span>
     </div>
   );

@@ -159,7 +159,7 @@ export default function FamilyProducts() {
             <section>
               <div className="relative mb-3">
                 <span className="inline-flex items-center rounded-full bg-primary px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white">
-                  Αγαπημένα Προϊόντα
+                  Αγαπημενα Προϊοντα
                 </span>
               </div>
 
@@ -180,7 +180,7 @@ export default function FamilyProducts() {
             <section>
               <div className="mb-3">
                 <span className="inline-flex items-center rounded-full bg-black px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white">
-                  Άλλα Προϊόντα
+                  Αλλα Προϊοντα
                 </span>
               </div>
 

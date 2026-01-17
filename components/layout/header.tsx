@@ -85,7 +85,7 @@ export default function Header() {
 
     setCurrentBranch(branch);
     if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
-      router.push("/products/L'ARTIGIANO");
+      router.push("/products/LARTIGIANO");
     } else {
       router.push("/");
     }
@@ -101,7 +101,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full max-w-full overflow-x-hidden border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">
       <div className="flex h-16 w-full max-w-full min-w-0 items-center px-2 sm:px-4 justify-between overflow-x-hidden">
-        <Logo pathname={pathname} />
+        <Logo pathname={pathname} clientData={clientData} />
         {!isFetching && (
           <>
             {pathname !== "/stores" && (
@@ -129,7 +129,7 @@ export default function Header() {
             )}
 
             <div className="flex items-center sm:gap-2 md:gap-4 min-w-0">
-              {pathname !== "/stores" && pathname !== "/" && (
+              {pathname !== "/stores" && (
                 <>
                   <BranchSelector
                     currentBranch={currentBranch}

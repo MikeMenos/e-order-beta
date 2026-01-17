@@ -4,14 +4,18 @@ import logo from "@/public/logo.png";
 import logoIcon from "@/public/logo-icon.png";
 import { appStore } from "@/stores/appStore";
 import { getGroupChainIconSrc } from "@/lib/utils";
+import { ClientResponse } from "@/lib/interfaces";
 
 interface LogoProps {
   pathname: string;
+  clientData?: ClientResponse;
 }
 
-export function Logo({ pathname }: LogoProps) {
+export function Logo({ pathname, clientData }: LogoProps) {
   const { currentBranch } = appStore();
-  const headerIconSrc = getGroupChainIconSrc(currentBranch?.GROUP_CHAIN);
+
+  const groupChain = clientData?.data[0]?.GROUP_CHAIN;
+  const headerIconSrc = getGroupChainIconSrc(groupChain);
   const logoContent = (
     <>
       {headerIconSrc ? (

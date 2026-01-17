@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Trash2 } from "lucide-react";
-import { FC, useState } from "react";
+import { FC, useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { IProductItem } from "@/lib/interfaces";
 import { Input } from "./ui/input";
@@ -36,6 +36,19 @@ const ProductCard: FC<ProductCardProps> = ({
   const pathname = usePathname();
   const [qty, setQty] = useState<number | "">(product.Qty2);
   const [error, setError] = useState("");
+  const prevQty2Ref = useRef(product.Qty2);
+
+  // Sync local qty state with product.Qty2 when it changes
+  // This is necessary because when productsWithQty updates (e.g., after useGetProductsPerFamily call),
+  // the product.Qty2 prop changes but the local state doesn't automatically update
+  // We need to sync state from props here because the same product (same CODE) can have different Qty2 values
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (product.Qty2 !== prevQty2Ref.current) {
+      prevQty2Ref.current = product.Qty2;
+      setQty(product.Qty2);
+    }
+  }, [product.Qty2]);
 
   const IMAGE_BASE_URL = "https://ergastiri.oncloud.gr/s1services?filename=";
 

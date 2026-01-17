@@ -72,7 +72,7 @@ export default function Cart() {
         data: {
           SALDOC: [
             {
-              SERIES: "7024",
+              SERIES: currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? "7020" : "7024",
               TRDR: Number(currentBranch?.TRDR),
               TRDBRANCH: Number(currentBranch?.BRANCH),
               PAYMENT: 1006,
@@ -86,6 +86,8 @@ export default function Cart() {
             {
               TRUCKS: 2,
               DELIVDATE: delivDate,
+              DEPTRDR: currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? 185 : undefined,
+              BILLTRDR : currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? 185 : undefined,
             },
           ],
           ITELINES: updatedLines,

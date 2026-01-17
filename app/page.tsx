@@ -54,7 +54,6 @@ export default function Home() {
             setBasketId(data.id);
           }
           setCurrentBranch(clientData?.data[0]);
-          queryClient.invalidateQueries({ queryKey: ["cart"] });
         },
       });
     }
@@ -66,8 +65,8 @@ export default function Home() {
     ) {
       setBasketId(clientData?.data[0].BASKET_KEY);
       setCurrentBranch(clientData?.data[0]);
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
     }
+    queryClient.invalidateQueries({ queryKey: ["cart"] });
   }, [
     clientData,
     addToCartMutation,
@@ -77,7 +76,6 @@ export default function Home() {
   ]);
 
   if (!hydrated) return null;
-
   // If there are more than one branch, and the current branch is not set, redirect to the stores page
   if (clientData && clientData?.count > 1 && !currentBranch?.BRANCH)
     redirect("/stores");
