@@ -13,6 +13,7 @@ import { IProductItem } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { X } from "lucide-react";
 
 export default function FamilyProducts() {
   const {
@@ -118,13 +119,18 @@ export default function FamilyProducts() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center mb-1">
+      <div className="flex gap-2 flex-row sm:items-center mb-1">
         <Input
           placeholder="Αναζήτηση…"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           className="sm:max-w-xs"
         />
+        {filter && (
+          <Button variant="ghost" onClick={() => setFilter("")}>
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       <Card className="shadow-none rounded-2xl">

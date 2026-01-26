@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 export async function setPinToCookies(pin: string, afm?: string) {
   const cookieStore = await cookies();
-  
+
   // For special AFM values, set a special cookie
   if (afm === "999999999" || afm === "987654321") {
     cookieStore.set("ergastirio-special-session", afm, {
@@ -24,4 +24,8 @@ export async function setPinToCookies(pin: string, afm?: string) {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
   }
+}
+
+export async function isSpecialSession() {
+  return (await cookies()).has("ergastirio-special-session");
 }

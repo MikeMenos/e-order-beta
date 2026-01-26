@@ -31,9 +31,10 @@ export function proxy(req: NextRequest) {
   // Case 1: If user has regular session (not special) and tries to access /clients, redirect back
   if (session && !specialSession && isClients) {
     // Try to redirect to referer, otherwise redirect to home
-    const redirectUrl = refererPath !== "/clients" && refererPath !== "/login" 
-      ? refererPath 
-      : "/";
+    const redirectUrl =
+      refererPath !== "/clients" && refererPath !== "/login"
+        ? refererPath
+        : "/";
     return NextResponse.redirect(new URL(redirectUrl, req.url));
   }
 

@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { QueryProvider } from "../components/query-provider";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
 import { Toaster } from "react-hot-toast";
 import React from "react";
+import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
@@ -25,17 +24,12 @@ export default function RootLayout({
       <body
         suppressHydrationWarning
         className={cn(
-          "bg-zinc-50  dark:bg-zinc-900 text-foreground antialiased",
-          "min-h-screen flex flex-col"
+          "bg-zinc-50 dark:bg-zinc-900 text-foreground antialiased",
+          "min-h-screen flex flex-col",
         )}
       >
         <QueryProvider>
-          <Header />
-          <main className="mx-auto w-full max-w-6xl py-2 px-3 flex-1">
-            {children}
-          </main>
-
-          <Footer />
+          <AppShell>{children}</AppShell>
 
           <Toaster
             toastOptions={{
@@ -47,7 +41,7 @@ export default function RootLayout({
                 duration: 3000,
                 style: { padding: "1rem" },
               },
-              position: "bottom-center",
+              position: "top-center",
             }}
           />
         </QueryProvider>

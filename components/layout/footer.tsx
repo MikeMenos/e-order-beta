@@ -8,7 +8,6 @@ export default function Footer() {
   const pathname = usePathname();
   const { currentBranch } = appStore();
 
-  if (pathname === "/login") return null;
   return (
     <>
       {/* Fixed branch info for mobile on home page */}

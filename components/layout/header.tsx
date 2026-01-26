@@ -16,10 +16,12 @@ import { CartButton } from "@/components/header/cart-button";
 import { LogoutButton } from "@/components/header/logout-button";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { isSpecialSession } from "@/app/login/actions/setPInToCookies";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [specialSession, setSpecialSession] = useState(false);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -40,6 +42,7 @@ export default function Header() {
   useEffect(() => {
     appStore.persist.rehydrate();
     setHydrated();
+    isSpecialSession().then(setSpecialSession);
   }, [setHydrated]);
 
   useEffect(() => {
@@ -50,11 +53,11 @@ export default function Header() {
   useEffect(() => {
     if (!hydrated) return;
 
-    // If special AFM user without currentBranch, redirect to /clients
-    if (isSpecialAfm && !currentBranch) {
+    // If specialSession AFM user without currentBranch, redirect to /clients
+    if (!currentBranch && specialSession) {
       router.replace("/clients");
     }
-  }, [hydrated, currentBranch, pathname, router, isSpecialAfm]);
+  }, [hydrated, currentBranch, pathname, router, specialSession]);
 
   const trdr = currentBranch?.TRDR ? String(currentBranch.TRDR) : undefined;
   const branch = currentBranch?.BRANCH
@@ -65,9 +68,6 @@ export default function Header() {
     trdr,
     branch,
   });
-
-  if (!hydrated) return null;
-  if (pathname === "/login") return null;
 
   const showClientsLink = isSpecialAfm && !pathname.startsWith("/clients");
   const isPending = false;
@@ -92,7 +92,7 @@ export default function Header() {
     router.replace("/login");
   };
 
-  if (pathname === "/login") return null;
+  if (!hydrated) return null;
 
   return (
     <header className="sticky top-0 z-50 w-full max-w-full overflow-x-hidden border-b bg-white/80 shadow-[0_1px_4px_rgba(0,0,0,0.08)] dark:bg-black/80 backdrop-blur">

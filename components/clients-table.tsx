@@ -8,13 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Building2,
-  MapPin,
-  Phone,
-  Mail,
-  Navigation,
-} from "lucide-react";
+import { Building2, MapPin, Phone, Mail, Navigation } from "lucide-react";
 import Loading from "./ui/loading";
 import { useRouter } from "next/navigation";
 import { appStore } from "@/stores/appStore";
@@ -41,7 +35,7 @@ export default function ClientsTable({
   };
 
   if (loading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (error) {
@@ -78,7 +72,7 @@ export default function ClientsTable({
                   {c.NAME}
                 </CardTitle>
                 <CardDescription className="flex items-center gap-1.5 mt-1.5">
-                ΑΦΜ: 
+                  ΑΦΜ:
                   <span className="font-mono text-xs">{c.AFM}</span>
                 </CardDescription>
               </div>

@@ -23,31 +23,47 @@ import logoIcon from "@/public/logo-icon.png";
 
 export default function Login() {
   const router = useRouter();
-  const { vat, setVat, setCurrentBranch, setBasketId } = appStore();
+  const { vat, setVat } = appStore();
 
   const [backendPin, setBackendPin] = useState<string | null>(null);
   const [isSpecialAfm, setIsSpecialAfm] = useState(false);
   const [specialPassword, setSpecialPassword] = useState<string | null>(null);
 
   const pinRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const [enteredPin, setEnteredPin] = useState(Array(6).fill(""));
+  const [enteredPin, setEnteredPin] = useState<string[]>([]);
 
   const { mutate: clientDataMutation, isPending } =
     useGetClientData(isSpecialAfm);
   const pinMutation = useVerifyPin();
 
-  useEffect(() => {
-    setCurrentBranch(undefined);
-    setBasketId(undefined);
-  }, [setCurrentBranch, setBasketId]);
+  // Decide PIN length dynamically based on backendPin (normal flow) or specialPassword (special AFM flow)
+  const pinLength =
+    (isSpecialAfm ? specialPassword?.length : backendPin?.length) ?? 0;
 
   useEffect(() => {
-    if (!backendPin && !isSpecialAfm) return;
+    appStore.getState().resetState();
+    appStore.persist.clearStorage();
+  }, []);
+
+  // Whenever pinLength becomes known/changes, reset input state to the correct length
+  useEffect(() => {
+    if (pinLength > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setEnteredPin(Array(pinLength).fill(""));
+      pinRefs.current = [];
+    } else {
+      setEnteredPin([]);
+      pinRefs.current = [];
+    }
+  }, [pinLength]);
+
+  useEffect(() => {
+    if (pinLength === 0) return;
 
     setTimeout(() => {
       pinRefs.current[0]?.focus();
     }, 0);
-  }, [backendPin, isSpecialAfm]);
+  }, [pinLength]);
 
   const handlePinChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "");
@@ -63,12 +79,12 @@ export default function Login() {
     updated[index] = digit;
     setEnteredPin(updated);
 
-    if (index < 5) {
+    if (index < pinLength - 1) {
       pinRefs.current[index + 1]?.focus();
       pinRefs.current[index + 1]?.select();
     }
 
-    if (updated.every((d) => d !== "")) {
+    if (updated.length === pinLength && updated.every((d) => d !== "")) {
       onSubmitPin(updated.join(""));
     }
   };
@@ -99,18 +115,21 @@ export default function Login() {
     if (vat === "999999999") {
       setIsSpecialAfm(true);
       setSpecialPassword("996633");
+      setBackendPin(null);
       return;
     }
 
     if (vat === "987654321") {
       setIsSpecialAfm(true);
       setSpecialPassword("130565");
+      setBackendPin(null);
       return;
     }
 
     // Normal flow for other AFMs
     setIsSpecialAfm(false);
     setSpecialPassword(null);
+
     clientDataMutation(vat, {
       onSuccess: (data) => {
         setBackendPin(data?.data[0].PIN_A ?? null);
@@ -128,7 +147,7 @@ export default function Login() {
         errorToast("Λάθος κωδικός");
         return;
       }
-      // For special AFMs, proceed with login and navigate to clients
+
       pinMutation.mutate(
         { pin, afm: vat },
         {
@@ -173,6 +192,7 @@ export default function Login() {
           className="h-10 w-auto mt-0 sm:h-16"
         />
       </div>
+
       <Card className="w-full max-w-[400px]">
         <CardHeader>
           <CardTitle className="mt-2">Καλωσορίσατε στην εφαρμογή</CardTitle>
@@ -196,17 +216,17 @@ export default function Login() {
               </div>
             )}
 
-            {(backendPin || isSpecialAfm) && (
+            {pinLength > 0 && (backendPin || isSpecialAfm) && (
               <div className="grid gap-2">
                 <div className="flex items-center justify-between mb-2">
-                  <Label>6-ψήφιο PIN</Label>
+                  <Label>{pinLength}-ψήφιο PIN</Label>
                   <Button
                     type="button"
                     variant="ghost"
                     className="text-slate-500 hover:text-slate-700"
                     onClick={() => {
                       setBackendPin(null);
-                      setEnteredPin(Array(6).fill(""));
+                      setEnteredPin([]);
                       setIsSpecialAfm(false);
                       setSpecialPassword(null);
                     }}
@@ -214,8 +234,14 @@ export default function Login() {
                     Επιστροφή στο ΑΦΜ
                   </Button>
                 </div>
-                <div className="grid grid-cols-6 gap-2 w-full">
-                  {Array.from({ length: 6 }).map((_, i) => (
+
+                <div
+                  className="grid gap-2 w-full"
+                  style={{
+                    gridTemplateColumns: `repeat(${pinLength}, minmax(0, 1fr))`,
+                  }}
+                >
+                  {Array.from({ length: pinLength }).map((_, i) => (
                     <Input
                       key={i}
                       ref={(el) => {
@@ -247,7 +273,7 @@ export default function Login() {
             <Button
               className="w-full"
               onClick={() => onSubmitPin(enteredPin.join(""))}
-              disabled={pinMutation.isPending}
+              disabled={pinMutation.isPending || enteredPin.some((d) => !d)}
             >
               {pinMutation.isPending
                 ? "Γίνεται επαλήθευση..."

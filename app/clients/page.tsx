@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useGetClientsAll } from "@/hooks/useGetClientsAll";
 import type { IStoreInfo } from "@/lib/interfaces";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { appStore } from "@/stores/appStore";
 
 const ITEMS_PER_PAGE = 20;
@@ -76,7 +76,7 @@ export default function ClientsPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl p-4 sm:p-6">
+    <main className="mx-auto w-full max-w-6xl">
       <div className="mb-4">
         <h1 className="text-xl font-semibold">Πελάτες</h1>
         <div className="flex items-center gap-4 mt-1">
@@ -94,7 +94,7 @@ export default function ClientsPage() {
       </div>
 
       <div className="space-y-4">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex gap-2 flex-row sm:items-center">
           <Input
             placeholder="Αναζήτηση σε όλα τα πεδία…"
             value={q}
@@ -104,11 +104,11 @@ export default function ClientsPage() {
             }}
             className="sm:max-w-md"
           />
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={onClear} disabled={!q.trim()}>
-              Καθαρισμός
+          {q.trim() && (
+            <Button variant="ghost" onClick={onClear}>
+              <X className="h-4 w-4" />
             </Button>
-          </div>
+          )}
         </div>
 
         <ClientsTable
