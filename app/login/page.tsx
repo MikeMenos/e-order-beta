@@ -26,11 +26,14 @@ export default function Login() {
   const { vat, setVat, setCurrentBranch, setBasketId } = appStore();
 
   const [backendPin, setBackendPin] = useState<string | null>(null);
+  const [isSpecialAfm, setIsSpecialAfm] = useState(false);
+  const [specialPassword, setSpecialPassword] = useState<string | null>(null);
 
   const pinRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [enteredPin, setEnteredPin] = useState(Array(6).fill(""));
 
-  const { mutate: clientDataMutation, isPending } = useGetClientData();
+  const { mutate: clientDataMutation, isPending } =
+    useGetClientData(isSpecialAfm);
   const pinMutation = useVerifyPin();
 
   useEffect(() => {
@@ -39,12 +42,12 @@ export default function Login() {
   }, [setCurrentBranch, setBasketId]);
 
   useEffect(() => {
-    if (!backendPin) return;
+    if (!backendPin && !isSpecialAfm) return;
 
     setTimeout(() => {
       pinRefs.current[0]?.focus();
     }, 0);
-  }, [backendPin]);
+  }, [backendPin, isSpecialAfm]);
 
   const handlePinChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "");
@@ -72,7 +75,7 @@ export default function Login() {
 
   const handlePinKeyDown = (
     index: number,
-    e: KeyboardEvent<HTMLInputElement>
+    e: KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace") {
       if (enteredPin[index]) {
@@ -92,9 +95,25 @@ export default function Login() {
   const onSubmitVat = () => {
     if (!vat) return;
 
+    // Special AFM handling
+    if (vat === "999999999") {
+      setIsSpecialAfm(true);
+      setSpecialPassword("996633");
+      return;
+    }
+
+    if (vat === "987654321") {
+      setIsSpecialAfm(true);
+      setSpecialPassword("130565");
+      return;
+    }
+
+    // Normal flow for other AFMs
+    setIsSpecialAfm(false);
+    setSpecialPassword(null);
     clientDataMutation(vat, {
       onSuccess: (data) => {
-        setBackendPin(data.data[0].PIN_A);
+        setBackendPin(data?.data[0].PIN_A ?? null);
       },
       onError: () => {
         errorToast("Δε βρέθηκαν στοιχεία για το συγκεκριμένο ΑΦΜ");
@@ -103,15 +122,36 @@ export default function Login() {
   };
 
   const onSubmitPin = (pin: string) => {
+    // Handle special AFM cases
+    if (isSpecialAfm && specialPassword) {
+      if (pin !== specialPassword) {
+        errorToast("Λάθος κωδικός");
+        return;
+      }
+      // For special AFMs, proceed with login and navigate to clients
+      pinMutation.mutate(
+        { pin, afm: vat },
+        {
+          onSuccess: () => router.push("/clients"),
+          onError: () => errorToast("Αποτυχία σύνδεσης"),
+        },
+      );
+      return;
+    }
+
+    // Normal flow for regular AFMs
     if (pin !== backendPin) {
       errorToast("Λάθος PIN");
       return;
     }
 
-    pinMutation.mutate(pin, {
-      onSuccess: () => router.push("/"),
-      onError: () => errorToast("Αποτυχία σύνδεσης"),
-    });
+    pinMutation.mutate(
+      { pin },
+      {
+        onSuccess: () => router.push("/"),
+        onError: () => errorToast("Αποτυχία σύνδεσης"),
+      },
+    );
   };
 
   return (
@@ -143,7 +183,7 @@ export default function Login() {
 
         <CardContent>
           <div className="flex flex-col gap-6">
-            {!backendPin && (
+            {!backendPin && !isSpecialAfm && (
               <div className="grid gap-2">
                 <Label htmlFor="AFM">ΑΦΜ</Label>
                 <Input
@@ -156,7 +196,7 @@ export default function Login() {
               </div>
             )}
 
-            {backendPin && (
+            {(backendPin || isSpecialAfm) && (
               <div className="grid gap-2">
                 <div className="flex items-center justify-between mb-2">
                   <Label>6-ψήφιο PIN</Label>
@@ -167,6 +207,8 @@ export default function Login() {
                     onClick={() => {
                       setBackendPin(null);
                       setEnteredPin(Array(6).fill(""));
+                      setIsSpecialAfm(false);
+                      setSpecialPassword(null);
                     }}
                   >
                     Επιστροφή στο ΑΦΜ
@@ -193,7 +235,7 @@ export default function Login() {
         </CardContent>
 
         <CardFooter className="flex-col gap-2">
-          {!backendPin ? (
+          {!backendPin && !isSpecialAfm ? (
             <Button
               className="w-full"
               onClick={onSubmitVat}

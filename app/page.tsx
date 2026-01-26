@@ -2,17 +2,13 @@
 
 import ProductCategories from "@/components/product-categories";
 import Loading from "@/components/ui/loading";
-import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { useGetFamilies } from "@/hooks/useGetFamilies";
-import { buildFirstBasketKeyPayload } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
-import { useQueryClient } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Home() {
-  const queryClient = useQueryClient();
   const {
     setHydrated,
     hydrated,
@@ -21,10 +17,13 @@ export default function Home() {
     vat,
     setCurrentBranch,
   } = appStore();
-
+  const isSpecialAfm = vat === "999999999" || vat === "987654321";
   const { data, isLoading } = useGetFamilies();
-  const { mutate: addToCartMutation } = useAddToCart();
-  const { data: clientData, mutate, isPending } = useGetClientData();
+  const {
+    data: clientData,
+    mutate,
+    isPending,
+  } = useGetClientData(isSpecialAfm);
 
   useEffect(() => {
     if (!vat) return;
@@ -37,43 +36,13 @@ export default function Home() {
   }, [setHydrated]);
 
   useEffect(() => {
-    // If there is only one branch, and the basket key is 0, we need to create a new basket with a 'fake' addition of a product to the cart
-    if (
-      clientData &&
-      clientData?.count === 1 &&
-      clientData?.data[0].BASKET_KEY === "0"
-    ) {
-      const payload = buildFirstBasketKeyPayload({
-        trdr: Number(clientData?.data[0].TRDR),
-        branch: Number(clientData?.data[0].BRANCH),
-      });
-
-      addToCartMutation(payload, {
-        onSuccess: (data) => {
-          if (data.id) {
-            setBasketId(data.id);
-          }
-          setCurrentBranch(clientData?.data[0]);
-        },
-      });
+    if (!clientData || clientData.count !== 1) return;
+    const branch = clientData.data[0];
+    setCurrentBranch(branch);
+    if (branch.BASKET_KEY && branch.BASKET_KEY !== "0") {
+      setBasketId(branch.BASKET_KEY);
     }
-    // If there is only one branch, and the basket key is not 0, we need to set the basket key
-    if (
-      clientData &&
-      clientData?.count === 1 &&
-      clientData?.data[0].BASKET_KEY !== "0"
-    ) {
-      setBasketId(clientData?.data[0].BASKET_KEY);
-      setCurrentBranch(clientData?.data[0]);
-    }
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
-  }, [
-    clientData,
-    addToCartMutation,
-    setBasketId,
-    setCurrentBranch,
-    queryClient,
-  ]);
+  }, [clientData, setCurrentBranch, setBasketId]);
 
   if (!hydrated) return null;
   // If there are more than one branch, and the current branch is not set, redirect to the stores page
@@ -81,7 +50,7 @@ export default function Home() {
     redirect("/stores");
 
   // If the current branch is Artigiano, redirect to the Artigiano products page
-  if (clientData && clientData?.data[0].GROUP_CHAIN === "L'ARTIGIANO")
+  if (currentBranch && currentBranch.GROUP_CHAIN === "L'ARTIGIANO")
     redirect("/products/LARTIGIANO");
 
   if (isLoading || isPending) return <Loading />;

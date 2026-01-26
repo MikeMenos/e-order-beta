@@ -49,6 +49,7 @@ export function Logo({ pathname, clientData }: LogoProps) {
 
   if (
     pathname === "/stores" ||
+    pathname.startsWith("/clients") ||
     (currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" &&
       pathname.startsWith("/products"))
   ) {

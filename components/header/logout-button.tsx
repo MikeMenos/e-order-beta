@@ -30,7 +30,7 @@ export function LogoutButton({
           onClick={onLogout}
         >
           <LogOut className="mr-1 h-4 w-4" />
-          Logout
+          Αποσύνδεση
         </Button>
       )}
 
@@ -42,7 +42,7 @@ export function LogoutButton({
           onClick={onLogout}
         >
           <LogOut className="mr-1 h-4 w-4" />
-          Logout
+          Αποσύνδεση
         </Button>
       )}
     </>

@@ -14,6 +14,8 @@ type AppState = {
 
   hydrated: boolean;
   setHydrated: () => void;
+
+  resetState: () => void;
 };
 
 export const appStore = create<AppState>()(
@@ -30,10 +32,17 @@ export const appStore = create<AppState>()(
 
       hydrated: false,
       setHydrated: () => set({ hydrated: true }),
+
+      resetState: () =>
+        set({
+          vat: undefined,
+          basketId: undefined,
+          currentBranch: undefined,
+        }),
     }),
     {
       name: "app-storage",
       skipHydration: true,
-    }
-  )
+    },
+  ),
 );

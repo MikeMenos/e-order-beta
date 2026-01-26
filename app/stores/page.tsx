@@ -2,27 +2,24 @@
 
 import StoreCard from "@/components/store-card";
 import { CardHeader, CardTitle } from "@/components/ui/card";
-import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { IStoreInfo } from "@/lib/interfaces";
-import { buildFirstBasketKeyPayload } from "@/lib/utils";
 import { appStore } from "@/stores/appStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-
 export default function Stores() {
-  const { hydrated, setHydrated, setBasketId, vat, setCurrentBranch,currentBranch} =
+  const { hydrated, setHydrated, setBasketId, vat, setCurrentBranch } =
     appStore();
   const router = useRouter();
+  const isSpecialAfm = vat === "999999999" || vat === "987654321";
 
   useEffect(() => {
     appStore.persist.rehydrate();
     setHydrated();
   }, [setHydrated]);
 
-  const { mutate: addToCartMutation, isPending } = useAddToCart();
-  const { data, mutate } = useGetClientData();
+  const { data, mutate } = useGetClientData(isSpecialAfm);
 
   useEffect(() => {
     if (!vat) return;
@@ -35,41 +32,15 @@ export default function Stores() {
   const headStore = stores[0];
 
   const handleBranchChange = (branch: IStoreInfo) => {
-    if (isPending) return;
-
-    // If there is only one branch, and the basket key is 0, we need to create a new basket with a 'fake' addition of a product to the cart
-    if (branch.BASKET_KEY === "0") {
-      const payload = buildFirstBasketKeyPayload({
-        trdr: Number(branch.TRDR),
-        branch: Number(branch.BRANCH),
-      });
-
-      addToCartMutation(payload, {
-        onSuccess: (data) => {
-          if (data.id) {
-            setBasketId(data.id);
-          }
-          if (vat) {
-            mutate(vat);
-          }
-          if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
-            router.push("/products/LARTIGIANO");
-          } else {
-            router.push("/");
-          }
-        },
-      });
-      // If there is only one branch, and the basket key is not 0, we need to set the basket key
-    } else if (branch.BASKET_KEY) {
-      setBasketId(branch.BASKET_KEY);
-      if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
-        router.push("/products/LARTIGIANO");
-      } else {
-        router.push("/");
-      }
-    }
-
     setCurrentBranch(branch);
+    if (branch.BASKET_KEY && branch.BASKET_KEY !== "0") {
+      setBasketId(branch.BASKET_KEY);
+    }
+    if (branch.GROUP_CHAIN === "L'ARTIGIANO") {
+      router.push("/products/LARTIGIANO");
+    } else {
+      router.push("/");
+    }
   };
 
   return (
@@ -100,7 +71,7 @@ export default function Stores() {
             onClick={() => handleBranchChange(item)}
             className="mb-4 break-inside-avoid cursor-pointer"
           >
-            <StoreCard data={item} isPending={isPending} />
+            <StoreCard data={item} isPending={false} />
           </div>
         ))}
       </div>

@@ -1,27 +1,29 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { CartTotals } from "@/components/cart-totals";
+import Heading from "@/components/layout/heading";
 import { OrderSummary } from "@/components/order-summary";
 import { successToast } from "@/components/toasts";
 import EmptyCart from "@/components/ui/empty-cart";
 import Loading from "@/components/ui/loading";
 import { useAddToCart } from "@/hooks/useAddToCart";
 import { useGetCart } from "@/hooks/useGetCart";
+import { useGetCartPricing } from "@/hooks/useGetCartPricing";
 import { useGetClientData } from "@/hooks/useGetClientData";
 import { AddToCartPayload, IProductItem } from "@/lib/interfaces";
 import { appStore } from "@/stores/appStore";
 
 export default function Cart() {
   const { basketId, vat, currentBranch } = appStore();
-
+  const isSpecialAfm = vat === "999999999" || vat === "987654321";
   const [editedQuantities, setEditedQuantities] = useState<
     Record<number, number>
   >({});
   const [comments, setComments] = useState("");
   const [delivDate, setDelivDate] = useState("");
 
-  const { mutate: getClientData } = useGetClientData();
+  const { mutate: getClientData } = useGetClientData(isSpecialAfm);
 
   useEffect(() => {
     if (!vat) return;
@@ -34,6 +36,33 @@ export default function Cart() {
     : undefined;
 
   const { data, isLoading } = useGetCart({ trdr, branch });
+  const isVat999999999 = vat === "999999999";
+  const { data: pricingData, isLoading: isPricingLoading } = useGetCartPricing({
+    basketId: basketId ?? undefined,
+    enabled: isVat999999999,
+  });
+
+  const enrichedCart = useMemo(() => {
+    if (!data?.data) return data;
+    if (!isVat999999999 || !pricingData?.data?.ITELINES) {
+      return data;
+    }
+    const itelines = pricingData.data.ITELINES;
+    const enriched = data.data.map((item) => {
+      const match = itelines.find(
+        (line) => String(line.MTRL) === String(item.MTRL),
+      );
+      if (!match) return item;
+      return {
+        ...item,
+        LINEVAL: match.LINEVAL,
+        SXPERC: match.SXPERC,
+      };
+    });
+    return { ...data, data: enriched };
+  }, [data, isVat999999999, pricingData?.data?.ITELINES]);
+
+  const sumAmnt = pricingData?.data?.SALDOC?.[0]?.SUMAMNT;
 
   const { mutateAsync: addToCart, isPending } = useAddToCart();
 
@@ -72,7 +101,8 @@ export default function Cart() {
         data: {
           SALDOC: [
             {
-              SERIES: currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? "7020" : "7024",
+              SERIES:
+                currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? "7020" : "7024",
               TRDR: Number(currentBranch?.TRDR),
               TRDBRANCH: Number(currentBranch?.BRANCH),
               PAYMENT: 1006,
@@ -86,8 +116,10 @@ export default function Cart() {
             {
               TRUCKS: 2,
               DELIVDATE: delivDate,
-              DEPTRDR: currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? 185 : undefined,
-              BILLTRDR : currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? 185 : undefined,
+              DEPTRDR:
+                currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? 185 : undefined,
+              BILLTRDR:
+                currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? 185 : undefined,
             },
           ],
           ITELINES: updatedLines,
@@ -151,7 +183,7 @@ export default function Cart() {
       setComments,
       setDelivDate,
       setEditedQuantities,
-    ]
+    ],
   );
 
   const handleQtyEdit = useCallback((product: IProductItem, newQty: number) => {
@@ -166,9 +198,20 @@ export default function Cart() {
 
   return (
     <div className="flex md:flex-row flex-col gap-6">
-      <OrderSummary items={data} onQtyChange={handleQtyEdit} />
+      <OrderSummary
+        items={enrichedCart}
+        onQtyChange={handleQtyEdit}
+        showVatPricing={isVat999999999}
+        isPricingLoading={isPricingLoading}
+      />
 
-      <div className="basis-1/3">
+      <div className="basis-1/3 space-y-4">
+        <Heading
+          title="Λεπτομέρειες Παραγγελίας"
+          showVatPricing={isVat999999999}
+          sumAmnt={sumAmnt}
+          isPricingLoading={isPricingLoading}
+        />
         <CartTotals
           items={data?.data}
           onSendOrder={handleSendOrder}
@@ -177,6 +220,7 @@ export default function Cart() {
           delivDate={delivDate}
           setDelivDate={setDelivDate}
           isPending={isPending}
+          currentBranch={currentBranch}
         />
       </div>
     </div>

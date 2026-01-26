@@ -1,111 +1,138 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import type { IStoreInfo } from "@/lib/interfaces";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Building2,
+  MapPin,
+  Phone,
+  Mail,
+  Navigation,
+} from "lucide-react";
+import Loading from "./ui/loading";
+import { useRouter } from "next/navigation";
+import { appStore } from "@/stores/appStore";
 
-import { useGetClientsAll } from "@/hooks/useGetClientsAll";
-import { useSearchClients } from "@/hooks/useSearchClients";
+interface ClientsTableProps {
+  clients: IStoreInfo[];
+  loading?: boolean;
+  error?: Error | null;
+}
 
-export default function ClientsTable() {
-  const [q, setQ] = useState("");
+export default function ClientsTable({
+  clients,
+  loading = false,
+  error = null,
+}: ClientsTableProps) {
+  const router = useRouter();
+  const setCurrentBranch = appStore((state) => state.setCurrentBranch);
+  const setBasketId = appStore((state) => state.setBasketId);
 
-  const all = useGetClientsAll();
-  const search = useSearchClients();
-
-  const hasSearch = search.isSuccess;
-
-  const rows = useMemo(() => {
-    if (hasSearch) return search.data?.data ?? [];
-    return all.data?.data ?? [];
-  }, [all.data, hasSearch, search.data]);
-
-  const loading = all.isLoading || search.isPending;
-
-  const onSearch = () => {
-    const value = q.trim();
-    if (!value) return;
-    search.mutate({ q: value });
+  const handleCardClick = (client: IStoreInfo) => {
+    setCurrentBranch(client);
+    setBasketId(client.BASKET_KEY);
+    router.push("/");
   };
 
-  const onClear = () => {
-    setQ("");
-    search.reset();
-  };
+  if (loading) {
+    return <Loading/>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-sm text-red-600">
+        {error.message ?? "Κάτι πήγε στραβά"}
+      </div>
+    );
+  }
+
+  if (clients.length === 0) {
+    return (
+      <div className="py-12 text-center text-slate-600">
+        Δεν βρέθηκαν αποτελέσματα.
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <Input
-          placeholder="ΑΦΜ ή Όνομα…"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") onSearch();
-          }}
-          className="sm:max-w-md"
-        />
-        <div className="flex gap-2">
-          <Button onClick={onSearch} disabled={!q.trim() || search.isPending}>
-            Αναζήτηση
-          </Button>
-          <Button variant="secondary" onClick={onClear} disabled={!hasSearch}>
-            Καθαρισμός
-          </Button>
-        </div>
-      </div>
-
-      {loading && <div className="text-sm text-slate-600">Φόρτωση…</div>}
-      {(all.isError || search.isError) && (
-        <div className="text-sm text-red-600">
-          {((all.error as Error)?.message || (search.error as Error)?.message) ??
-            "Κάτι πήγε στραβά"}
-        </div>
-      )}
-
-      <div className="rounded-2xl border bg-white overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Επωνυμία</TableHead>
-              <TableHead>ΑΦΜ</TableHead>
-              <TableHead>Πόλη</TableHead>
-              <TableHead className="hidden md:table-cell">Διεύθυνση</TableHead>
-              <TableHead className="hidden lg:table-cell">Τηλέφωνο</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {!loading && rows.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5} className="py-6 text-center text-slate-600">
-                  Δεν βρέθηκαν αποτελέσματα.
-                </TableCell>
-              </TableRow>
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      {clients.map((c) => (
+        <Card
+          key={`${c.TRDR}-${c.BRANCH}-${c.AFM}`}
+          className="hover:shadow-lg transition-all duration-200 hover:border-primary/50 group cursor-pointer"
+          onClick={() => handleCardClick(c)}
+        >
+          <CardHeader className="pb-1">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
+                <Building2 className="h-5 w-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <CardTitle className="text-lg font-semibold line-clamp-2">
+                  {c.NAME}
+                </CardTitle>
+                <CardDescription className="flex items-center gap-1.5 mt-1.5">
+                ΑΦΜ: 
+                  <span className="font-mono text-xs">{c.AFM}</span>
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3 pt-0">
+            {c.CITY && (
+              <div className="flex items-start gap-2.5 text-sm">
+                <MapPin className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <span className="text-slate-500 text-xs">Πόλη</span>
+                  <p className="font-medium text-slate-900">{c.CITY}</p>
+                </div>
+              </div>
             )}
-
-            {rows.map((c) => (
-              <TableRow key={`${c.TRDR}-${c.BRANCH}-${c.AFM}`}>
-                <TableCell className="font-medium">{c.NAME}</TableCell>
-                <TableCell>{c.AFM}</TableCell>
-                <TableCell>{c.CITY}</TableCell>
-                <TableCell className="hidden md:table-cell">{c.ADDRESS}</TableCell>
-                <TableCell className="hidden lg:table-cell">
-                  {c.PHONE01 ?? "-"}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            {c.ADDRESS && (
+              <div className="flex items-start gap-2.5 text-sm">
+                <Navigation className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <span className="text-slate-500 text-xs">Διεύθυνση</span>
+                  <p className="font-medium text-slate-900 line-clamp-2">
+                    {c.ADDRESS}
+                  </p>
+                </div>
+              </div>
+            )}
+            {c.PHONE01 && (
+              <div className="flex items-start gap-2.5 text-sm">
+                <Phone className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <span className="text-slate-500 text-xs">Τηλέφωνο</span>
+                  <p className="font-medium text-slate-900">{c.PHONE01}</p>
+                </div>
+              </div>
+            )}
+            {(c.DISTRICT || c.ZIP) && (
+              <div className="flex items-center gap-3 pt-1 border-t border-slate-100">
+                {c.DISTRICT && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                    <span className="text-slate-600">{c.DISTRICT}</span>
+                  </div>
+                )}
+                {c.ZIP && (
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <Mail className="h-3.5 w-3.5 text-slate-400" />
+                    <span className="text-slate-600 font-mono">{c.ZIP}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }

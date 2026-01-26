@@ -22,6 +22,9 @@ export interface IStoreInfo {
   PAYMENT?: string;
   BASKET_KEY?: string;
   GROUP_CHAIN?: string;
+  SALESMAN?: string;
+  /** L'ARTIGIANO: allowed delivery weekdays, e.g. "ΔΕΥ-ΤΕΤ-ΠΑΡ" (Mon/Wed/Fri) */
+  PROGRAMMATISMOS?: string;
 }
 
 export interface IFamilyCategories {
@@ -51,6 +54,10 @@ export interface IProductItem {
   MTRL: string;
   Qty1: string;
   Qty2: number;
+  /** Cart pricing (vat 999999999): price without VAT, euros */
+  LINEVAL?: string;
+  /** Cart pricing (vat 999999999): price with VAT, euros */
+  SXPERC?: string;
 }
 
 export interface ICart {

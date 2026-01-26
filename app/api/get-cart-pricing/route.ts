@@ -2,16 +2,25 @@ import { NextResponse } from "next/server";
 import { backend } from "@/lib/backend";
 import { decodeBackendResponse } from "@/lib/api-utils";
 
-export async function POST() {
+const LOCATEINFO =
+  "SALDOC:TRDR,SERIES,PAYMENT,SUMAMNT ;ITELINES:LINENUM,MTRL,MTRL_ITEM_CODE,MTRL_ITEM_NAME,QTY2,LINEVAL,SXPERC";
+
+export async function POST(req: Request) {
   try {
-
+    const { KEY } = await req.json();
     const clientID = process.env.CLIENT_ID;
-
-    const payload: Record<string, unknown> = { clientID };
+    const appId = process.env.APP_ID;
 
     const response = await backend.post(
-      "/s1services/js/api.web/PELATES_ALL",
-      payload,
+      "/s1services",
+      {
+        service: "getData",
+        clientID,
+        appId,
+        OBJECT: "SALDOC",
+        KEY,
+        LOCATEINFO,
+      },
       { responseType: "arraybuffer" }
     );
 

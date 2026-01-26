@@ -3,8 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 
 export function useVerifyPin() {
   return useMutation({
-    mutationFn: async (pin: string) => {
-      await setPinToCookies(pin);
+    mutationFn: async ({ pin, afm }: { pin: string; afm?: string }) => {
+      await setPinToCookies(pin, afm);
     },
   });
 }

@@ -20,11 +20,14 @@ interface ProductCardProps {
   onSubmitProducts?: (
     product: IProductItem,
     qty: number,
-    isDelete?: boolean
+    isDelete?: boolean,
   ) => void;
   onQtyChange?: (product: IProductItem, qty: number) => void;
   isPending?: boolean;
   onRemove?: (product: IProductItem) => void;
+  showWholesalePrice?: boolean;
+  showCartVatPricing?: boolean;
+  isPricingLoading?: boolean;
 }
 
 const ProductCard: FC<ProductCardProps> = ({
@@ -32,16 +35,15 @@ const ProductCard: FC<ProductCardProps> = ({
   onSubmitProducts,
   isPending,
   onQtyChange,
+  showWholesalePrice,
+  showCartVatPricing,
+  isPricingLoading,
 }) => {
   const pathname = usePathname();
   const [qty, setQty] = useState<number | "">(product.Qty2);
   const [error, setError] = useState("");
   const prevQty2Ref = useRef(product.Qty2);
 
-  // Sync local qty state with product.Qty2 when it changes
-  // This is necessary because when productsWithQty updates (e.g., after useGetProductsPerFamily call),
-  // the product.Qty2 prop changes but the local state doesn't automatically update
-  // We need to sync state from props here because the same product (same CODE) can have different Qty2 values
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (product.Qty2 !== prevQty2Ref.current) {
@@ -52,10 +54,19 @@ const ProductCard: FC<ProductCardProps> = ({
 
   const IMAGE_BASE_URL = "https://ergastiri.oncloud.gr/s1services?filename=";
 
+  const wholesalePrice = showWholesalePrice
+    ? (() => {
+        const p = parseFloat(product.PRICE_PER_MU1 || "0");
+        const s = parseFloat(product.SXESI || "0");
+        if (Number.isNaN(p) || Number.isNaN(s)) return null;
+        return (p * s).toFixed(2);
+      })()
+    : null;
+
   const categoryKey = product.FAMILY?.trim().toUpperCase();
   const imageUrl = product.IMAGE?.trim()
     ? `${IMAGE_BASE_URL}${product.IMAGE.trim()}`
-    : placeholderImage[categoryKey] ?? "/categories/allo.jpg";
+    : (placeholderImage[categoryKey] ?? "/categories/allo.jpg");
 
   const onAddProductToBasket = () => {
     if (typeof qty === "number" && qty <= 0) {
@@ -106,9 +117,47 @@ const ProductCard: FC<ProductCardProps> = ({
             {product.TITLE || product.FULL_DESCRIPTION}
           </div>
 
-          <div className="text-s text-slate-500">
+          <div className="text-sm text-slate-500">
             {product.DESCRIPTION || product.FULL_DESCRIPTION}
           </div>
+
+          {wholesalePrice != null && (
+            <div className="mt-1 text-sm">
+              <span className="font-bold">{wholesalePrice}€</span>{" "}
+              <span className="text-slate-500">(Χονδρική χωρίς ΦΠΑ)</span>
+            </div>
+          )}
+          {showCartVatPricing && (
+            <div className="mt-1 text-sm space-y-0.5">
+              {isPricingLoading ? (
+                <>
+                  <div>
+                    Τιμή χωρίς ΦΠΑ:{" "}
+                    <span className="inline-block h-4 w-12 bg-slate-200 rounded animate-pulse" />
+                  </div>
+                  <div>
+                    Τιμή με ΦΠΑ:{" "}
+                    <span className="inline-block h-4 w-12 bg-slate-200 rounded animate-pulse" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  {product.LINEVAL != null && (
+                    <div>
+                      Τιμή χωρίς ΦΠΑ:{" "}
+                      <span className="font-bold">{product.LINEVAL}€</span>
+                    </div>
+                  )}
+                  {product.SXPERC != null && (
+                    <div>
+                      Τιμή με ΦΠΑ:{" "}
+                      <span className="font-bold">{product.SXPERC}€</span>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex gap-3 sm:gap-4 items-center justify-between">
           <div className="h-12 w-h-12 sm:h-24 sm:w-24 rounded-xl bg-slate-50 overflow-hidden">
@@ -127,6 +176,45 @@ const ProductCard: FC<ProductCardProps> = ({
             <div className="text-s text-slate-500">
               {product.DESCRIPTION || product.FULL_DESCRIPTION}
             </div>
+
+            {wholesalePrice != null && (
+              <div className="text-sm">
+                <span>Τιμή συσκ:</span>{" "}
+                <span className="font-bold">{wholesalePrice}€</span>{" "}
+                <span className="text-slate-500">(Χονδρική χωρίς ΦΠΑ)</span>
+              </div>
+            )}
+            {showCartVatPricing && (
+              <div className="text-sm space-y-0.5">
+                {isPricingLoading ? (
+                  <>
+                    <div>
+                      Τιμή χωρίς ΦΠΑ:{" "}
+                      <span className="inline-block h-4 w-12 bg-slate-200 rounded animate-pulse" />
+                    </div>
+                    <div>
+                      Τιμή με ΦΠΑ:{" "}
+                      <span className="inline-block h-4 w-12 bg-slate-200 rounded animate-pulse" />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {product.LINEVAL != null && (
+                      <div>
+                        Τιμή χωρίς ΦΠΑ:{" "}
+                        <span className="font-bold">{product.LINEVAL}€</span>
+                      </div>
+                    )}
+                    {product.SXPERC != null && (
+                      <div>
+                        Τιμή με ΦΠΑ:{" "}
+                        <span className="font-bold">{product.SXPERC}€</span>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-end">
@@ -182,18 +270,35 @@ const ProductCard: FC<ProductCardProps> = ({
                   </Button>
                 )}
 
-                {pathname === "/cart" && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="gap-1 text-red-500 hover:text-red-700 hover:bg-red-50"
-                    onClick={handleRemove}
-                    disabled={isPending}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                )}
+                {showCartVatPricing &&
+                  typeof qty === "number" &&
+                  Number(qty) > 0 &&
+                  Number(qty) !== Number(product.Qty2) && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="whitespace-nowrap gap-1 cursor-pointer"
+                      onClick={onAddProductToBasket}
+                      disabled={isPending}
+                      aria-label="Εφαρμογή ποσότητας"
+                    >
+                      <ShoppingCart className="h-4 w-4" />
+                    </Button>
+                  )}
+                {pathname === "/cart" &&
+                  (!showCartVatPricing ||
+                    Number(qty) === Number(product.Qty2)) && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="gap-1 text-red-500 hover:text-red-700 hover:bg-red-50"
+                      onClick={handleRemove}
+                      disabled={isPending}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
               </div>
             </div>
           </div>

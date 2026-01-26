@@ -11,7 +11,7 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
         "bg-card text-card-foreground shadow-sm",
         "py-2 px-3",
         "transition-colors",
-        className
+        className,
       )}
       {...props}
     />
