@@ -108,7 +108,12 @@ export default function Cart() {
               PAYMENT: 1006,
               TRUCKS: 2,
               DELIVDATE: delivDate,
-              COMMENTS: comments,
+              COMMENTS:
+                vat === "999999999"
+                  ? `Order16: ${comments}`
+                  : vat === "987654321"
+                    ? `FromC: ${comments}`
+                    : comments,
               REMARKS: "",
             },
           ],
