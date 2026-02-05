@@ -151,3 +151,34 @@ input[type="number"] {
 label {
   @apply m-0;
 }
+
+/* Calendar scroll box – white bg on desktop; on mobile add visible scrollbar track */
+.calendar-scroll-box {
+  background-color: white;
+}
+@media (max-width: 767px) {
+  .calendar-scroll-box {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--muted);
+    scrollbar-gutter: stable;
+    /* Always-visible 8px strip on the right so scroll area is obvious (even with overlay scrollbars) */
+    background: linear-gradient(to left, var(--muted) 8px, transparent 8px),
+      white;
+    background-color: white;
+  }
+  .calendar-scroll-box::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .calendar-scroll-box::-webkit-scrollbar-track {
+    background: var(--muted);
+    border-radius: 4px;
+  }
+  .calendar-scroll-box::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+  }
+  .calendar-scroll-box::-webkit-scrollbar-thumb:hover {
+    filter: brightness(0.9);
+  }
+}

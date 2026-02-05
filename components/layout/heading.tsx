@@ -27,11 +27,13 @@ export default function Heading({
   return (
     <Card
       className={cn(
-        "mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+        "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-0 shadow-none",
         className,
       )}
     >
-      <CardContent className="flex flex-col gap-1">
+      <CardContent
+        className={`flex flex-col gap-1 items-center ${showVatPricing ? "items-start" : ""}`}
+      >
         <h1 className="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           {title}
         </h1>

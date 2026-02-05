@@ -109,16 +109,21 @@ const ProductCard: FC<ProductCardProps> = ({
     handleQtyChange(String(next), setQty);
   };
 
+  const isCart = pathname === "/cart";
+
   return (
     <Card className="border border-slate-200/80 shadow-none rounded-2xl p-0 w-full max-w-4xl mx-auto mb-2">
       <CardContent>
-        <div className="flex-1 md:hidden justify-center items-center flex flex-col text-sm p-0 mb-2">
+        {/* Mobile only: title/desc block – hidden in cart (shown in row instead) */}
+        <div
+          className={`flex-1 flex flex-col text-sm p-0 mb-2 justify-center items-center ${isCart ? "hidden" : "md:hidden"}`}
+        >
           <div className="font-medium text-[15px] sm:text-base">
             {product.TITLE || product.FULL_DESCRIPTION}
           </div>
 
           <div className="text-sm text-slate-500">
-            {product.DESCRIPTION || product.FULL_DESCRIPTION}
+            {product.DESCRIPTION || product.FULL_DESCRIPTION} ({product?.SXESI})
           </div>
 
           {wholesalePrice != null && (
@@ -160,7 +165,10 @@ const ProductCard: FC<ProductCardProps> = ({
           )}
         </div>
         <div className="flex gap-3 sm:gap-4 items-center justify-between">
-          <div className="h-12 w-h-12 sm:h-24 sm:w-24 rounded-xl bg-slate-50 overflow-hidden">
+          {/* Image – hidden on mobile in cart */}
+          <div
+            className={`h-12 w-12 sm:h-24 sm:w-24 shrink-0 rounded-xl bg-slate-50 overflow-hidden ${isCart ? "hidden md:block" : ""}`}
+          >
             <img
               src={imageUrl}
               alt={product.TITLE}
@@ -168,9 +176,59 @@ const ProductCard: FC<ProductCardProps> = ({
             />
           </div>
 
+          {/* Cart mobile: title/desc on left (justify-between with buttons on right) */}
+          {isCart && (
+            <div className="flex-1 min-w-0 md:hidden flex flex-col gap-0.5 text-sm pr-2">
+              <div className="font-medium text-[15px] truncate">
+                {product.TITLE || product.FULL_DESCRIPTION}
+              </div>
+              <div className="text-slate-500 text-xs line-clamp-2">
+                {product.DESCRIPTION || product.FULL_DESCRIPTION} (
+                {product?.SXESI})
+              </div>
+              {wholesalePrice != null && (
+                <div className="text-xs">
+                  <span className="font-bold">{wholesalePrice}€</span>{" "}
+                  <span className="text-slate-500">(Χονδρική χωρίς ΦΠΑ)</span>
+                </div>
+              )}
+              {showCartVatPricing && (
+                <div className="text-xs space-y-0.5">
+                  {isPricingLoading ? (
+                    <>
+                      <div>
+                        Χωρίς ΦΠΑ:{" "}
+                        <span className="inline-block h-3 w-10 bg-slate-200 rounded animate-pulse" />
+                      </div>
+                      <div>
+                        Με ΦΠΑ:{" "}
+                        <span className="inline-block h-3 w-10 bg-slate-200 rounded animate-pulse" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {product.LINEVAL != null && (
+                        <div>
+                          Χωρίς ΦΠΑ:{" "}
+                          <span className="font-bold">{product.LINEVAL}€</span>
+                        </div>
+                      )}
+                      {product.SXPERC != null && (
+                        <div>
+                          Με ΦΠΑ:{" "}
+                          <span className="font-bold">{product.SXPERC}€</span>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="flex-1 md:flex flex-col gap-2 text-sm p-0 hidden">
             <div className="font-medium text-[15px] sm:text-base">
-              {product.TITLE || product.FULL_DESCRIPTION}
+              {product.TITLE || product.FULL_DESCRIPTION} ({product?.SXESI})
             </div>
 
             <div className="text-s text-slate-500">
@@ -218,7 +276,7 @@ const ProductCard: FC<ProductCardProps> = ({
             )}
           </div>
 
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end shrink-0">
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center justify-end gap-2">
                 <div className="relative">

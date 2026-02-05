@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { CartCheckoutDialog } from "@/components/cart-checkout-dialog";
 import { CartTotals } from "@/components/cart-totals";
-import Heading from "@/components/layout/heading";
 import { OrderSummary } from "@/components/order-summary";
 import { successToast } from "@/components/toasts";
 import EmptyCart from "@/components/ui/empty-cart";
@@ -22,6 +22,7 @@ export default function Cart() {
   >({});
   const [comments, setComments] = useState("");
   const [delivDate, setDelivDate] = useState("");
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const { mutate: getClientData } = useGetClientData(isSpecialAfm);
 
@@ -201,33 +202,42 @@ export default function Cart() {
   if (isLoading) return <Loading />;
   if (data?.count === 0) return <EmptyCart />;
 
-  return (
-    <div className="flex md:flex-row flex-col gap-6">
-      <OrderSummary
-        items={enrichedCart}
-        onQtyChange={handleQtyEdit}
-        showVatPricing={isVat999999999}
-        isPricingLoading={isPricingLoading}
+  const orderDetailsContent = (
+    <div className="space-y-4">
+      <CartTotals
+        items={data?.data}
+        onSendOrder={handleSendOrder}
+        comments={comments}
+        setComments={setComments}
+        delivDate={delivDate}
+        setDelivDate={setDelivDate}
+        isPending={isPending}
+        currentBranch={currentBranch}
       />
+    </div>
+  );
 
-      <div className="basis-1/3 space-y-4">
-        <Heading
-          title="Λεπτομέρειες Παραγγελίας"
+  return (
+    <>
+      <div className="pb-36 md:pb-24">
+        <OrderSummary
+          items={enrichedCart}
+          onQtyChange={handleQtyEdit}
           showVatPricing={isVat999999999}
-          sumAmnt={sumAmnt}
           isPricingLoading={isPricingLoading}
-        />
-        <CartTotals
-          items={data?.data}
-          onSendOrder={handleSendOrder}
-          comments={comments}
-          setComments={setComments}
-          delivDate={delivDate}
-          setDelivDate={setDelivDate}
-          isPending={isPending}
-          currentBranch={currentBranch}
+          sumAmnt={sumAmnt}
         />
       </div>
-    </div>
+
+      <CartCheckoutDialog
+        open={checkoutOpen}
+        onOpenChange={setCheckoutOpen}
+        showVatPricing={isVat999999999}
+        sumAmnt={sumAmnt}
+        isPricingLoading={isPricingLoading}
+      >
+        {orderDetailsContent}
+      </CartCheckoutDialog>
+    </>
   );
 }

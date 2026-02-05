@@ -107,51 +107,48 @@ export function CartTotals({
   };
 
   return (
-    <div className="basis-2/3">
-      <Card className="border border-slate-200/80 shadow-none rounded-2xl">
-        <CardContent className="pb-4 pt-4 space-y-4 text-sm p-0">
-          <div className="px-3 space-y-1">
-            <Label className=" text-slate-500">
-              Επιλογή: Ημερομηνία Παράδοσης
-            </Label>
-            {programmatismos && (
-              <p className=" text-slate-500">
-                Διαθέσιμες ημέρες:{" "}
-                <span className="font-bold">{programmatismos.label}</span>
-              </p>
-            )}
+    <Card className="border-0 shadow-none rounded-2xl">
+      <CardContent className="pb-4 pt-4 space-y-4 text-sm p-0">
+        <div className="px-3 space-y-1 text-center">
+          <Label className=" text-slate-500">Ημερομηνία Παράδοσης</Label>
+          {programmatismos && (
+            <p className=" text-slate-500">
+              Διαθέσιμες ημέρες:{" "}
+              <span className="font-bold">{programmatismos.label}</span>
+            </p>
+          )}
+          <div className="border border-primary/60 bg-white rounded-xl">
             <Calendar
               mode="single"
               selected={selectedDate}
               onSelect={handleCalendarSelect}
               disabled={disabledMatchers}
-              className="rounded-xl border border-slate-200 bg-white"
+              className="border-0 rounded-none shadow-none md:h-fit h-[45vh]"
             />
           </div>
+        </div>
+        <div className="px-3 space-y-1">
+          <Label className="text-xs text-slate-500">Σχόλια Παραγγελίας</Label>
+          <Textarea
+            className="bg-white"
+            value={comments}
+            onChange={(e) => setComments(e.target.value)}
+            rows={3}
+          />
+        </div>
 
-          <div className="px-3 space-y-1">
-            <Label className="text-xs text-slate-500">Σχόλια Παραγγελίας</Label>
-            <Textarea
-              className="bg-white"
-              value={comments}
-              onChange={(e) => setComments(e.target.value)}
-              rows={3}
-            />
-          </div>
-
-          <div className="pt-4 p-4">
-            <Button
-              className="w-full gap-2"
-              size="lg"
-              onClick={handleSendOrderClick}
-              disabled={items?.length === 0 || !delivDate || isPending}
-            >
-              <ShoppingCart className="h-4 w-4" />
-              Αποστολή Παραγγελίας
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <div className="pt-4 p-4">
+          <Button
+            className="w-full gap-2"
+            size="lg"
+            onClick={handleSendOrderClick}
+            disabled={items?.length === 0 || !delivDate || isPending}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            Αποστολή Παραγγελίας
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
