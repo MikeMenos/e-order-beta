@@ -8,7 +8,7 @@ import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
-  title: "Ergastirion Manager",
+  title: "E-order Beta",
   icons: {
     icon: "/logo.png",
   },
@@ -24,7 +24,7 @@ export default function RootLayout({
       <body
         suppressHydrationWarning
         className={cn(
-          "bg-zinc-50 dark:bg-zinc-900 text-foreground antialiased",
+          "bg-backround dark:bg-zinc-900 text-foreground antialiased",
           "min-h-screen flex flex-col",
         )}
       >

@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Ergastirio Manager",
-    short_name: "Ergastirio",
-    description: "Ergastirio Manager PWA",
+    name: "E-order",
+    short_name: "E-order",
+    description: "E-order PWA",
     start_url: "/",
     scope: "/",
     display: "standalone",

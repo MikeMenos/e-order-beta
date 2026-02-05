@@ -105,7 +105,7 @@ export default function Cart() {
                 currentBranch?.GROUP_CHAIN === "L'ARTIGIANO" ? "7020" : "7024",
               TRDR: Number(currentBranch?.TRDR),
               TRDBRANCH: Number(currentBranch?.BRANCH),
-              PAYMENT: 1006,
+              PAYMENT: 1003,
               TRUCKS: 2,
               DELIVDATE: delivDate,
               COMMENTS:
@@ -143,7 +143,7 @@ export default function Cart() {
               SERIES: "7001",
               TRDR: Number(currentBranch?.TRDR),
               TRDBRANCH: Number(currentBranch?.BRANCH),
-              PAYMENT: 1006,
+              PAYMENT: 1003,
               TRUCKS: 2,
               DELIVDATE: "",
               COMMENTS: "",

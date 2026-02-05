@@ -174,7 +174,8 @@ const ProductCard: FC<ProductCardProps> = ({
             </div>
 
             <div className="text-s text-slate-500">
-              {product.DESCRIPTION || product.FULL_DESCRIPTION}
+              {product.DESCRIPTION || product.FULL_DESCRIPTION} (
+              {product?.SXESI})
             </div>
 
             {wholesalePrice != null && (

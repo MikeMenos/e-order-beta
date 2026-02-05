@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/public/logo.png";
-import logoIcon from "@/public/logo-icon.png";
 import { appStore } from "@/stores/appStore";
 import { getGroupChainIconSrc } from "@/lib/utils";
 import { ClientResponse } from "@/lib/interfaces";
@@ -23,18 +22,11 @@ export function Logo({ pathname, clientData }: LogoProps) {
       ) : (
         <>
           <Image
-            src={headerIconSrc ?? logoIcon}
-            alt="Logo"
-            width={36}
-            height={36}
-            className="h-10 w-10 translate-y-px"
-          />
-          <Image
             src={logo}
             alt="Logo"
-            width={150}
-            height={40}
-            className={`h-10 w-auto sm:h-11 ${
+            width={60}
+            height={60}
+            className={` ${
               pathname.startsWith("/products") &&
               currentBranch?.GROUP_CHAIN !== "L'ARTIGIANO"
                 ? "hidden md:block"

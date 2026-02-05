@@ -108,7 +108,7 @@ export function CartTotals({
 
   return (
     <div className="basis-2/3">
-      <Card className="border border-slate-200/80 shadow-none rounded-2xl bg-slate-50">
+      <Card className="border border-slate-200/80 shadow-none rounded-2xl">
         <CardContent className="pb-4 pt-4 space-y-4 text-sm p-0">
           <div className="px-3 space-y-1">
             <Label className=" text-slate-500">

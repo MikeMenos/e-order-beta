@@ -19,7 +19,6 @@ import { ChangeEvent, KeyboardEvent, useRef, useState, useEffect } from "react";
 import { appStore } from "@/stores/appStore";
 import Image from "next/image";
 import logo from "@/public/logo.png";
-import logoIcon from "@/public/logo-icon.png";
 
 export default function Login() {
   const router = useRouter();
@@ -176,21 +175,8 @@ export default function Login() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-start">
       <div className="flex flex-col items-center gap-1 py-8">
-        <Image
-          src={logoIcon}
-          alt="Logo icon"
-          width={50}
-          height={50}
-          className="h-20 w-20"
-        />
-
-        <Image
-          src={logo}
-          alt="Logo"
-          width={300}
-          height={60}
-          className="h-10 w-auto mt-0 sm:h-16"
-        />
+        <Image src={logo} alt="Logo" width={100} height={100} />
+        <p className="text-gray-500">Beta Version</p>
       </div>
 
       <Card className="w-full max-w-[400px]">

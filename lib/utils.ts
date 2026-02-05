@@ -38,7 +38,7 @@ export function buildUpdatedLines(params: {
 
   if (exists) {
     return existingLines.map((l) =>
-      l.MTRL === clickedMtrl ? { ...l, QTY2: qty } : l
+      l.MTRL === clickedMtrl ? { ...l, QTY2: qty } : l,
     );
   } else {
     return [
@@ -73,7 +73,7 @@ export const buildFirstBasketKeyPayload = ({
           SERIES: "7001",
           TRDR: trdr,
           TRDBRANCH: branch,
-          PAYMENT: 1006,
+          PAYMENT: 1003,
           TRUCKS: 2,
           DELIVDATE: "",
           COMMENTS: "",

@@ -20,7 +20,7 @@ export default function Footer() {
       )}
 
       <footer className="w-full h-14 bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-sm text-zinc-500">
-        © 2026 Ergastirion - Manager App. All rights reserved.
+        © 2026 E-order App. All rights reserved.
       </footer>
     </>
   );
